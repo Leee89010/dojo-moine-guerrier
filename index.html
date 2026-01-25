@@ -475,6 +475,8 @@ function getJSON(key, def) {
 function setJSON(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
 }
+        
+let lastDate = new Date().toLocaleDateString("fr-FR");
 
 // --- RITUEL ---
 function validerRituel() {
@@ -491,6 +493,31 @@ function validerRituel() {
         alert("Tu veux être discipliné ? Alors remplis au moins poids, stress et intention.");
         return;
     }
+        setInterval(() => {
+    const currentDate = new Date().toLocaleDateString("fr-FR");
+
+    if (currentDate !== lastDate) {
+        lastDate = currentDate;
+        resetRituelDuJour();
+    }
+}, 30000); // vérifie toutes les 30 secondes
+function resetRituelDuJour() {
+
+    // Réinitialise les champs
+    document.getElementById("poids").value = "";
+    document.getElementById("stress").value = "";
+    document.getElementById("sommeil").value = "";
+    document.getElementById("intention").value = "";
+    document.getElementById("tache").value = "";
+
+    // Réinitialise l’affichage
+    document.getElementById("dashboard").classList.remove("visible");
+    document.getElementById("rituel").classList.add("visible");
+
+    // Recharge le dashboard
+    afficherDashboard();
+}
+
 
     // --- ENREGISTREMENT DANS L'HISTORIQUE (pour la page progression) ---
     const date = new Date().toLocaleDateString("fr-FR");
