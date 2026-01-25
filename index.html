@@ -492,7 +492,7 @@ function validerRituel() {
         return;
     }
 
-    // --- ENREGISTREMENT DANS L'HISTORIQUE ---
+    // --- ENREGISTREMENT DANS L'HISTORIQUE (pour la page progression) ---
     const date = new Date().toLocaleDateString("fr-FR");
 
     let historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
@@ -507,9 +507,9 @@ function validerRituel() {
 
     localStorage.setItem("historiquePoids", JSON.stringify(historique));
 
-    alert("Rituel enregistré !");
-}
+    // --- ENREGISTREMENT DANS TES DONNÉES EXISTANTES ---
     const key = todayKey();
+
     const corps = getJSON("corps", {});
     corps[key] = { poids, stress, sommeil };
     setJSON("corps", corps);
@@ -520,11 +520,13 @@ function validerRituel() {
     meta[key].tache = tache;
     setJSON("metaJour", meta);
 
-    // XP rituel
+    // --- XP ---
     let xp = parseInt(localStorage.getItem("xp") || "0", 10);
     xp += 10;
     localStorage.setItem("xp", xp.toString());
 
+    // --- UI ---
+    alert("Rituel enregistré !");
     document.getElementById("rituel").classList.remove("visible");
     document.getElementById("dashboard").classList.add("visible");
     afficherDashboard();
