@@ -1,467 +1,580 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-        <link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dojo du Moine Guerrier</title>
+    
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a0a0a">
-<link rel="stylesheet" href="style.css">
-        
+    <meta name="theme-color" content="#0a0a0a">
 
-<script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/firebase-messaging-sw.js")
-    .then(() => console.log("SW Firebase OK"))
-    .catch(err => console.error("SW Firebase ERROR", err));
-}
-</script>
-<meta charset="UTF-8">
-<title>Dojo du Moine Guerrier</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --bg: #0a0a0a;
+            --card: rgba(20, 20, 20, 0.85);
+            --accent: #d4af37;
+            --text: #f2f2f2;
+            --muted: #888;
+            --border: rgba(212, 175, 55, 0.35);
+            --shadow: rgba(0, 0, 0, 0.6);
+            --radius: 14px;
+        }
 
-<style>
-/* --- VARIABLES --- */
-:root {
-    --bg: #0a0a0a;
-    --bg2: #111;
-    --card: rgba(20, 20, 20, 0.85);
-    --accent: #d4af37;
-    --accent-soft: rgba(212, 175, 55, 0.25);
-    --text: #f2f2f2;
-    --muted: #888;
-    --border: rgba(212, 175, 55, 0.35);
-    --shadow: rgba(0, 0, 0, 0.6);
-    --radius: 14px;
-    --transition: 0.25s ease;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-/* --- RESET --- */
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
+        body {
+            font-family: "Inter", system-ui, sans-serif;
+            color: var(--text);
+            overflow: hidden;
+            background: #000;
+        }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "Inter", system-ui, sans-serif;
-    color: var(--text);
-    overflow-x: hidden;
-}
+        /* --- FOND ANIMÉ --- */
+        #background {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at top, #1a1a1a 0%, #000 70%);
+            overflow: hidden;
+        }
 
-/* --- FOND ANIMÉ (fumée + particules dorées) --- */
-#background {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(circle at top, #1a1a1a 0%, #000 70%);
-    overflow: hidden;
-}
+        .smoke {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+            filter: blur(80px);
+            animation: smokeMove 18s infinite ease-in-out;
+        }
 
-/* Fumée */
-.smoke {
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
-    filter: blur(80px);
-    animation: smokeMove 18s infinite ease-in-out;
-}
+        .smoke:nth-child(1) { top: -100px; left: -150px; animation-delay: 0s; }
+        .smoke:nth-child(2) { bottom: -150px; right: -100px; animation-delay: 4s; }
+        .smoke:nth-child(3) { top: 40%; left: 20%; animation-delay: 8s; }
 
-.smoke:nth-child(1) { top: -100px; left: -150px; animation-delay: 0s; }
-.smoke:nth-child(2) { bottom: -150px; right: -100px; animation-delay: 4s; }
-.smoke:nth-child(3) { top: 40%; left: 20%; animation-delay: 8s; }
+        @keyframes smokeMove {
+            0% { transform: translate(0,0) scale(1); }
+            50% { transform: translate(40px,-30px) scale(1.2); }
+            100% { transform: translate(0,0) scale(1); }
+        }
 
-@keyframes smokeMove {
-    0% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(40px,-30px) scale(1.2); }
-    100% { transform: translate(0,0) scale(1); }
-}
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: floatUp 6s infinite ease-in-out;
+        }
 
-/* Particules dorées */
-.particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: var(--accent);
-    border-radius: 50%;
-    opacity: 0.7;
-    animation: floatUp 6s infinite ease-in-out;
-}
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0.3; }
+            50% { opacity: 0.9; }
+            100% { transform: translateY(-120px) scale(0.5); opacity: 0; }
+        }
 
-@keyframes floatUp {
-    0% { transform: translateY(0) scale(1); opacity: 0.3; }
-    50% { opacity: 0.9; }
-    100% { transform: translateY(-120px) scale(0.5); opacity: 0; }
-}
+        /* --- SLIDER CONTENEUR --- */
+        .slider-container {
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100vh;
+            width: 200vw;
+        }
 
-/* --- HEADER CALLIGRAPHIE JAPONAISE --- */
-#header {
-    text-align: center;
-    padding: 40px 0 20px;
-    font-size: 32px;
-    font-weight: 300;
-    letter-spacing: 3px;
-    color: var(--accent);
-    text-shadow: 0 0 18px rgba(212,175,55,0.35);
-    animation: headerStroke 3s ease forwards;
-    opacity: 0;
-}
+        .slider-page {
+            min-width: 100vw;
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
 
-@keyframes headerStroke {
-    0% { opacity: 0; transform: translateY(-20px); }
-    40% { opacity: 1; }
-    100% { transform: translateY(0); }
-}
+        /* --- HEADER --- */
+        #header {
+            text-align: center;
+            padding: 30px 0 20px;
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-shadow: 0 0 18px rgba(212,175,55,0.35);
+        }
 
-/* --- CONTENEUR --- */
-.container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 20px;
-}
+        /* --- CONTENEUR --- */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
 
-/* --- CARTES --- */
-.card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin: 16px 0;
-    border: 1px solid var(--border);
-    box-shadow: 0 0 25px var(--shadow);
-    backdrop-filter: blur(6px);
-    transition: var(--transition);
-}
+        /* --- CARTES --- */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 25px var(--shadow);
+            backdrop-filter: blur(6px);
+            transition: 0.25s ease;
+        }
 
-.card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 35px rgba(212, 175, 55, 0.15);
-}
+        .card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.15);
+        }
 
-/* --- BOUTONS --- */
-button {
-    width: 100%;
-    padding: 14px;
-    margin: 10px 0;
-    background: #151515;
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: var(--transition);
-    letter-spacing: 0.5px;
-}
+        h1, h2, h3 {
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
 
-button:hover {
-    background: #1f1f1f;
-    border-color: var(--accent);
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
-}
+        h1 { font-size: 24px; text-align: center; }
+        h2 { font-size: 20px; }
+        h3 { font-size: 18px; }
 
-button.primary {
-    background: var(--accent);
-    color: #000;
-    font-weight: 600;
-    border-color: var(--accent);
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
-}
+        /* --- BOUTONS --- */
+        button {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            background: #151515;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.25s ease;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
 
-button.primary:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.45);
-}
+        button:hover, button:active {
+            background: #1f1f1f;
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+            transform: translateY(-2px);
+        }
 
-/* --- INPUTS --- */
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0 14px;
-    background: #0f0f0f;
-    color: var(--text);
-    border: 1px solid #333;
-    border-radius: 10px;
-    transition: var(--transition);
-}
+        button.primary {
+            background: var(--accent);
+            color: #000;
+            font-weight: 700;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
+        }
 
-input:focus, select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
-    outline: none;
-}
+        button.primary:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
 
-/* --- SECTIONS --- */
-.section {
-    display: none;
-    animation: fadeIn 0.4s ease;
-}
+        /* --- INPUTS --- */
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 14px;
+            background: #0f0f0f;
+            color: var(--text);
+            border: 1px solid #333;
+            border-radius: 10px;
+            transition: 0.25s ease;
+            font-family: inherit;
+            font-size: 15px;
+        }
 
-.visible {
-    display: block;
-}
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+            outline: none;
+        }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        label {
+            display: block;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 12px;
+            font-size: 14px;
+        }
 
-/* --- BADGES --- */
-.badge {
-    display: inline-block;
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    background: rgba(212, 175, 55, 0.1);
-    font-size: 12px;
-    margin: 4px;
-    letter-spacing: 0.5px;
-}
+        /* --- SECTIONS --- */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
 
-/* --- XP --- */
-.xp {
-    font-size: 14px;
-    color: var(--accent);
-    text-align: center;
-    margin-top: 6px;
-    font-weight: 500;
-}
+        .visible {
+            display: block;
+        }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-hr {
-    border: none;
-    border-top: 1px solid #222;
-    margin: 12px 0;
-}
-</style>
+        /* --- UTILITAIRES --- */
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .small {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .xp {
+            font-size: 16px;
+            color: var(--accent);
+            text-align: center;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #222;
+            margin: 16px 0;
+        }
+
+        /* --- PAGE PROGRESSION --- */
+        .page-progression {
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 70%);
+        }
+
+        .progression-title {
+            text-align: center;
+            padding: 40px 20px 20px;
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-shadow: 0 0 18px rgba(212,175,55,0.35);
+        }
+
+        #progressionChart {
+            max-width: 90%;
+            margin: 40px auto;
+            padding: 20px;
+            background: rgba(20, 20, 20, 0.7);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        /* --- INDICATEUR DE SLIDE --- */
+        .slide-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .slide-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.3);
+            transition: 0.3s ease;
+        }
+
+        .slide-dot.active {
+            background: var(--accent);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* --- BOUTON NOTIFICATIONS --- */
+        #enable-notifs {
+            background: var(--accent);
+            color: black;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 20px auto;
+            display: block;
+            cursor: pointer;
+            max-width: 90%;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        #enable-notifs:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
-    <button id="enable-notifs" style="
-    background:#d4af37;
-    color:black;
-    padding:12px 20px;
-    border:none;
-    border-radius:8px;
-    font-size:18px;
-    font-weight:bold;
-    margin:20px auto;
-    display:block;
-    cursor:pointer;
-">
-Activer les notifications du Dojo
-</button>
 
 <div id="background">
     <div class="smoke"></div>
     <div class="smoke"></div>
     <div class="smoke"></div>
-
-    <!-- Particules dorées -->
-    <script>
-        for (let i = 0; i < 40; i++) {
-            const p = document.createElement("div");
-            p.className = "particle";
-            p.style.left = Math.random() * 100 + "vw";
-            p.style.top = Math.random() * 100 + "vh";
-            p.style.animationDelay = Math.random() * 6 + "s";
-            document.getElementById("background").appendChild(p);
-        }
-    </script>
 </div>
-<div id="header">🧘‍♂️ Dojo du Moine Guerrier</div>    
-<div class="container">
 
-    <h1>🧘‍♂️ Dojo du Moine Guerrier</h1>
+<div class="slider-container" id="slider">
 
-    <!-- RITUEL DU MATIN -->
-    <div id="rituel" class="section visible card">
-        <h2>⚔️ Rituel du Matin</h2>
-        <p class="small center">“Commence par la discipline. Le reste attendra.”</p>
+    <!-- PAGE 1 : DOJO -->
+    <div class="slider-page page-dojo">
+        <div id="header">🧘‍♂️ Dojo du Moine Guerrier</div>
+        
+        <button id="enable-notifs">
+            🔔 Activer les notifications du Dojo
+        </button>
 
-        <label>Poids du jour (kg)</label>
-        <input type="number" id="poids" step="0.1">
+        <div class="container">
 
-        <div class="row">
-            <div>
-                <label>Stress (0–10)</label>
-                <input type="number" id="stress" min="0" max="10">
+            <!-- RITUEL DU MATIN -->
+            <div id="rituel" class="section visible card">
+                <h2>⚔️ Rituel du Matin</h2>
+                <p class="small center">"Commence par la discipline. Le reste attendra."</p>
+
+                <label>Poids du jour (kg)</label>
+                <input type="number" id="poids" step="0.1" placeholder="86.5">
+
+                <div class="row">
+                    <div>
+                        <label>Stress (0–10)</label>
+                        <input type="number" id="stress" min="0" max="10" placeholder="5">
+                    </div>
+                    <div>
+                        <label>Sommeil (0–10)</label>
+                        <input type="number" id="sommeil" min="0" max="10" placeholder="7">
+                    </div>
+                </div>
+
+                <label>Intention du jour</label>
+                <input type="text" id="intention" placeholder="Ex : Aujourd'hui je suis discipliné">
+
+                <label>Tâche du jour (1 seule)</label>
+                <input type="text" id="tache" placeholder="Ex : Faire ma séance de muscu">
+
+                <hr>
+
+                <p class="small"><b>Minute 1 :</b> Pesée, respiration 4-2-6 (4 cycles), verre d'eau.</p>
+                <p class="small"><b>Minute 2 :</b> Intention + tâche du jour.</p>
+                <p class="small"><b>Minute 3 :</b> Habitudes + anti-craving (respiration + 10 squats + gainage 10 sec).</p>
+
+                <button class="primary" onclick="validerRituel()">✅ Valider le rituel</button>
             </div>
-            <div>
-                <label>Sommeil (0–10)</label>
-                <input type="number" id="sommeil" min="0" max="10">
+
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="section card">
+                <h2>📊 Tableau de Bord</h2>
+                <p class="small center">"Voici ta Voie aujourd'hui. Exécute."</p>
+
+                <div class="card">
+                    <h3>🥋 Séance du jour</h3>
+                    <p id="seanceDuJour">Aujourd'hui : définis ta séance.</p>
+                    <button onclick="definirSeance()">Définir / modifier la séance</button>
+                </div>
+
+                <div class="card">
+                    <h3>⚖️ Poids</h3>
+                    <p id="poidsDisplay">Poids du jour : -</p>
+                    <p id="objectifDisplay" class="small">Objectif : 75 kg</p>
+                </div>
+
+                <div class="card">
+                    <h3>🧠 Mental</h3>
+                    <p id="stressDisplay">Stress : -</p>
+                    <p id="intentionDisplay">Intention : -</p>
+                </div>
+
+                <div class="card">
+                    <h3>🧱 Discipline & XP</h3>
+                    <p id="xpDisplay" class="xp">XP total : 0</p>
+                    <button onclick="showSection('discipline')">Gérer mes habitudes</button>
+                </div>
+
+                <button onclick="showSection('corps')">⚖️ Corps</button>
+                <button onclick="showSection('sport')">🥊 Sport</button>
+                <button onclick="showSection('addictions')">🚬 Addictions</button>
+                <button onclick="showSection('mental')">🧠 Mental</button>
+                <button onclick="showSection('badges')">🏆 Niveaux & Badges</button>
             </div>
-        </div>
 
-        <label>Intention du jour</label>
-        <input type="text" id="intention" placeholder="Ex : Aujourd’hui je suis discipliné.">
-
-        <label>Tâche du jour (1 seule)</label>
-        <input type="text" id="tache" placeholder="Ex : Faire ma séance de muscu.">
-
-        <hr>
-
-        <p class="small"><b>Minute 1 :</b> Pesée, respiration 4-2-6 (4 cycles), verre d’eau.</p>
-        <p class="small"><b>Minute 2 :</b> Intention + tâche du jour.</p>
-        <p class="small"><b>Minute 3 :</b> Habitudes + anti-craving (respiration + 10 squats + gainage 10 sec).</p>
-
-        <button class="primary" onclick="validerRituel()">Valider le rituel</button>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="section card">
-        <h2>📊 Tableau de Bord</h2>
-        <p class="small center">“Voici ta Voie aujourd’hui. Exécute.”</p>
-
-        <div class="card">
-            <h3>🥋 Séance du jour</h3>
-            <p id="seanceDuJour">Aujourd’hui : définis ta séance.</p>
-            <button onclick="definirSeance()">Définir / modifier la séance</button>
-        </div>
-
-        <div class="card">
-            <h3>⚖️ Poids</h3>
-            <p id="poidsDisplay">Poids du jour : -</p>
-            <p id="objectifDisplay" class="small">Objectif : 75 kg</p>
-        </div>
-
-        <div class="card">
-            <h3>🧠 Mental</h3>
-            <p id="stressDisplay">Stress : -</p>
-            <p id="intentionDisplay">Intention : -</p>
-        </div>
-
-        <div class="card">
-            <h3>🧱 Discipline & XP</h3>
-            <p id="xpDisplay" class="xp">XP total : 0</p>
-            <button onclick="showSection('discipline')">Gérer mes habitudes</button>
-        </div>
-
-        <button onclick="showSection('corps')">⚖️ Corps</button>
-        <button onclick="showSection('sport')">🥊 Sport</button>
-        <button onclick="showSection('addictions')">🚬 Addictions</button>
-        <button onclick="showSection('mental')">🧠 Mental</button>
-        <button onclick="showSection('badges')">🏆 Niveaux & Badges</button>
-    </div>
-
-    <!-- CORPS -->
-    <div id="corps" class="section card">
-        <h2>⚖️ Corps & Composition</h2>
-        <p id="historiquePoids" class="small"></p>
-        <button onclick="showSection('dashboard')">⬅️ Retour</button>
-    </div>
-
-    <!-- SPORT -->
-    <div id="sport" class="section card">
-        <h2>🥊 Entraînement</h2>
-
-        <label>Type de séance</label>
-        <select id="typeSeance">
-            <option value="Kickboxing">Kickboxing</option>
-            <option value="Muscu">Musculation</option>
-            <option value="Boxe anglaise">Boxe anglaise</option>
-            <option value="Cardio">Cardio</option>
-            <option value="Repos actif">Repos actif</option>
-        </select>
-
-        <div class="row">
-            <div>
-                <label>Durée (min)</label>
-                <input type="number" id="dureeSeance">
+            <!-- CORPS -->
+            <div id="corps" class="section card">
+                <h2>⚖️ Corps & Composition</h2>
+                <p id="historiquePoids" class="small"></p>
+                <button onclick="showSection('dashboard')">⬅️ Retour</button>
             </div>
-            <div>
-                <label>Intensité (1–10)</label>
-                <input type="number" id="intensiteSeance" min="1" max="10">
+
+            <!-- SPORT -->
+            <div id="sport" class="section card">
+                <h2>🥊 Entraînement</h2>
+
+                <label>Type de séance</label>
+                <select id="typeSeance">
+                    <option value="Kickboxing">Kickboxing</option>
+                    <option value="Muscu">Musculation</option>
+                    <option value="Boxe anglaise">Boxe anglaise</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="Repos actif">Repos actif</option>
+                </select>
+
+                <div class="row">
+                    <div>
+                        <label>Durée (min)</label>
+                        <input type="number" id="dureeSeance" placeholder="60">
+                    </div>
+                    <div>
+                        <label>Intensité (1–10)</label>
+                        <input type="number" id="intensiteSeance" min="1" max="10" placeholder="8">
+                    </div>
+                </div>
+
+                <label>Objectif de la séance</label>
+                <input type="text" id="objectifSeance" placeholder="Ex : puissance, technique, cardio...">
+
+                <button class="primary" onclick="validerSeance()">✅ Valider la séance (XP)</button>
+
+                <p id="historiqueSeances" class="small"></p>
+
+                <button onclick="showSection('dashboard')">⬅️ Retour</button>
             </div>
+
+            <!-- ADDICTIONS -->
+            <div id="addictions" class="section card">
+                <h2>🚬 Addictions & Cravings</h2>
+
+                <div class="row">
+                    <div>
+                        <label>Joints (nombre)</label>
+                        <input type="number" id="joints" min="0" placeholder="0">
+                    </div>
+                    <div>
+                        <label>Cigarettes (nombre)</label>
+                        <input type="number" id="cigarettes" min="0" placeholder="0">
+                    </div>
+                </div>
+
+                <label>Heure de la première consommation</label>
+                <input type="time" id="heurePremiere">
+
+                <label>Déclencheur principal</label>
+                <select id="declencheur">
+                    <option value="stress">Stress</option>
+                    <option value="ennui">Ennui</option>
+                    <option value="social">Social</option>
+                    <option value="routine">Routine</option>
+                </select>
+
+                <label>Craving (0–10)</label>
+                <input type="number" id="craving" min="0" max="10" placeholder="5">
+
+                <button class="primary" onclick="validerAddictions()">✅ Valider la journée (XP)</button>
+
+                <p id="resumeAddictions" class="small"></p>
+
+                <button onclick="showSection('dashboard')">⬅️ Retour</button>
+            </div>
+
+            <!-- DISCIPLINE -->
+            <div id="discipline" class="section card">
+                <h2>🧱 Discipline & Habitudes</h2>
+
+                <p class="small">Coche ce que tu as fait aujourd'hui :</p>
+
+                <div style="margin: 20px 0;">
+                    <label style="display: flex; align-items: center; margin: 12px 0; cursor: pointer;">
+                        <input type="checkbox" id="hHydratation" style="width: auto; margin-right: 10px;">
+                        <span>Hydratation</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin: 12px 0; cursor: pointer;">
+                        <input type="checkbox" id="hMobilite" style="width: auto; margin-right: 10px;">
+                        <span>10 min de mobilité</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin: 12px 0; cursor: pointer;">
+                        <input type="checkbox" id="hPasMatin" style="width: auto; margin-right: 10px;">
+                        <span>Pas de cigarette/joint avant midi</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin: 12px 0; cursor: pointer;">
+                        <input type="checkbox" id="hPasGrignotage" style="width: auto; margin-right: 10px;">
+                        <span>Pas de grignotage</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin: 12px 0; cursor: pointer;">
+                        <input type="checkbox" id="hTache" style="width: auto; margin-right: 10px;">
+                        <span>Tâche du jour complétée</span>
+                    </label>
+                </div>
+
+                <button class="primary" onclick="validerDiscipline()">✅ Valider discipline (XP)</button>
+
+                <p id="scoreDiscipline" class="xp"></p>
+
+                <button onclick="showSection('dashboard')">⬅️ Retour</button>
+            </div>
+
+            <!-- MENTAL -->
+            <div id="mental" class="section card">
+                <h2>🧠 Mental</h2>
+                <p id="mentalSummary" class="small"></p>
+                <button onclick="showSection('dashboard')">⬅️ Retour</button>
+            </div>
+
+            <!-- BADGES -->
+            <div id="badges" class="section card">
+                <h2>🏆 Niveaux & Badges</h2>
+                <p class="small">Système simple : plus tu gagnes d'XP, plus tu montes.</p>
+                <p id="niveauGlobal" class="xp"></p>
+                <p id="listeBadges" class="small"></p>
+                <button onclick="showSection('dashboard')">⬅️ Retour</button>
+            </div>
+
         </div>
-
-        <label>Objectif de la séance</label>
-        <input type="text" id="objectifSeance" placeholder="Ex : puissance, technique, cardio...">
-
-        <button class="primary" onclick="validerSeance()">Valider la séance (XP)</button>
-
-        <p id="historiqueSeances" class="small"></p>
-
-        <button onclick="showSection('dashboard')">⬅️ Retour</button>
     </div>
 
-    <!-- ADDICTIONS -->
-    <div id="addictions" class="section card">
-        <h2>🚬 Addictions & Cravings</h2>
-
-        <div class="row">
-            <div>
-                <label>Joints (nombre)</label>
-                <input type="number" id="joints" min="0">
-            </div>
-            <div>
-                <label>Cigarettes (nombre)</label>
-                <input type="number" id="cigarettes" min="0">
-            </div>
+    <!-- PAGE 2 : PROGRESSION -->
+    <div class="slider-page page-progression">
+        <div class="progression-title">📈 Progression</div>
+        <div class="container">
+            <canvas id="progressionChart"></canvas>
         </div>
-
-        <label>Heure de la première consommation</label>
-        <input type="time" id="heurePremiere">
-
-        <label>Déclencheur principal</label>
-        <select id="declencheur">
-            <option value="stress">Stress</option>
-            <option value="ennui">Ennui</option>
-            <option value="social">Social</option>
-            <option value="routine">Routine</option>
-        </select>
-
-        <label>Craving (0–10)</label>
-        <input type="number" id="craving" min="0" max="10">
-
-        <button class="primary" onclick="validerAddictions()">Valider la journée (XP)</button>
-
-        <p id="resumeAddictions" class="small"></p>
-
-        <button onclick="showSection('dashboard')">⬅️ Retour</button>
     </div>
 
-    <!-- DISCIPLINE -->
-    <div id="discipline" class="section card">
-        <h2>🧱 Discipline & Habitudes</h2>
+</div>
 
-        <p class="small">Coche ce que tu as fait aujourd’hui :</p>
-
-        <label><input type="checkbox" id="hHydratation"> Hydratation</label><br>
-        <label><input type="checkbox" id="hMobilite"> 10 min de mobilité</label><br>
-        <label><input type="checkbox" id="hPasMatin"> Pas de cigarette/joint avant midi</label><br>
-        <label><input type="checkbox" id="hPasGrignotage"> Pas de grignotage</label><br>
-        <label><input type="checkbox" id="hTache"> Tâche du jour complétée</label><br>
-
-        <button class="primary" onclick="validerDiscipline()">Valider discipline (XP)</button>
-
-        <p id="scoreDiscipline" class="xp"></p>
-
-        <button onclick="showSection('dashboard')">⬅️ Retour</button>
-    </div>
-
-    <!-- MENTAL -->
-    <div id="mental" class="section card">
-        <h2>🧠 Mental</h2>
-        <p id="mentalSummary" class="small"></p>
-        <button onclick="showSection('dashboard')">⬅️ Retour</button>
-    </div>
-
-    <!-- BADGES -->
-    <div id="badges" class="section card">
-        <h2>🏆 Niveaux & Badges</h2>
-        <p class="small">Système simple : plus tu gagnes d’XP, plus tu montes.</p>
-        <p id="niveauGlobal" class="xp"></p>
-        <p id="listeBadges" class="small"></p>
-        <button onclick="showSection('dashboard')">⬅️ Retour</button>
-    </div>
-
+<!-- INDICATEUR DE SLIDE -->
+<div class="slide-indicator">
+    <div class="slide-dot active" id="dot0"></div>
+    <div class="slide-dot" id="dot1"></div>
 </div>
 
 <script>
+// --- PARTICULES DORÉES ---
+const bg = document.getElementById("background");
+for (let i = 0; i < 40; i++) {
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.top = Math.random() * 100 + "vh";
+    p.style.animationDelay = Math.random() * 6 + "s";
+    bg.appendChild(p);
+}
+
 // --- UTILITAIRES ---
 function todayKey() {
-    const d = new Date();
-    return d.toISOString().slice(0,10); // YYYY-MM-DD
+    return new Date().toISOString().slice(0,10);
 }
 
 function getJSON(key, def) {
@@ -475,68 +588,21 @@ function getJSON(key, def) {
 function setJSON(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
 }
-        
-let lastDate = new Date().toLocaleDateString("fr-FR");
 
 // --- RITUEL ---
 function validerRituel() {
-
-    // --- RÉCUPÉRATION DES VALEURS ---
     const poids = document.getElementById("poids").value;
     const stress = document.getElementById("stress").value;
     const sommeil = document.getElementById("sommeil").value;
     const intention = document.getElementById("intention").value;
     const tache = document.getElementById("tache").value;
 
-    // --- VALIDATION ---
     if (!poids || !stress || !intention) {
-        alert("Tu veux être discipliné ? Alors remplis au moins poids, stress et intention.");
+        alert("Remplis au moins poids, stress et intention.");
         return;
     }
-        setInterval(() => {
-    const currentDate = new Date().toLocaleDateString("fr-FR");
 
-    if (currentDate !== lastDate) {
-        lastDate = currentDate;
-        resetRituelDuJour();
-    }
-}, 30000); // vérifie toutes les 30 secondes
-function resetRituelDuJour() {
-
-    // Réinitialise les champs
-    document.getElementById("poids").value = "";
-    document.getElementById("stress").value = "";
-    document.getElementById("sommeil").value = "";
-    document.getElementById("intention").value = "";
-    document.getElementById("tache").value = "";
-
-    // Réinitialise l’affichage
-    document.getElementById("dashboard").classList.remove("visible");
-    document.getElementById("rituel").classList.add("visible");
-
-    // Recharge le dashboard
-    afficherDashboard();
-}
-
-
-    // --- ENREGISTREMENT DANS L'HISTORIQUE (pour la page progression) ---
-    const date = new Date().toLocaleDateString("fr-FR");
-
-    let historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
-
-    historique.push({
-        date: date,
-        poids: poids,
-        stress: stress,
-        sommeil: sommeil,
-        sport: null // on ajoutera plus tard
-    });
-
-    localStorage.setItem("historiquePoids", JSON.stringify(historique));
-
-    // --- ENREGISTREMENT DANS TES DONNÉES EXISTANTES ---
     const key = todayKey();
-
     const corps = getJSON("corps", {});
     corps[key] = { poids, stress, sommeil };
     setJSON("corps", corps);
@@ -547,15 +613,11 @@ function resetRituelDuJour() {
     meta[key].tache = tache;
     setJSON("metaJour", meta);
 
-    // --- XP ---
     let xp = parseInt(localStorage.getItem("xp") || "0", 10);
     xp += 10;
     localStorage.setItem("xp", xp.toString());
 
-    // --- UI ---
-    alert("Rituel enregistré !");
-    document.getElementById("rituel").classList.remove("visible");
-    document.getElementById("dashboard").classList.add("visible");
+    showSection('dashboard');
     afficherDashboard();
 }
 
@@ -567,43 +629,28 @@ function afficherDashboard() {
     const xp = parseInt(localStorage.getItem("xp") || "0", 10);
 
     if (corps[key]) {
-        document.getElementById("poidsDisplay").innerText =
-            "Poids du jour : " + corps[key].poids + " kg";
-        document.getElementById("stressDisplay").innerText =
-            "Stress : " + (corps[key].stress || "-") + "/10";
-    } else {
-        document.getElementById("poidsDisplay").innerText = "Poids du jour : -";
-        document.getElementById("stressDisplay").innerText = "Stress : -";
+        document.getElementById("poidsDisplay").innerText = "Poids du jour : " + corps[key].poids + " kg";
+        document.getElementById("stressDisplay").innerText = "Stress : " + (corps[key].stress || "-") + "/10";
     }
 
     if (meta[key]) {
-        document.getElementById("intentionDisplay").innerText =
-            "Intention : " + (meta[key].intention || "-");
-    } else {
-        document.getElementById("intentionDisplay").innerText = "Intention : -";
+        document.getElementById("intentionDisplay").innerText = "Intention : " + (meta[key].intention || "-");
     }
 
     document.getElementById("xpDisplay").innerText = "XP total : " + xp;
 
-    // Séance du jour
     const seances = getJSON("seances", {});
     if (seances[key]) {
         document.getElementById("seanceDuJour").innerText =
-            "Aujourd’hui : " + seances[key].type + " — " +
-            (seances[key].objectif || "sans objectif défini.");
+            "Aujourd'hui : " + seances[key].type + " — " + (seances[key].objectif || "sans objectif");
     }
 
-    // Mental summary
     let mentalText = "";
     if (corps[key]) {
         const s = parseInt(corps[key].stress || "0", 10);
-        if (s >= 7) {
-            mentalText += "Stress élevé. Respire. Tu n’es pas ton stress.\n";
-        } else if (s >= 4) {
-            mentalText += "Stress modéré. Reste vigilant.\n";
-        } else {
-            mentalText += "Stress bas. Profite pour avancer fort.\n";
-        }
+        if (s >= 7) mentalText = "Stress élevé. Respire.";
+        else if (s >= 4) mentalText = "Stress modéré. Reste vigilant.";
+        else mentalText = "Stress bas. Profite pour avancer fort.";
     }
     document.getElementById("mentalSummary").innerText = mentalText;
 
@@ -616,11 +663,11 @@ function showSection(id) {
     document.getElementById(id).classList.add('visible');
 }
 
-// --- SEANCE ---
 function definirSeance() {
     showSection('sport');
 }
 
+// --- SEANCE ---
 function validerSeance() {
     const type = document.getElementById("typeSeance").value;
     const duree = document.getElementById("dureeSeance").value;
@@ -632,15 +679,14 @@ function validerSeance() {
     seances[key] = { type, duree, intensite, objectif };
     setJSON("seances", seances);
 
-    // XP sport
     let xp = parseInt(localStorage.getItem("xp") || "0", 10);
     xp += 12;
     localStorage.setItem("xp", xp.toString());
 
     document.getElementById("historiqueSeances").innerText =
-        "Dernière séance : " + type + " — " + duree + " min — intensité " + intensite + "/10.";
+        "Dernière : " + type + " — " + duree + " min — intensité " + intensite + "/10";
 
-    alert("Séance validée. Tu avances.");
+    alert("Séance validée !");
     showSection('dashboard');
     afficherDashboard();
 }
@@ -660,15 +706,14 @@ function validerAddictions() {
 
     let xp = parseInt(localStorage.getItem("xp") || "0", 10);
     if (parseInt(joints) === 0 && parseInt(cigarettes) === 0) {
-        xp += 15; // journée clean
+        xp += 15;
     }
     localStorage.setItem("xp", xp.toString());
 
     document.getElementById("resumeAddictions").innerText =
-        "Joints : " + joints + " | Cigarettes : " + cigarettes +
-        " | Première : " + heurePremiere + " | Craving : " + craving + "/10.";
+        "Joints : " + joints + " | Cigarettes : " + cigarettes + " | Craving : " + craving + "/10";
 
-    alert("Journée addictions enregistrée.");
+    alert("Addictions enregistrées");
     afficherDashboard();
 }
 
@@ -689,150 +734,58 @@ function validerDiscipline() {
 
     let xp = parseInt(localStorage.getItem("xp") || "0", 10);
     xp += score * 2;
-    if (score === 5) xp += 10; // journée parfaite
+    if (score === 5) xp += 10;
     localStorage.setItem("xp", xp.toString());
 
-    document.getElementById("scoreDiscipline").innerText =
-        "Score discipline : " + score + "/5";
+    document.getElementById("scoreDiscipline").innerText = "Score : " + score + "/5";
 
-    alert("Discipline validée. Tu prouves ta rigueur.");
+    alert("Discipline validée !");
     afficherDashboard();
 }
 
-// --- BADGES & NIVEAUX ---
+// --- BADGES ---
 function majBadges() {
     const xp = parseInt(localStorage.getItem("xp") || "0", 10);
     let niveau = "Errant";
     if (xp >= 500) niveau = "Moine Implacable";
     else if (xp >= 300) niveau = "Moine Rigoureux";
     else if (xp >= 150) niveau = "Moine en Formation";
-    else if (xp >= 50) niveau = "Apprenti de la Rigueur";
+    else if (xp >= 50) niveau = "Apprenti";
 
-    document.getElementById("niveauGlobal").innerText =
-        "Niveau Discipline : " + niveau + " (" + xp + " XP)";
+    document.getElementById("niveauGlobal").innerText = "Niveau : " + niveau + " (" + xp + " XP)";
 
     const corps = getJSON("corps", {});
     const poidsActuel = corps[todayKey()]?.poids;
     let badges = [];
 
-    if (xp >= 50) badges.push("Premier Pas sur la Voie");
-    if (xp >= 150) badges.push("Semaine du Moine (ou équivalent XP)");
+    if (xp >= 50) badges.push("Premier Pas");
+    if (xp >= 150) badges.push("Semaine du Moine");
     if (xp >= 300) badges.push("Rigueur Inflexible");
 
     if (poidsActuel) {
-        const diff = 86.7 - parseFloat(poidsActuel); // point de départ approximatif
+        const diff = 86.7 - parseFloat(poidsActuel);
         if (diff >= 2) badges.push("Allègement (–2 kg)");
         if (diff >= 5) badges.push("Transformation (–5 kg)");
-        if (diff >= 10) badges.push("Renouveau (–10 kg)");
-        if (parseFloat(poidsActuel) <= 75) badges.push("Temple Parfait (75 kg atteint)");
+        if (parseFloat(poidsActuel) <= 75) badges.push("Temple Parfait");
     }
 
     document.getElementById("listeBadges").innerText =
-        badges.length ? "Badges obtenus : " + badges.join(" | ") :
-        "Aucun badge pour l’instant. Gagne-les.";
+        badges.length ? "Badges : " + badges.join(" | ") : "Aucun badge pour l'instant";
 }
 
-// --- INIT ---
-window.onload = function() {
-    // Si le rituel du jour a déjà été fait, on va direct au dashboard
-    const corps = getJSON("corps", {});
-    if (corps[todayKey()]) {
-        document.getElementById("rituel").classList.remove("visible");
-        document.getElementById("dashboard").classList.add("visible");
-        afficherDashboard();
-    }
-};
-</script>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+// --- SLIDER ---
+let startX = 0;
+let currentPage = 0;
+const slider = document.getElementById("slider");
 
-<script>
-// --- CONFIG FIREBASE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyBl5qUBgdizyFhZsDDQOXM_JlFHtn7PZj0",
-  authDomain: "dojo-du-moine-guerrier.firebaseapp.com",
-  projectId: "dojo-du-moine-guerrier",
-  storageBucket: "dojo-du-moine-guerrier.firebasestorage.app",
-  messagingSenderId: "395565857197",
-  appId: "1:395565857197:web:dedd212901fcd4835e8924",
-  measurementId: "G-WYNDY2KDP5"
-};
-
-// --- INITIALISATION ---
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
-
-// --- CLÉ VAPID (celle que tu as dans Firebase > Web Push) ---
-const vapidKey = "BDcCdEu-qubVPVMvyJpaXSupQCHfAryaOoihi6Xqi84O4rkOmyYq4gICs9ZLTHB3IgfaXO0c96MoumqmQHCw_n4";
-
-// --- DEMANDE DE PERMISSION ---
-Notification.requestPermission().then(permission => {
-    if (permission === "granted") {
-        messaging.getToken({ vapidKey:vapidKey }).then(token => {
-            console.log("🔥 Token FCM :", token);
-            localStorage.setItem("fcmToken", token);
-        });
-    } else {
-        console.log("Notifications refusées");
-    }
+slider.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
 });
 
-// --- RÉCEPTION DES NOTIFICATIONS EN PREMIER PLAN ---
-messaging.onMessage(payload => {
-    console.log("📩 Notification reçue :", payload);
+slider.addEventListener("touchend", e => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
 
-    new Notification(payload.notification.title, {
-        body: payload.notification.body,
-        icon: "icon-192.png"
-    });
-});
-</script>
-    <script>
-document.getElementById("enable-notifs").addEventListener("click", async () => {
-    console.log("🟡 Demande de permission…");
-
-    const permission = await Notification.requestPermission();
-
-    if (permission !== "granted") {
-        console.log("❌ Permission refusée");
-        alert("Tu dois autoriser les notifications pour recevoir les messages du Dojo.");
-        return;
-    }
-
-    console.log("✅ Permission accordée");
-
-    try {
-        const token = await messaging.getToken({ vapidKey: vapidKey });
-
-        if (!token) {
-            console.log("❌ Aucun token généré");
-            alert("Impossible de générer un token. Réessaie.");
-            return;
-        }
-
-        console.log("🔥 Token FCM :", token);
-        alert("Notifications activées !");
-        localStorage.setItem("fcmToken", token);
-
-    } catch (err) {
-        console.error("Erreur lors de la génération du token :", err);
-    }
-});
-</script>
-<div class="bottom-menu-wrapper">
-    <div class="bottom-menu-pill">
-        <a href="index.html" class="active">
-            <span class="icon">🧘</span>
-            <span>Dojo</span>
-        </a>
-        <a href="progression.html">
-            <span class="icon">📈</span>
-            <span>Progression</span>
-        </a>
-    </div>
-</div>
-
-
-</body>
-</html>
+    if (Math.abs(diff) > 50) {
+        if (diff > 0 && currentPage < 1) {
+            slideTo
