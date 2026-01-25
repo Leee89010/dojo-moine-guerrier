@@ -1,11 +1,20 @@
+// ============================================================
+// DOJO.JS - VERSION CORRIGÉE ET NETTOYÉE
+// ============================================================
+
 // --- UTILITAIRES GLOBAUX ---
 function todayKey() {
-    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 function getJSON(key, def) {
     try {
-        return JSON.parse(localStorage.getItem(key)) || def;
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : def;
     } catch {
         return def;
     }
@@ -86,7 +95,7 @@ const waterGoalGlassesInput = document.getElementById("waterGoalGlassesInput");
 function renderSteps() {
     if (!stepsValueEl || !stepsProgressEl || !stepsGoalLabelEl) return;
 
-    stepsValueEl.textContent = dayState.steps;
+    stepsValueEl.textContent = dayState.steps.toLocaleString("fr-FR");
     stepsGoalLabelEl.textContent = dojoSettings.stepsGoal.toLocaleString("fr-FR");
 
     const ratio = Math.min(dayState.steps / dojoSettings.stepsGoal, 1);
@@ -222,7 +231,7 @@ saveSettingsBtn?.addEventListener("click", () => {
     if (settingsPopup) settingsPopup.style.display = "none";
 });
 
-// Appui long sur la carte “Pas” → ouvre réglages
+// Appui long sur la carte "Pas" → ouvre réglages
 let stepsPressTimer = null;
 if (stepsCard) {
     const startPress = () => {
@@ -242,198 +251,130 @@ if (stepsCard) {
     stepsCard.addEventListener("touchcancel", endPress);
 }
 
-// --- INIT ---
-renderSteps();
-renderWater();
-renderRituals();
-// --- RENDU DES CARTES SUPPLÉMENTAIRES ---
-const key = todayKey();
-
-// CORPS
-const corps = getJSON("corps", {});
-if (corps[key]) {
-    document.getElementById("poidsLabel").textContent = corps[key].poids + " kg";
-    document.getElementById("stressLabel").textContent = corps[key].stress + "/10";
-    document.getElementById("sommeilLabel").textContent = corps[key].sommeil + "/10";
-}
-
-// SÉANCE
-const seances = getJSON("seances", {});
-if (seances[key]) {
-    document.getElementById("typeSeanceLabel").textContent = seances[key].type;
-    document.getElementById("dureeSeanceLabel").textContent = seances[key].duree + " min";
-    document.getElementById("intensiteSeanceLabel").textContent = seances[key].intensite + "/10";
-}
-
-// ADDICTIONS
-const add = getJSON("addictions", {});
-if (add[key]) {
-    document.getElementById("jointsLabel").textContent = add[key].joints;
-    document.getElementById("cigarettesLabel").textContent = add[key].cigarettes;
-    document.getElementById("cravingLabel").textContent = add[key].craving + "/10";
-}
-
-// MENTAL
-if (corps[key]) {
-    const stress = parseInt(corps[key].stress || "0", 10);
-    let etat = "", conseil = "";
-
-    if (stress >= 7) {
-        etat = "Stress élevé";
-        conseil = "Respiration 4-2-6 + marche";
-    } else if (stress >= 4) {
-        etat = "Stress modéré";
-        conseil = "Pause + respiration lente";
-    } else {
-        etat = "Stress bas";
-        conseil = "Avance fort sur ta tâche";
-    }
-
-    document.getElementById("mentalEtatLabel").textContent = etat;
-    document.getElementById("mentalConseilLabel").textContent = conseil;
-}
-
-// XP / NIVEAU
-const xp = parseInt(localStorage.getItem("xp") || "0", 10);
-let niveau = "Errant";
-if (xp >= 500) niveau = "Moine Implacable";
-else if (xp >= 300) niveau = "Moine Rigoureux";
-else if (xp >= 150) niveau = "Moine en Formation";
-else if (xp >= 50) niveau = "Apprenti de la Rigueur";
-
-document.getElementById("xpLabel").textContent = xp + " XP";
-document.getElementById("niveauLabel").textContent = niveau;
-
-// DISCIPLINE
-const disc = getJSON("discipline", {});
-if (disc[key]) {
-    document.getElementById("disciplineScoreLabel").textContent = disc[key].score + "/5";
-}
-/* ============================================================
-   DOJO — EXTENSIONS INTERACTIVES (Corps, Séance, Addictions,
-   Discipline, Mental, XP)
-   ============================================================ */
+// ============================================================
+// RENDU DES CARTES SUPPLÉMENTAIRES (CORPS, SÉANCE, ETC.)
+// ============================================================
 
 const key = todayKey();
 
-/* ============================================================
-   1. ÉTAT DU CORPS — INLINE EDITING
-   ============================================================ */
-
+// --- CORPS ---
 const corpsData = getJSON("corps", {});
 
-if (!corpsData[key]) {
-    corpsData[key] = { poids: "", stress: 0, sommeil: 0 };
+if (document.getElementById("poidsInput")) {
+    if (!corpsData[key]) {
+        corpsData[key] = { poids: "", stress: 0, sommeil: 0 };
+    }
+
+    document.getElementById("poidsInput").value = corpsData[key].poids || "";
+    document.getElementById("stressInput").value = corpsData[key].stress || 0;
+    document.getElementById("sommeilInput").value = corpsData[key].sommeil || 0;
+
+    document.getElementById("saveCorpsBtn")?.addEventListener("click", () => {
+        corpsData[key].poids = document.getElementById("poidsInput").value;
+        corpsData[key].stress = document.getElementById("stressInput").value;
+        corpsData[key].sommeil = document.getElementById("sommeilInput").value;
+
+        setJSON("corps", corpsData);
+
+        alert("État du corps mis à jour.");
+        renderMental();
+    });
 }
 
-document.getElementById("poidsInput").value = corpsData[key].poids || "";
-document.getElementById("stressInput").value = corpsData[key].stress || 0;
-document.getElementById("sommeilInput").value = corpsData[key].sommeil || 0;
-
-document.getElementById("saveCorpsBtn").addEventListener("click", () => {
-    corpsData[key].poids = document.getElementById("poidsInput").value;
-    corpsData[key].stress = document.getElementById("stressInput").value;
-    corpsData[key].sommeil = document.getElementById("sommeilInput").value;
-
-    saveJSON("corps", corpsData);
-
-    alert("État du corps mis à jour.");
-    renderMental();
-});
-
-/* ============================================================
-   2. POPUP GÉNÉRIQUE
-   ============================================================ */
-
-function openPopup(id) {
-    document.getElementById(id).style.display = "flex";
+// --- POPUP GÉNÉRIQUE ---
+window.openPopup = function(id) {
+    const popup = document.getElementById(id);
+    if (popup) popup.style.display = "flex";
 }
 
-function closePopup(id) {
-    document.getElementById(id).style.display = "none";
+window.closePopup = function(id) {
+    const popup = document.getElementById(id);
+    if (popup) popup.style.display = "none";
 }
 
-/* ============================================================
-   3. SÉANCE DU JOUR — POPUP
-   ============================================================ */
-
+// --- SÉANCE DU JOUR ---
 const seances = getJSON("seances", {});
 
-if (!seances[key]) {
-    seances[key] = { type: "", duree: "", intensite: "" };
+if (document.getElementById("seanceCard")) {
+    if (!seances[key]) {
+        seances[key] = { type: "", duree: "", intensite: "" };
+    }
+
+    document.getElementById("seanceCard").addEventListener("click", () => {
+        document.getElementById("popupSeanceType").value = seances[key].type || "";
+        document.getElementById("popupSeanceDuree").value = seances[key].duree || "";
+        document.getElementById("popupSeanceIntensite").value = seances[key].intensite || "";
+        openPopup("popupSeance");
+    });
+
+    document.getElementById("saveSeanceBtn")?.addEventListener("click", () => {
+        seances[key].type = document.getElementById("popupSeanceType").value;
+        seances[key].duree = document.getElementById("popupSeanceDuree").value;
+        seances[key].intensite = document.getElementById("popupSeanceIntensite").value;
+
+        setJSON("seances", seances);
+        renderSeance();
+        closePopup("popupSeance");
+        alert("Séance enregistrée !");
+    });
 }
 
-document.getElementById("seanceCard").addEventListener("click", () => {
-    document.getElementById("popupSeanceType").value = seances[key].type;
-    document.getElementById("popupSeanceDuree").value = seances[key].duree;
-    document.getElementById("popupSeanceIntensite").value = seances[key].intensite;
-    openPopup("popupSeance");
-});
-
-document.getElementById("saveSeanceBtn").addEventListener("click", () => {
-    seances[key].type = document.getElementById("popupSeanceType").value;
-    seances[key].duree = document.getElementById("popupSeanceDuree").value;
-    seances[key].intensite = document.getElementById("popupSeanceIntensite").value;
-
-    saveJSON("seances", seances);
-    renderSeance();
-    closePopup("popupSeance");
-});
-
-/* ============================================================
-   4. ADDICTIONS — POPUP
-   ============================================================ */
-
+// --- ADDICTIONS ---
 const addictions = getJSON("addictions", {});
 
-if (!addictions[key]) {
-    addictions[key] = { joints: 0, cigarettes: 0, craving: 0 };
+if (document.getElementById("addictionsCard")) {
+    if (!addictions[key]) {
+        addictions[key] = { joints: 0, cigarettes: 0, craving: 0 };
+    }
+
+    document.getElementById("addictionsCard").addEventListener("click", () => {
+        document.getElementById("popupJoints").value = addictions[key].joints || 0;
+        document.getElementById("popupCigarettes").value = addictions[key].cigarettes || 0;
+        document.getElementById("popupCraving").value = addictions[key].craving || 0;
+        openPopup("popupAddictions");
+    });
+
+    document.getElementById("saveAddictionsBtn")?.addEventListener("click", () => {
+        addictions[key].joints = parseInt(document.getElementById("popupJoints").value) || 0;
+        addictions[key].cigarettes = parseInt(document.getElementById("popupCigarettes").value) || 0;
+        addictions[key].craving = parseInt(document.getElementById("popupCraving").value) || 0;
+
+        setJSON("addictions", addictions);
+        renderAddictions();
+        closePopup("popupAddictions");
+        alert("Addictions enregistrées !");
+    });
 }
 
-document.getElementById("addictionsCard").addEventListener("click", () => {
-    document.getElementById("popupJoints").value = addictions[key].joints;
-    document.getElementById("popupCigarettes").value = addictions[key].cigarettes;
-    document.getElementById("popupCraving").value = addictions[key].craving;
-    openPopup("popupAddictions");
-});
-
-document.getElementById("saveAddictionsBtn").addEventListener("click", () => {
-    addictions[key].joints = parseInt(document.getElementById("popupJoints").value);
-    addictions[key].cigarettes = parseInt(document.getElementById("popupCigarettes").value);
-    addictions[key].craving = parseInt(document.getElementById("popupCraving").value);
-
-    saveJSON("addictions", addictions);
-    renderAddictions();
-    closePopup("popupAddictions");
-});
-
-/* ============================================================
-   5. DISCIPLINE — POPUP
-   ============================================================ */
-
+// --- DISCIPLINE ---
 const discipline = getJSON("discipline", {});
 
-if (!discipline[key]) {
-    discipline[key] = { score: 0 };
+if (document.getElementById("disciplineCard")) {
+    if (!discipline[key]) {
+        discipline[key] = { score: 0 };
+    }
+
+    document.getElementById("disciplineCard").addEventListener("click", () => {
+        document.getElementById("popupDisciplineScore").value = discipline[key].score || 0;
+        openPopup("popupDiscipline");
+    });
+
+    document.getElementById("saveDisciplineBtn")?.addEventListener("click", () => {
+        discipline[key].score = parseInt(document.getElementById("popupDisciplineScore").value) || 0;
+        setJSON("discipline", discipline);
+        renderDiscipline();
+        closePopup("popupDiscipline");
+        alert("Discipline enregistrée !");
+    });
 }
 
-document.getElementById("disciplineCard").addEventListener("click", () => {
-    document.getElementById("popupDisciplineScore").value = discipline[key].score;
-    openPopup("popupDiscipline");
-});
-
-document.getElementById("saveDisciplineBtn").addEventListener("click", () => {
-    discipline[key].score = parseInt(document.getElementById("popupDisciplineScore").value);
-    saveJSON("discipline", discipline);
-    renderDiscipline();
-    closePopup("popupDiscipline");
-});
-
-/* ============================================================
-   6. MENTAL — AUTO CALCULÉ
-   ============================================================ */
-
+// --- MENTAL (AUTO CALCULÉ) ---
 function renderMental() {
+    const mentalEtatLabel = document.getElementById("mentalEtatLabel");
+    const mentalConseilLabel = document.getElementById("mentalConseilLabel");
+    
+    if (!mentalEtatLabel || !mentalConseilLabel) return;
+    
     const c = corpsData[key];
     if (!c) return;
 
@@ -453,15 +394,17 @@ function renderMental() {
         conseil = "Avance fort sur ta tâche.";
     }
 
-    document.getElementById("mentalEtatLabel").textContent = etat;
-    document.getElementById("mentalConseilLabel").textContent = conseil;
+    mentalEtatLabel.textContent = etat;
+    mentalConseilLabel.textContent = conseil;
 }
 
-/* ============================================================
-   7. XP + NIVEAU
-   ============================================================ */
-
+// --- XP + NIVEAU ---
 function renderXP() {
+    const xpLabel = document.getElementById("xpLabel");
+    const niveauLabel = document.getElementById("niveauLabel");
+    
+    if (!xpLabel || !niveauLabel) return;
+    
     const xp = parseInt(localStorage.getItem("xp") || "0");
     let niveau = "Errant";
 
@@ -470,41 +413,42 @@ function renderXP() {
     else if (xp >= 150) niveau = "Moine en Formation";
     else if (xp >= 50) niveau = "Apprenti de la Rigueur";
 
-    document.getElementById("xpLabel").textContent = xp + " XP";
-    document.getElementById("niveauLabel").textContent = niveau;
+    xpLabel.textContent = xp + " XP";
+    niveauLabel.textContent = niveau;
 }
 
-/* ============================================================
-   8. RENDU DES CARTES
-   ============================================================ */
-
-function renderCorps() {
-    document.getElementById("poidsInput").value = corpsData[key].poids || "";
-    document.getElementById("stressInput").value = corpsData[key].stress || 0;
-    document.getElementById("sommeilInput").value = corpsData[key].sommeil || 0;
-}
-
+// --- RENDU DES CARTES ---
 function renderSeance() {
-    document.getElementById("typeSeanceLabel").textContent = seances[key].type || "–";
-    document.getElementById("dureeSeanceLabel").textContent = seances[key].duree || "–";
-    document.getElementById("intensiteSeanceLabel").textContent = seances[key].intensite || "–";
+    const typeLabel = document.getElementById("typeSeanceLabel");
+    const dureeLabel = document.getElementById("dureeSeanceLabel");
+    const intensiteLabel = document.getElementById("intensiteSeanceLabel");
+    
+    if (typeLabel) typeLabel.textContent = seances[key]?.type || "—";
+    if (dureeLabel) dureeLabel.textContent = seances[key]?.duree ? seances[key].duree + " min" : "—";
+    if (intensiteLabel) intensiteLabel.textContent = seances[key]?.intensite ? seances[key].intensite + "/10" : "—";
 }
 
 function renderAddictions() {
-    document.getElementById("jointsLabel").textContent = addictions[key].joints;
-    document.getElementById("cigarettesLabel").textContent = addictions[key].cigarettes;
-    document.getElementById("cravingLabel").textContent = addictions[key].craving + "/10";
+    const jointsLabel = document.getElementById("jointsLabel");
+    const cigarettesLabel = document.getElementById("cigarettesLabel");
+    const cravingLabel = document.getElementById("cravingLabel");
+    
+    if (jointsLabel) jointsLabel.textContent = addictions[key]?.joints || "0";
+    if (cigarettesLabel) cigarettesLabel.textContent = addictions[key]?.cigarettes || "0";
+    if (cravingLabel) cravingLabel.textContent = (addictions[key]?.craving || "0") + "/10";
 }
 
 function renderDiscipline() {
-    document.getElementById("disciplineScoreLabel").textContent = discipline[key].score + "/5";
+    const disciplineScoreLabel = document.getElementById("disciplineScoreLabel");
+    if (disciplineScoreLabel) {
+        disciplineScoreLabel.textContent = (discipline[key]?.score || "0") + "/5";
+    }
 }
 
-/* ============================================================
-   9. INITIALISATION
-   ============================================================ */
-
-renderCorps();
+// --- INITIALISATION ---
+renderSteps();
+renderWater();
+renderRituals();
 renderSeance();
 renderAddictions();
 renderDiscipline();
