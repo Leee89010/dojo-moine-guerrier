@@ -20,7 +20,7 @@ const categoryIcons = {
 
 
 // --- STRUCTURE LOCALSTORAGE ---
-function getFinances() {
+function getFinances() 
     return JSON.parse(localStorage.getItem("finances")) || {};
 }
 
