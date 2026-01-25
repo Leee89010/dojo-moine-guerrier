@@ -259,3 +259,59 @@ updatePeriodDisplay();
 updateSolde();
 renderTransactions();
 updateCharts();
+
+function enableSwipeToDelete() {
+    const cards = document.querySelectorAll(".swipe-card");
+
+    cards.forEach(card => {
+        let startX = 0;
+        let currentX = 0;
+        let swiped = false;
+
+        const content = card.querySelector(".swipe-content");
+        const del = card.querySelector(".swipe-delete");
+
+        card.addEventListener("touchstart", e => {
+            startX = e.touches[0].clientX;
+        });
+
+        card.addEventListener("touchmove", e => {
+            currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+
+            if (diff < 0) {
+                content.style.transform = `translateX(${diff}px)`;
+                del.style.transform = `translateX(${120 + diff}px)`;
+            }
+        });
+
+        card.addEventListener("touchend", () => {
+            const diff = currentX - startX;
+
+            if (diff < -60) {
+                // Swipe validé
+                content.style.transform = "translateX(-120px)";
+                del.style.transform = "translateX(0)";
+                swiped = true;
+            } else {
+                // Retour
+                content.style.transform = "translateX(0)";
+                del.style.transform = "translateX(120px)";
+                swiped = false;
+            }
+        });
+
+        // Suppression si on clique sur le bouton rouge
+        del.addEventListener("click", () => {
+            const id = parseInt(card.getAttribute("data-id"), 10);
+
+            const monthData = finances[currentYear][formatMonth(currentMonth)];
+            monthData.transactions.splice(id, 1);
+
+            saveFinances(finances);
+            renderTransactions();
+            updateSolde();
+            updateCharts();
+        });
+    });
+}
