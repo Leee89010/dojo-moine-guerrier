@@ -132,6 +132,8 @@ card.innerHTML = `
 `;
         container.appendChild(card);
     });
+    enableSwipeToDelete();
+
 }
 
 // --- GRAPHIQUES ---
