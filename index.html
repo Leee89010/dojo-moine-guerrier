@@ -298,6 +298,54 @@
             <button id="closeSettings" class="close-popup">Fermer</button>
         </div>
     </div>
+<!-- POPUP SÉANCE -->
+<div class="popup-overlay" id="popupSeance">
+    <div class="popup-dojo">
+        <h2>Séance du jour</h2>
+
+        <label>Type</label>
+        <input type="text" id="popupSeanceType" placeholder="Ex : Muscu, Cardio, Yoga">
+
+        <label>Durée (min)</label>
+        <input type="number" id="popupSeanceDuree">
+
+        <label>Intensité (0–10)</label>
+        <input type="number" id="popupSeanceIntensite" min="0" max="10">
+
+        <button class="primary" id="saveSeanceBtn">Enregistrer</button>
+        <button class="close-popup" onclick="closePopup('popupSeance')">Fermer</button>
+    </div>
+</div>
+<!-- POPUP ADDICTIONS -->
+<div class="popup-overlay" id="popupAddictions">
+    <div class="popup-dojo">
+        <h2>Addictions</h2>
+
+        <label>Joints</label>
+        <input type="number" id="popupJoints">
+
+        <label>Cigarettes</label>
+        <input type="number" id="popupCigarettes">
+
+        <label>Craving (0–10)</label>
+        <input type="number" id="popupCraving" min="0" max="10">
+
+        <button class="primary" id="saveAddictionsBtn">Enregistrer</button>
+        <button class="close-popup" onclick="closePopup('popupAddictions')">Fermer</button>
+    </div>
+</div>
+<!-- POPUP DISCIPLINE -->
+<div class="popup-overlay" id="popupDiscipline">
+    <div class="popup-dojo">
+        <h2>Discipline</h2>
+
+        <label>Score du jour (0–5)</label>
+        <input type="number" id="popupDisciplineScore" min="0" max="5">
+
+        <button class="primary" id="saveDisciplineBtn">Enregistrer</button>
+        <button class="close-popup" onclick="closePopup('popupDiscipline')">Fermer</button>
+    </div>
+</div>
 
     <!-- MENU -->
     <div class="bottom-menu-wrapper">
