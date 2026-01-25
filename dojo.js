@@ -246,3 +246,66 @@ if (stepsCard) {
 renderSteps();
 renderWater();
 renderRituals();
+// --- RENDU DES CARTES SUPPLÉMENTAIRES ---
+const key = todayKey();
+
+// CORPS
+const corps = getJSON("corps", {});
+if (corps[key]) {
+    document.getElementById("poidsLabel").textContent = corps[key].poids + " kg";
+    document.getElementById("stressLabel").textContent = corps[key].stress + "/10";
+    document.getElementById("sommeilLabel").textContent = corps[key].sommeil + "/10";
+}
+
+// SÉANCE
+const seances = getJSON("seances", {});
+if (seances[key]) {
+    document.getElementById("typeSeanceLabel").textContent = seances[key].type;
+    document.getElementById("dureeSeanceLabel").textContent = seances[key].duree + " min";
+    document.getElementById("intensiteSeanceLabel").textContent = seances[key].intensite + "/10";
+}
+
+// ADDICTIONS
+const add = getJSON("addictions", {});
+if (add[key]) {
+    document.getElementById("jointsLabel").textContent = add[key].joints;
+    document.getElementById("cigarettesLabel").textContent = add[key].cigarettes;
+    document.getElementById("cravingLabel").textContent = add[key].craving + "/10";
+}
+
+// MENTAL
+if (corps[key]) {
+    const stress = parseInt(corps[key].stress || "0", 10);
+    let etat = "", conseil = "";
+
+    if (stress >= 7) {
+        etat = "Stress élevé";
+        conseil = "Respiration 4-2-6 + marche";
+    } else if (stress >= 4) {
+        etat = "Stress modéré";
+        conseil = "Pause + respiration lente";
+    } else {
+        etat = "Stress bas";
+        conseil = "Avance fort sur ta tâche";
+    }
+
+    document.getElementById("mentalEtatLabel").textContent = etat;
+    document.getElementById("mentalConseilLabel").textContent = conseil;
+}
+
+// XP / NIVEAU
+const xp = parseInt(localStorage.getItem("xp") || "0", 10);
+let niveau = "Errant";
+if (xp >= 500) niveau = "Moine Implacable";
+else if (xp >= 300) niveau = "Moine Rigoureux";
+else if (xp >= 150) niveau = "Moine en Formation";
+else if (xp >= 50) niveau = "Apprenti de la Rigueur";
+
+document.getElementById("xpLabel").textContent = xp + " XP";
+document.getElementById("niveauLabel").textContent = niveau;
+
+// DISCIPLINE
+const disc = getJSON("discipline", {});
+if (disc[key]) {
+    document.getElementById("disciplineScoreLabel").textContent = disc[key].score + "/5";
+}
