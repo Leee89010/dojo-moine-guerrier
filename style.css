@@ -1,4 +1,1455 @@
 /* ============================================================
+   DOJO DU MOINE GUERRIER — STYLE GLOBAL
+   ============================================================ */
+
+/* ------------------------------
+   VARIABLES
+--------------------------------*/
+:root {
+    --bg1: #050507;
+    --bg2: #1b1b1f;
+    --card-bg: rgba(20,20,25,0.85);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #f5f5f5;
+    --muted: #aaa;
+    --accent: #d4af37;
+    --accent-soft: rgba(212,175,55,0.18);
+    --radius: 18px;
+    --blur: 14px;
+    --transition: 0.25s ease;
+}
+
+/* ------------------------------
+   RESET
+--------------------------------*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+    background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+    color: var(--text);
+    padding-bottom: 120px;
+    overflow-x: hidden;
+}
+
+/* ------------------------------
+   FOND ANIMÉ
+--------------------------------*/
+#background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.smoke {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+    filter: blur(80px);
+    animation: smokeMove 18s infinite ease-in-out;
+}
+
+.smoke:nth-child(1) { top: -100px; left: -150px; animation-delay: 0s; }
+.smoke:nth-child(2) { bottom: -150px; right: -100px; animation-delay: 4s; }
+.smoke:nth-child(3) { top: 40%; left: 20%; animation-delay: 8s; }
+
+@keyframes smokeMove {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(40px,-30px) scale(1.2); }
+    100% { transform: translate(0,0) scale(1); }
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: floatUp 6s infinite ease-in-out;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 0.3; }
+    50% { opacity: 0.9; }
+    100% { transform: translateY(-120px) scale(0.5); opacity: 0; }
+}
+
+/* ============================================================
+   ACCUEIL DOJO (index.html)
+   ============================================================ */
+
+body.page-dojo {
+    /* même fond que défaut, mais on garde la classe si besoin */
+}
+
+/* HEADER */
+.dojo-header {
+    padding: 26px 20px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dojo-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(212,175,55,0.25);
+}
+
+.dojo-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.dojo-settings-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--card-border);
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.dojo-settings-btn:hover {
+    background: var(--accent-soft);
+    color: #000;
+}
+
+/* MAIN */
+.dojo-main {
+    padding: 0 18px 40px;
+}
+
+.dojo-section {
+    margin-top: 20px;
+}
+
+.dojo-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* CARTES GÉNÉRIQUES */
+.dojo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(var(--blur));
+    box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    transition: var(--transition);
+}
+
+.dojo-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 18px 50px rgba(212,175,55,0.15);
+}
+
+/* GRILLE CORPS (PAS + EAU) */
+.dojo-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 700px) {
+    .dojo-stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* HEADER DE CARTE */
+.dojo-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.dojo-card-icon {
+    font-size: 22px;
+}
+
+.dojo-card-label {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* VALEUR PRINCIPALE */
+.dojo-card-main {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 4px 0 10px;
+}
+
+.dojo-card-value {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.dojo-card-unit {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* PROGRESSION */
+.dojo-card-progress {
+    margin-top: 4px;
+}
+
+.dojo-card-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 6px 0;
+}
+
+.dojo-card-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+.dojo-card-progress-text {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* ACTIONS (CHIPS) */
+.dojo-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.dojo-chip {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    transition: var(--transition);
+}
+
+.dojo-chip:hover {
+    background: var(--accent-soft);
+    color: #000;
+}
+
+.dojo-card-hint {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+/* TOGGLE HYDRATATION */
+.dojo-card-toggle {
+    display: inline-flex;
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
+    padding: 3px;
+    margin: 6px 0 10px;
+}
+
+.toggle-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.toggle-btn.active {
+    background: var(--accent-soft);
+    color: #000;
+}
+
+/* RITUELS */
+.dojo-rituals {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ritual-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(var(--blur));
+    transition: var(--transition);
+}
+
+.ritual-card.completed {
+    border-color: var(--accent);
+    background: rgba(212,175,55,0.12);
+}
+
+.ritual-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.ritual-icon {
+    font-size: 22px;
+}
+
+.ritual-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ritual-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.ritual-toggle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    background: transparent;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.ritual-card.completed .ritual-toggle {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+/* BOUTON FLOTTANT + */
+.add-ritual-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: #000;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 9998;
+}
+
+.add-ritual-btn:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 16px 40px rgba(212,175,55,0.45);
+}
+
+/* POPUP RÉGLAGES */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup {
+    background: #111;
+    padding: 20px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.popup input, .popup select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 14px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+.popup button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #d4af37;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.close-popup {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* ============================================================
+   MENU BAS (PILL FLOTTANT)
+   ============================================================ */
+
+.bottom-menu-wrapper {
+    position: fixed;
+    bottom: 18px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.bottom-menu-pill {
+    pointer-events: auto;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(18px);
+    border-radius: 999px;
+    padding: 10px 18px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+}
+
+.bottom-menu-pill a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    transition: var(--transition);
+}
+
+.bottom-menu-pill a span.icon {
+    font-size: 18px;
+}
+
+.bottom-menu-pill a.active {
+    background: var(--accent-soft);
+    color: #fdf5d0;
+}
+
+/* ============================================================
+   PAGE PROGRESSION
+   ============================================================ */
+
+body.page-progression {
+    margin: 0;
+    padding: 0 0 90px 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    background: radial-gradient(circle at top, #1b1b1f, #050507);
+    color: #f5f5f5;
+}
+
+.progression-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 20px 0 5px;
+}
+
+.progression-subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.progression-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px 20px;
+    box-sizing: border-box;
+}
+
+#progressionChart {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 20px;
+}
+
+.days-strip {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px 0 5px;
+    margin-bottom: 10px;
+    scrollbar-width: none;
+}
+.days-strip::-webkit-scrollbar {
+    display: none;
+}
+
+.day-pill {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #ddd;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.day-pill.active {
+    background: rgba(212,175,55,0.18);
+    border-color: #d4af37;
+    color: #fdf5d0;
+}
+
+.details-card {
+    background: rgba(15,15,20,0.9);
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-top: 10px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.details-card h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.detail-label {
+    color: #aaa;
+}
+
+.detail-value {
+    font-weight: 600;
+}
+
+/* ============================================================
+   PAGE FINANCES
+   ============================================================ */
+
+body.page-finances {
+    background: radial-gradient(circle at top, #1b1b1f, #050507);
+    color: #f5f5f5;
+    padding-bottom: 120px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text";
+}
+
+.finance-header {
+    text-align: center;
+    padding: 20px 0 10px;
+}
+
+.finance-period {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.finance-period button {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.finance-view-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.finance-view-toggle button {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 999px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.finance-view-toggle button.active {
+    background: rgba(212,175,55,0.18);
+    color: #fdf5d0;
+}
+
+.finance-solde {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.finance-container {
+    padding: 20px;
+}
+
+.section-title {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* TRANSACTIONS */
+.transaction-card {
+    background: rgba(255,255,255,0.05);
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.transaction-card .amount {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.transaction-card .amount.positive {
+    color: #4caf50;
+}
+
+.transaction-card .amount.negative {
+    color: #e53935;
+}
+
+.transaction-card .desc {
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* BOUTON AJOUT FINANCES */
+.add-transaction-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: #d4af37;
+    color: #000;
+    border: none;
+    padding: 16px 20px;
+    border-radius: 999px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* SWIPE TO DELETE */
+.swipe-card {
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+.swipe-content {
+    background: rgba(255,255,255,0.05);
+    padding: 14px;
+    border-radius: 14px;
+    transition: transform 0.25s ease;
+}
+
+.swipe-delete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 120px;
+    background: #e53935;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    transform: translateX(120px);
+    transition: transform 0.25s ease;
+    border-radius: 14px;
+}
+/* Tailles des cartes */
+.dojo-card-medium {
+    padding: 16px 18px;
+}
+
+.dojo-card-small {
+    padding: 14px 16px;
+}
+
+/* Inline inputs */
+.inline-input {
+    width: 80px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 6px;
+    color: var(--text);
+    text-align: right;
+}
+
+.inline-slider {
+    width: 120px;
+}
+
+/* Cartes cliquables */
+.clickable {
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.clickable:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* Popup premium */
+.popup-dojo {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 20px;
+    border-radius: 18px;
+    width: 90%;
+    max-width: 380px;
+    backdrop-filter: blur(14px);
+}
+
+/* Sélecteur de période */
+.period-selector {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.period-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 16px;
+    border-radius: 999px;
+    color: #aaa;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.period-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(212,175,55,0.3);
+}
+
+.period-btn.active {
+    background: rgba(212,175,55,0.18);
+    border-color: #d4af37;
+    color: #fdf5d0;
+    font-weight: 600;
+}
+
+/* Statistiques résumées */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    background: rgba(15,15,20,0.9);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #d4af37;
+    margin: 4px 0;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Container du graphique */
+.chart-container {
+    background: rgba(15,15,20,0.9);
+    border-radius: 18px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+}
+
+#progressionChart {
+    max-height: 400px;
+}
+
+/* Timeline jours améliorée */
+.days-strip {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px 0 15px;
+    margin: 20px 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212,175,55,0.3) rgba(255,255,255,0.05);
+}
+
+.days-strip::-webkit-scrollbar {
+    height: 6px;
+}
+
+.days-strip::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+}
+
+.days-strip::-webkit-scrollbar-thumb {
+    background: rgba(212,175,55,0.3);
+    border-radius: 10px;
+}
+
+.days-strip::-webkit-scrollbar-thumb:hover {
+    background: rgba(212,175,55,0.5);
+}
+
+.day-pill {
+    flex: 0 0 auto;
+    min-width: 65px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #ddd;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.day-pill strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 2px;
+}
+
+.day-pill:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-2px);
+}
+
+.day-pill.active {
+    background: rgba(212,175,55,0.18);
+    border-color: #d4af37;
+    color: #fdf5d0;
+    box-shadow: 0 4px 12px rgba(212,175,55,0.3);
+}
+
+.day-pill.active strong {
+    color: #d4af37;
+}
+
+/* Carte détails améliorée */
+.details-card {
+    background: rgba(15,15,20,0.9);
+    border-radius: 18px;
+    padding: 20px;
+    margin-top: 10px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.details-card h2 {
+    font-size: 18px;
+    margin: 0 0 16px;
+    color: #d4af37;
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.detail-label {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.detail-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #f5f5f5;
+}
+
+/* Codes couleur pour valeurs */
+.detail-value.stress-high {
+    color: #ff6b6b;
+}
+
+.detail-value.stress-medium {
+    color: #ffa726;
+}
+
+.detail-value.sleep-good {
+    color: #4caf50;
+}
+
+.detail-value.sleep-bad {
+    color: #ff6b6b;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .stats-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .period-selector {
+        flex-wrap: wrap;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card,
+.chart-container,
+.details-card {
+    animation: fadeIn 0.4s ease;
+}
+/* ============================================================
+   PROGRESSION.HTML - STYLE ULTRA SEXY
+   À ajouter à la fin de votre style.css existant
+   ============================================================ */
+
+/* Container principal */
+.progression-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 100px;
+}
+
+/* Sélecteur de période */
+.period-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.period-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    padding: 10px 20px;
+    border-radius: 999px;
+    color: #aaa;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.period-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(212,175,55,0.15);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.period-btn:hover::before {
+    width: 200px;
+    height: 200px;
+}
+
+.period-btn:hover {
+    border-color: rgba(212,175,55,0.4);
+    transform: translateY(-2px);
+}
+
+.period-btn.active {
+    background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.15));
+    border-color: #d4af37;
+    color: #fdf5d0;
+    box-shadow: 0 4px 20px rgba(212,175,55,0.3);
+}
+
+/* Statistiques résumées */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, rgba(20,20,25,0.95), rgba(15,15,20,0.95));
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.stat-card:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px rgba(212,175,55,0.3));
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #d4af37;
+    margin: 8px 0;
+    text-shadow: 0 0 20px rgba(212,175,55,0.4);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+}
+
+/* Container du graphique */
+.chart-container {
+    background: linear-gradient(145deg, rgba(20,20,25,0.95), rgba(15,15,20,0.95));
+    border-radius: 24px;
+    padding: 30px 20px;
+    margin: 30px 0;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, rgba(212,175,55,0.1), transparent);
+    border-radius: 24px;
+    z-index: -1;
+}
+
+#progressionChart {
+    max-height: 350px;
+}
+
+/* Section timeline */
+.days-section {
+    margin: 35px 0 20px;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #d4af37;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Timeline jours SEXY */
+.days-strip {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 15px 5px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212,175,55,0.4) rgba(255,255,255,0.05);
+}
+
+.days-strip::-webkit-scrollbar {
+    height: 8px;
+}
+
+.days-strip::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    margin: 0 10px;
+}
+
+.days-strip::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, rgba(212,175,55,0.3), rgba(212,175,55,0.6));
+    border-radius: 10px;
+}
+
+.days-strip::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, rgba(212,175,55,0.5), rgba(212,175,55,0.8));
+}
+
+.day-pill {
+    flex: 0 0 auto;
+    min-width: 70px;
+    height: 70px;
+    padding: 8px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(30,30,35,0.9), rgba(20,20,25,0.9));
+    border: 2px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.day-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(212,175,55,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.day-pill:hover {
+    border-color: rgba(212,175,55,0.4);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.day-pill:hover::before {
+    opacity: 1;
+}
+
+.day-name {
+    font-size: 10px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.day-number {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ddd;
+}
+
+.day-pill.active {
+    background: linear-gradient(145deg, rgba(212,175,55,0.25), rgba(212,175,55,0.15));
+    border-color: #d4af37;
+    box-shadow: 0 8px 30px rgba(212,175,55,0.4);
+    transform: translateY(-4px) scale(1.08);
+}
+
+.day-pill.active .day-name {
+    color: #d4af37;
+}
+
+.day-pill.active .day-number {
+    color: #fdf5d0;
+    text-shadow: 0 0 20px rgba(212,175,55,0.5);
+}
+
+/* Carte détails ULTRA SEXY */
+.details-card {
+    background: linear-gradient(145deg, rgba(20,20,25,0.98), rgba(15,15,20,0.98));
+    border-radius: 24px;
+    padding: 30px;
+    margin-top: 25px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.details-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.detail-header h2 {
+    font-size: 22px;
+    margin: 0 0 25px;
+    color: #d4af37;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-shadow: 0 0 30px rgba(212,175,55,0.3);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.detail-item {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 18px;
+    border: 1.5px solid rgba(255,255,255,0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(212,175,55,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.detail-item:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.detail-item:hover::before {
+    opacity: 1;
+}
+
+.detail-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 15px rgba(212,175,55,0.3));
+}
+
+.detail-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.detail-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #f5f5f5;
+}
+
+/* Codes couleur pour valeurs */
+.detail-item.high .detail-value {
+    color: #ff6b6b;
+    text-shadow: 0 0 20px rgba(255,107,107,0.5);
+}
+
+.detail-item.medium .detail-value {
+    color: #ffa726;
+    text-shadow: 0 0 20px rgba(255,167,38,0.5);
+}
+
+.detail-item.good .detail-value {
+    color: #4caf50;
+    text-shadow: 0 0 20px rgba(76,175,80,0.5);
+}
+
+.detail-item.empty {
+    opacity: 0.4;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .stats-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .detail-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .chart-container {
+        padding: 20px 15px;
+    }
+    
+    .stat-card {
+        padding: 16px;
+    }
+    
+    .stat-icon {
+        font-size: 28px;
+    }
+    
+    .stat-value {
+        font-size: 20px;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.stat-card,
+.chart-container,
+.details-card {
+    animation: fadeInUp 0.6s ease;
+}
+
+.day-pill.active {
+    animation: pulse 2s infinite;
+}
+
+/* Effet glow sur hover */
+.stat-card:hover .stat-icon,
+.detail-item:hover .detail-icon {
+    animation: pulse 1s ease-in-out;
+}
+/* ============================================================
    DOJO ULTRA PREMIUM - CSS COMPLET
    Remplace ou ajoute à style.css
    ============================================================ */
