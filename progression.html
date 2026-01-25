@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progression</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="page-progression">
+
+<h1 class="progression-title">📈 Progression journalière</h1>
+
+<canvas id="progressionChart"></canvas>
+
+<div id="details" class="details"></div>
+
+<!-- MENU BAS -->
+<div class="bottom-menu">
+    <a href="index.html">
+        <i>🧘</i>
+        Dojo
+    </a>
+    <a href="progression.html" class="active">
+        <i>📈</i>
+        Progression
+    </a>
+</div>
+
+<script>
+// Charger les données depuis localStorage
+const historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
+
+// Préparer les données pour le graphique
+const labels = historique.map(e => e.date);
+const data = historique.map(e => e.poids);
+
+const ctx = document.getElementById('progressionChart');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Poids (kg)",
+            data: data,
+            borderColor: "#d4af37",
+            borderWidth: 3,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: "#d4af37"
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: false }
+        }
+    }
+});
+
+// Affichage des détails
+let html = "<h2>Détails</h2>";
+historique.forEach(e => {
+    html += `<p><b>${e.date}</b> : ${e.poids} kg</p>`;
+});
+document.getElementById("details").innerHTML = html;
+</script>
+
+</body>
+</html>
