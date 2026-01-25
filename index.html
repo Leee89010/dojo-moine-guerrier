@@ -479,15 +479,8 @@ function setJSON(key, value) {
 // --- RITUEL ---
 function validerRituel() {
 
-    // --- ENREGISTREMENT DANS L'HISTORIQUE ---
+    // --- RÉCUPÉRATION DES VALEURS ---
     const poids = document.getElementById("poids").value;
-    const date = new Date().toLocaleDateString("fr-FR");
-
-    let historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
-    historique.push({ date: date, poids: poids });
-    localStorage.setItem("historiquePoids", JSON.stringify(historique));
-
-    // --- RÉCUPÉRATION DES AUTRES VALEURS ---
     const stress = document.getElementById("stress").value;
     const sommeil = document.getElementById("sommeil").value;
     const intention = document.getElementById("intention").value;
@@ -498,6 +491,25 @@ function validerRituel() {
         alert("Tu veux être discipliné ? Alors remplis au moins poids, stress et intention.");
         return;
     }
+
+    // --- ENREGISTREMENT DANS L'HISTORIQUE ---
+    const date = new Date().toLocaleDateString("fr-FR");
+
+    let historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
+
+    historique.push({
+        date: date,
+        poids: poids,
+        stress: stress,
+        sommeil: sommeil,
+        sport: null // on ajoutera plus tard
+    });
+
+    localStorage.setItem("historiquePoids", JSON.stringify(historique));
+
+    alert("Rituel enregistré !");
+}
+
 
     const key = todayKey();
     const corps = getJSON("corps", {});
