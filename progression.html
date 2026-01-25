@@ -3,189 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progression</title>
+    <title>Progression • Dojo</title>
 
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body class="page-progression">
 
     <h1 class="progression-title">📈 Progression</h1>
-    <p class="progression-subtitle" id="periodLabel">Historique des derniers jours</p>
+    <p class="progression-subtitle" id="periodLabel">Historique des 30 derniers jours</p>
 
     <div class="progression-container">
-        <canvas id="progressionChart"></canvas>
 
-        <div class="days-strip" id="daysStrip">
-            <!-- Pills jours générées en JS -->
+        <!-- Sélecteur de période -->
+        <div class="period-selector">
+            <button class="period-btn active" data-period="7">7 jours</button>
+            <button class="period-btn" data-period="14">14 jours</button>
+            <button class="period-btn" data-period="30">30 jours</button>
+            <button class="period-btn" data-period="all">Tout</button>
         </div>
 
+        <!-- Statistiques résumées -->
+        <div class="stats-summary">
+            <div class="stat-card">
+                <div class="stat-icon">⚖️</div>
+                <div class="stat-value" id="statPoids">—</div>
+                <div class="stat-label">Évolution poids</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">😰</div>
+                <div class="stat-value" id="statStress">—</div>
+                <div class="stat-label">Stress moyen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">😴</div>
+                <div class="stat-value" id="statSommeil">—</div>
+                <div class="stat-label">Sommeil moyen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="statSport">—</div>
+                <div class="stat-label">Total sport</div>
+            </div>
+        </div>
+
+        <!-- Graphique principal -->
+        <div class="chart-container">
+            <canvas id="progressionChart"></canvas>
+        </div>
+
+        <!-- Timeline des jours -->
+        <div class="days-strip" id="daysStrip"></div>
+
+        <!-- Détails du jour sélectionné -->
         <div class="details-card" id="detailsCard">
-            <!-- Détails du jour sélectionné -->
+            <p style="text-align: center; color: #aaa;">Sélectionne un jour dans la timeline</p>
         </div>
+
     </div>
 
     <!-- MENU FLOTTANT -->
     <div class="bottom-menu-wrapper">
-    <div class="bottom-menu-pill">
-        <a href="index.html"><span class="icon">🏠</span>Accueil</a>
-        <a href="progression.html"><span class="icon">📈</span>Progression</a>
-        <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏯</span>Accueil</a>
+            <a href="progression.html" class="active"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
     </div>
-</div>
-
 
 <script>
-/* --- RÉCUPÉRATION DES DONNÉES --- */
-/* On suppose que tu stockeras plus tard stress, sommeil, sport dans un même historique.
-   Pour l'instant, on part de historiquePoids + on prépare la structure. */
-
-let historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
-
-// On enrichit la structure pour prévoir stress/sommeil/sport plus tard
-historique = historique.map((entry, index) => ({
-    jour: index + 1,
-    date: entry.date,
-    poids: parseFloat(entry.poids),
-    stress: entry.stress ?? null,
-    sommeil: entry.sommeil ?? null,
-    sport: entry.sport ?? null
-}));
-
-if (historique.length === 0) {
-    document.getElementById("periodLabel").innerText = "Aucune donnée pour l’instant. Valide un rituel dans le Dojo.";
+// --- FONCTIONS UTILITAIRES ---
+function getJSON(key, def) {
+    try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : def;
+    } catch {
+        return def;
+    }
 }
 
-/* --- GRAPH MULTI-CURVES --- */
-const labels = historique.map(e => `Jour ${e.jour}`);
-const poidsData = historique.map(e => e.poids);
-const stressData = historique.map(e => e.stress ?? null);
-const sommeilData = historique.map(e => e.sommeil ?? null);
-const sportData = historique.map(e => e.sport ?? null);
+// --- RÉCUPÉRATION DES DONNÉES ---
+let historique = getJSON("historiquePoids", []);
 
-const ctx = document.getElementById('progressionChart');
+// Enrichissement des données avec les infos manquantes
+const corpsData = getJSON("corps", {});
+const seancesData = getJSON("seances", {});
 
-const chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [
-            {
-                label: "Poids (kg)",
-                data: poidsData,
-                borderColor: "#d4af37",
-                backgroundColor: "rgba(212,175,55,0.15)",
-                borderWidth: 3,
-                tension: 0.35,
-                pointRadius: 4,
-                pointBackgroundColor: "#d4af37"
-            },
-            {
-                label: "Stress (/10)",
-                data: stressData,
-                borderColor: "#ff6b6b",
-                backgroundColor: "rgba(255,107,107,0.12)",
-                borderWidth: 2,
-                tension: 0.35,
-                pointRadius: 3,
-                pointBackgroundColor: "#ff6b6b"
-            },
-            {
-                label: "Sommeil (/10)",
-                data: sommeilData,
-                borderColor: "#4da3ff",
-                backgroundColor: "rgba(77,163,255,0.12)",
-                borderWidth: 2,
-                tension: 0.35,
-                pointRadius: 3,
-                pointBackgroundColor: "#4da3ff"
-            },
-            {
-                label: "Sport (min)",
-                data: sportData,
-                borderColor: "#4cd964",
-                backgroundColor: "rgba(76,217,100,0.12)",
-                borderWidth: 2,
-                tension: 0.35,
-                pointRadius: 3,
-                pointBackgroundColor: "#4cd964"
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                labels: {
-                    color: "#ddd",
-                    font: { size: 12 }
-                }
-            }
-        },
-        scales: {
-            x: {
-                ticks: { color: "#aaa" },
-                grid: { color: "rgba(255,255,255,0.05)" }
-            },
-            y: {
-                ticks: { color: "#aaa" },
-                grid: { color: "rgba(255,255,255,0.05)" }
-            }
-        }
-    }
+historique = historique.map((entry, index) => {
+    const dateKey = entry.date;
+    
+    return {
+        jour: index + 1,
+        date: entry.date,
+        poids: entry.poids ? parseFloat(entry.poids) : null,
+        stress: entry.stress !== undefined ? parseInt(entry.stress) : (corpsData[dateKey]?.stress ? parseInt(corpsData[dateKey].stress) : null),
+        sommeil: entry.sommeil !== undefined ? parseInt(entry.sommeil) : (corpsData[dateKey]?.sommeil ? parseInt(corpsData[dateKey].sommeil) : null),
+        sport: entry.sport !== undefined ? parseInt(entry.sport) : (seancesData[dateKey]?.duree ? parseInt(seancesData[dateKey].duree) : null)
+    };
 });
 
-/* --- TIMELINE JOURS + DÉTAILS --- */
-const daysStrip = document.getElementById("daysStrip");
-const detailsCard = document.getElementById("detailsCard");
+// Trier par date
+historique.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-function renderDays() {
+if (historique.length === 0) {
+    document.getElementById("periodLabel").innerText = "Aucune donnée. Valide un rituel dans le Dojo pour commencer ton suivi.";
+    document.querySelector(".progression-container").innerHTML = 
+        '<div style="text-align:center; padding:40px; color:#aaa;"><p>📊 Pas encore de données</p><p>Commence par valider ton rituel du matin !</p><a href="rituel.html" style="color:#d4af37; text-decoration:none;">→ Aller au rituel</a></div>';
+}
+
+// --- VARIABLES GLOBALES ---
+let chart = null;
+let currentPeriod = 30; // Par défaut 30 jours
+
+// --- FILTRAGE PAR PÉRIODE ---
+function filterByPeriod(days) {
+    if (days === 'all') return historique;
+    return historique.slice(-days);
+}
+
+// --- CALCUL DES STATS ---
+function calculateStats(data) {
+    if (data.length === 0) return;
+
+    // Poids
+    const poidsData = data.filter(e => e.poids !== null).map(e => e.poids);
+    if (poidsData.length >= 2) {
+        const evolution = poidsData[poidsData.length - 1] - poidsData[0];
+        const statPoids = document.getElementById("statPoids");
+        statPoids.textContent = (evolution > 0 ? "+" : "") + evolution.toFixed(1) + " kg";
+        statPoids.style.color = evolution < 0 ? "#4caf50" : (evolution > 0 ? "#ff6b6b" : "#d4af37");
+    } else {
+        document.getElementById("statPoids").textContent = "—";
+    }
+
+    // Stress moyen
+    const stressData = data.filter(e => e.stress !== null).map(e => e.stress);
+    if (stressData.length > 0) {
+        const avgStress = (stressData.reduce((a, b) => a + b, 0) / stressData.length).toFixed(1);
+        document.getElementById("statStress").textContent = avgStress + "/10";
+    }
+
+    // Sommeil moyen
+    const sommeilData = data.filter(e => e.sommeil !== null).map(e => e.sommeil);
+    if (sommeilData.length > 0) {
+        const avgSommeil = (sommeilData.reduce((a, b) => a + b, 0) / sommeilData.length).toFixed(1);
+        document.getElementById("statSommeil").textContent = avgSommeil + "/10";
+    }
+
+    // Sport total
+    const sportData = data.filter(e => e.sport !== null).map(e => e.sport);
+    if (sportData.length > 0) {
+        const totalSport = sportData.reduce((a, b) => a + b, 0);
+        document.getElementById("statSport").textContent = totalSport + " min";
+    }
+}
+
+// --- CRÉATION DU GRAPHIQUE ---
+function createChart(data) {
+    const labels = data.map(e => {
+        const d = new Date(e.date);
+        return d.getDate() + '/' + (d.getMonth() + 1);
+    });
+
+    const poidsData = data.map(e => e.poids);
+    const stressData = data.map(e => e.stress);
+    const sommeilData = data.map(e => e.sommeil);
+    const sportData = data.map(e => e.sport);
+
+    const ctx = document.getElementById('progressionChart');
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Poids (kg)",
+                    data: poidsData,
+                    borderColor: "#d4af37",
+                    backgroundColor: "rgba(212,175,55,0.1)",
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: "#d4af37",
+                    pointBorderColor: "#000",
+                    pointBorderWidth: 2,
+                    yAxisID: 'y'
+                },
+                {
+                    label: "Stress (/10)",
+                    data: stressData,
+                    borderColor: "#ff6b6b",
+                    backgroundColor: "rgba(255,107,107,0.1)",
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: "#ff6b6b",
+                    yAxisID: 'y1'
+                },
+                {
+                    label: "Sommeil (/10)",
+                    data: sommeilData,
+                    borderColor: "#4da3ff",
+                    backgroundColor: "rgba(77,163,255,0.1)",
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: "#4da3ff",
+                    yAxisID: 'y1'
+                },
+                {
+                    label: "Sport (min)",
+                    data: sportData,
+                    borderColor: "#4cd964",
+                    backgroundColor: "rgba(76,217,100,0.1)",
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: "#4cd964",
+                    yAxisID: 'y2'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#ddd",
+                        font: { size: 13 },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#d4af37',
+                    bodyColor: '#fff',
+                    borderColor: '#d4af37',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: true
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { 
+                        color: "#aaa",
+                        font: { size: 11 }
+                    },
+                    grid: { 
+                        color: "rgba(255,255,255,0.05)",
+                        drawBorder: false
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Poids (kg)',
+                        color: '#d4af37'
+                    },
+                    ticks: { 
+                        color: "#d4af37",
+                        font: { size: 11 }
+                    },
+                    grid: { 
+                        color: "rgba(212,175,55,0.1)",
+                        drawBorder: false
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Stress / Sommeil',
+                        color: '#aaa'
+                    },
+                    min: 0,
+                    max: 10,
+                    ticks: { 
+                        color: "#aaa",
+                        font: { size: 11 }
+                    },
+                    grid: {
+                        drawOnChartArea: false,
+                        drawBorder: false
+                    }
+                },
+                y2: {
+                    type: 'linear',
+                    display: false,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// --- TIMELINE JOURS ---
+function renderDays(data) {
+    const daysStrip = document.getElementById("daysStrip");
     daysStrip.innerHTML = "";
-    historique.forEach((entry, index) => {
+    
+    data.forEach((entry, index) => {
         const pill = document.createElement("div");
-        pill.className = "day-pill" + (index === historique.length - 1 ? " active" : "");
+        pill.className = "day-pill";
         pill.dataset.index = index;
-        pill.innerText = `Jour ${entry.jour} (${entry.date})`;
-        pill.addEventListener("click", () => selectDay(index));
+        
+        const d = new Date(entry.date);
+        const dayName = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'][d.getDay()];
+        
+        pill.innerHTML = `<strong>${dayName}</strong><br>${d.getDate()}/${d.getMonth() + 1}`;
+        
+        pill.addEventListener("click", () => selectDay(index, data));
         daysStrip.appendChild(pill);
     });
 
-    if (historique.length > 0) {
-        selectDay(historique.length - 1);
-    } else {
-        detailsCard.innerHTML = "<p>Aucune donnée à afficher.</p>";
+    // Sélectionner le dernier jour par défaut
+    if (data.length > 0) {
+        selectDay(data.length - 1, data);
     }
 }
 
-function selectDay(index) {
+// --- DÉTAILS JOUR ---
+function selectDay(index, data) {
     document.querySelectorAll(".day-pill").forEach(p => p.classList.remove("active"));
     const activePill = document.querySelector(`.day-pill[data-index="${index}"]`);
-    if (activePill) activePill.classList.add("active");
+    if (activePill) {
+        activePill.classList.add("active");
+        activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
 
-    const e = historique[index];
+    const e = data[index];
+    const d = new Date(e.date);
+    const dayName = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'][d.getDay()];
 
-    detailsCard.innerHTML = `
-        <h2>Jour ${e.jour} — ${e.date}</h2>
-        <div class="detail-row">
-            <span class="detail-label">Poids</span>
-            <span class="detail-value">${e.poids ? e.poids + " kg" : "-"}</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Stress</span>
-            <span class="detail-value">${e.stress ?? "-"}/10</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Sommeil</span>
-            <span class="detail-value">${e.sommeil ?? "-"}/10</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Sport</span>
-            <span class="detail-value">${e.sport ?? "-"}</span>
+    document.getElementById("detailsCard").innerHTML = `
+        <h2>${dayName} ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}</h2>
+        
+        <div class="detail-grid">
+            <div class="detail-row">
+                <span class="detail-label">⚖️ Poids</span>
+                <span class="detail-value">${e.poids ? e.poids + " kg" : "—"}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">😰 Stress</span>
+                <span class="detail-value ${e.stress >= 7 ? 'stress-high' : (e.stress >= 4 ? 'stress-medium' : '')}">${e.stress !== null ? e.stress + "/10" : "—"}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">😴 Sommeil</span>
+                <span class="detail-value ${e.sommeil >= 7 ? 'sleep-good' : (e.sommeil < 5 ? 'sleep-bad' : '')}">${e.sommeil !== null ? e.sommeil + "/10" : "—"}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">🔥 Sport</span>
+                <span class="detail-value">${e.sport ? e.sport + " min" : "—"}</span>
+            </div>
         </div>
     `;
 }
 
-renderDays();
+// --- SÉLECTION DE PÉRIODE ---
+document.querySelectorAll(".period-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".period-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        
+        const period = btn.dataset.period;
+        currentPeriod = period === 'all' ? 'all' : parseInt(period);
+        
+        const filteredData = filterByPeriod(currentPeriod);
+        createChart(filteredData);
+        renderDays(filteredData);
+        calculateStats(filteredData);
+    });
+});
+
+// --- INITIALISATION ---
+const initialData = filterByPeriod(currentPeriod);
+createChart(initialData);
+renderDays(initialData);
+calculateStats(initialData);
 </script>
 
 </body>
