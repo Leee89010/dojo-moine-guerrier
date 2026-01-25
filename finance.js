@@ -20,9 +20,10 @@ const categoryIcons = {
 
 
 // --- STRUCTURE LOCALSTORAGE ---
-function getFinances() 
+function getFinances() {
     return JSON.parse(localStorage.getItem("finances")) || {};
 }
+
 
 function saveFinances(data) {
     localStorage.setItem("finances", JSON.stringify(data));
