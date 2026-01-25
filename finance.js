@@ -18,6 +18,7 @@ const categoryIcons = {
     "Autres": "💸"
 };
 
+
 // --- STRUCTURE LOCALSTORAGE ---
 function getFinances() {
     return JSON.parse(localStorage.getItem("finances")) || {};
