@@ -44,21 +44,21 @@
 
             <div class="dojo-card">
                 <label>Poids (kg)</label>
-                <input type="number" id="poids" step="0.1">
+                <input type="number" id="poids" step="0.1" placeholder="Ex: 75.5">
 
                 <div class="row">
                     <div>
-                        <label>Stress (0–10)</label>
-                        <input type="number" id="stress" min="0" max="10">
+                        <label>Stress (0—10)</label>
+                        <input type="number" id="stress" min="0" max="10" value="5">
                     </div>
                     <div>
-                        <label>Sommeil (0–10)</label>
-                        <input type="number" id="sommeil" min="0" max="10">
+                        <label>Sommeil (0—10)</label>
+                        <input type="number" id="sommeil" min="0" max="10" value="7">
                     </div>
                 </div>
 
                 <label>Intention du jour</label>
-                <input type="text" id="intention" placeholder="Ex : Aujourd’hui je suis discipliné.">
+                <input type="text" id="intention" placeholder="Ex : Aujourd'hui je suis discipliné.">
 
                 <label>Tâche du jour</label>
                 <input type="text" id="tache" placeholder="Ex : Faire ma séance de muscu.">
@@ -69,7 +69,7 @@
             <h2 class="dojo-section-title">Routine guidée</h2>
 
             <div class="dojo-card small-text">
-                <p><b>Minute 1 :</b> Pesée, respiration 4-2-6 (4 cycles), verre d’eau.</p>
+                <p><b>Minute 1 :</b> Pesée, respiration 4-2-6 (4 cycles), verre d'eau.</p>
                 <p><b>Minute 2 :</b> Intention + tâche du jour.</p>
                 <p><b>Minute 3 :</b> Habitudes + anti-craving (respiration + 10 squats + gainage 10 sec).</p>
             </div>
@@ -77,21 +77,69 @@
 
         <button class="primary" id="validerRituelBtn">Valider le rituel</button>
 
+        <div id="rituelStatus" style="margin-top: 10px; text-align: center; color: #d4af37;"></div>
+
     </main>
 
     <!-- MENU -->
     <div class="bottom-menu-wrapper">
         <div class="bottom-menu-pill">
-            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="index.html"><span class="icon">🏯</span>Accueil</a>
             <a href="progression.html"><span class="icon">📈</span>Progression</a>
             <a href="finance.html"><span class="icon">💸</span>Finances</a>
         </div>
     </div>
 
     <script src="dojo.js"></script>
-    <script src="firebase.js"></script>
 
     <script>
+        // Fonction pour générer la clé du jour
+        function todayKey() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getJSON(key, def) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : def;
+            } catch {
+                return def;
+            }
+        }
+
+        function setJSON(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        const key = todayKey();
+        const statusEl = document.getElementById("rituelStatus");
+
+        // Vérifier si le rituel a déjà été validé aujourd'hui
+        const xpGained = getJSON("xpGained", {});
+        
+        if (xpGained[key]?.rituel) {
+            statusEl.innerHTML = "✅ Rituel déjà validé aujourd'hui ! (+10 XP déjà accordés)";
+            statusEl.style.color = "#4caf50";
+        }
+
+        // Pré-remplissage si déjà saisi
+        const corps = getJSON("corps", {});
+        if (corps[key]) {
+            document.getElementById("poids").value = corps[key].poids || "";
+            document.getElementById("stress").value = corps[key].stress || 5;
+            document.getElementById("sommeil").value = corps[key].sommeil || 7;
+        }
+
+        const meta = getJSON("metaJour", {});
+        if (meta[key]) {
+            document.getElementById("intention").value = meta[key].intention || "";
+            document.getElementById("tache").value = meta[key].tache || "";
+        }
+
         // Validation du rituel
         document.getElementById("validerRituelBtn").addEventListener("click", () => {
 
@@ -102,11 +150,17 @@
             const tache = document.getElementById("tache").value;
 
             if (!poids || !stress || !intention) {
-                alert("Remplis au moins poids, stress et intention.");
+                alert("❌ Remplis au moins poids, stress et intention.");
                 return;
             }
 
-            const key = todayKey();
+            // Vérifier si déjà validé
+            const xpGained = getJSON("xpGained", {});
+            
+            if (xpGained[key]?.rituel) {
+                alert("⚠️ Tu as déjà validé ce rituel aujourd'hui !\nPas d'XP supplémentaire pour éviter la triche 😉");
+                return;
+            }
 
             // Corps
             const corps = getJSON("corps", {});
@@ -118,17 +172,45 @@
             meta[key] = { intention, tache };
             setJSON("metaJour", meta);
 
-            // Historique poids
+            // Historique poids (avec stress et sommeil pour progression)
             const hist = getJSON("historiquePoids", []);
-            hist.push({ date: key, poids, stress, sommeil });
+            
+            // Vérifier si une entrée existe déjà pour aujourd'hui
+            const existingIndex = hist.findIndex(h => h.date === key);
+            
+            if (existingIndex >= 0) {
+                // Mise à jour de l'entrée existante
+                hist[existingIndex] = { 
+                    date: key, 
+                    poids: parseFloat(poids),
+                    stress: parseInt(stress),
+                    sommeil: parseInt(sommeil)
+                };
+            } else {
+                // Nouvelle entrée
+                hist.push({ 
+                    date: key, 
+                    poids: parseFloat(poids),
+                    stress: parseInt(stress),
+                    sommeil: parseInt(sommeil)
+                });
+            }
+            
             setJSON("historiquePoids", hist);
 
-            // XP
+            // XP (une seule fois par jour)
+            if (!xpGained[key]) {
+                xpGained[key] = {};
+            }
+            
+            xpGained[key].rituel = true;
+            setJSON("xpGained", xpGained);
+
             let xp = parseInt(localStorage.getItem("xp") || "0", 10);
             xp += 10;
             localStorage.setItem("xp", xp.toString());
 
-            alert("Rituel enregistré !");
+            alert("✅ Rituel enregistré ! +10 XP\n\nTon intention : " + intention);
             window.location.href = "index.html";
         });
     </script>
