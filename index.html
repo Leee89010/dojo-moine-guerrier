@@ -477,7 +477,15 @@ function setJSON(key, value) {
 }
 
 // --- RITUEL ---
-function validerRituel() {
+function validerRituel() {const poids = document.getElementById("poids").value;
+const date = new Date().toLocaleDateString("fr-FR");
+
+let historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
+
+historique.push({ date: date, poids: poids });
+
+localStorage.setItem("historiquePoids", JSON.stringify(historique));
+
     const poids = document.getElementById("poids").value;
     const stress = document.getElementById("stress").value;
     const sommeil = document.getElementById("sommeil").value;
