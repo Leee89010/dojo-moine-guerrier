@@ -50,17 +50,19 @@
                     <option value="Musculation">Musculation</option>
                     <option value="Boxe anglaise">Boxe anglaise</option>
                     <option value="Cardio">Cardio</option>
+                    <option value="Yoga">Yoga</option>
+                    <option value="Mobilité">Mobilité</option>
                     <option value="Repos actif">Repos actif</option>
                 </select>
 
                 <div class="row">
                     <div>
                         <label>Durée (min)</label>
-                        <input type="number" id="dureeSeance">
+                        <input type="number" id="dureeSeance" min="5" placeholder="Ex: 45">
                     </div>
                     <div>
-                        <label>Intensité (1–10)</label>
-                        <input type="number" id="intensiteSeance" min="1" max="10">
+                        <label>Intensité (1—10)</label>
+                        <input type="number" id="intensiteSeance" min="1" max="10" value="5">
                     </div>
                 </div>
 
@@ -73,34 +75,77 @@
         <button class="primary" id="validerSeanceBtn">Valider la séance</button>
 
         <section class="dojo-section">
-            <h2 class="dojo-section-title">Historique</h2>
-            <div class="dojo-card small-text" id="historiqueSeances"></div>
+            <h2 class="dojo-section-title">Résumé</h2>
+            <div class="dojo-card small-text" id="historiqueSeances">
+                Valide ta séance pour voir le résumé.
+            </div>
         </section>
+
+        <div id="sportStatus" style="margin-top: 10px; text-align: center; color: #d4af37;"></div>
 
     </main>
 
     <!-- MENU -->
     <div class="bottom-menu-wrapper">
         <div class="bottom-menu-pill">
-            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="index.html"><span class="icon">🏯</span>Accueil</a>
             <a href="progression.html"><span class="icon">📈</span>Progression</a>
             <a href="finance.html"><span class="icon">💸</span>Finances</a>
         </div>
     </div>
 
     <script src="dojo.js"></script>
-    <script src="firebase.js"></script>
 
     <script>
+        function todayKey() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getJSON(key, def) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : def;
+            } catch {
+                return def;
+            }
+        }
+
+        function setJSON(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
         const key = todayKey();
+        const statusEl = document.getElementById("sportStatus");
+
+        // Vérifier si déjà validé
+        const xpGained = getJSON("xpGained", {});
+        
+        if (xpGained[key]?.sport) {
+            statusEl.innerHTML = "✅ Séance déjà validée aujourd'hui !";
+            statusEl.style.color = "#4caf50";
+        }
 
         // Affichage historique
         const seances = getJSON("seances", {});
         if (seances[key]) {
-            document.getElementById("historiqueSeances").innerText =
-                "Dernière séance : " + seances[key].type + " — " +
-                seances[key].duree + " min — intensité " +
-                seances[key].intensite + "/10.";
+            const s = seances[key];
+            
+            // Pré-remplir
+            document.getElementById("typeSeance").value = s.type || "Musculation";
+            document.getElementById("dureeSeance").value = s.duree || "";
+            document.getElementById("intensiteSeance").value = s.intensite || 5;
+            document.getElementById("objectifSeance").value = s.objectif || "";
+
+            document.getElementById("historiqueSeances").innerHTML =
+                "<strong>Type :</strong> " + s.type + "<br>" +
+                "<strong>Durée :</strong> " + s.duree + " min<br>" +
+                "<strong>Intensité :</strong> " + s.intensite + "/10<br>" +
+                (s.objectif ? "<strong>Objectif :</strong> " + s.objectif : "") +
+                "<br><br>🔥 <strong>+12 XP</strong>";
         }
 
         // Validation
@@ -111,16 +156,52 @@
             const intensite = document.getElementById("intensiteSeance").value;
             const objectif = document.getElementById("objectifSeance").value;
 
+            if (!duree) {
+                alert("❌ Entre au moins la durée de ta séance.");
+                return;
+            }
+
             const seances = getJSON("seances", {});
             seances[key] = { type, duree, intensite, objectif };
             setJSON("seances", seances);
 
-            // XP
-            let xp = parseInt(localStorage.getItem("xp") || "0", 10);
-            xp += 12;
-            localStorage.setItem("xp", xp.toString());
+            // Mettre à jour l'historique pour progression.html
+            const hist = getJSON("historiquePoids", []);
+            const existingIndex = hist.findIndex(h => h.date === key);
+            
+            if (existingIndex >= 0) {
+                hist[existingIndex].sport = parseInt(duree);
+            } else {
+                hist.push({ 
+                    date: key, 
+                    sport: parseInt(duree)
+                });
+            }
+            setJSON("historiquePoids", hist);
 
-            alert("Séance validée !");
+            // Vérifier si déjà validé aujourd'hui
+            const xpGained = getJSON("xpGained", {});
+            
+            let xpEarned = 0;
+
+            if (!xpGained[key]?.sport) {
+                xpEarned = 12;
+                let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+                xp += xpEarned;
+                localStorage.setItem("xp", xp.toString());
+
+                // Marquer comme validé
+                if (!xpGained[key]) {
+                    xpGained[key] = {};
+                }
+                xpGained[key].sport = true;
+                setJSON("xpGained", xpGained);
+
+                alert("🔥 Séance validée !\n\n" + type + " — " + duree + " min\nIntensité : " + intensite + "/10\n\nXP gagnés : +12 XP");
+            } else {
+                alert("📊 Séance mise à jour !\n\n⚠️ XP déjà accordés aujourd'hui (pas de double gain)");
+            }
+
             window.location.href = "index.html";
         });
     </script>
