@@ -222,6 +222,24 @@ hr {
 </style>
 </head>
 <body>
+<div id="background">
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+
+    <!-- Particules dorées -->
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+</div>
+<div id="header">🧘‍♂️ Dojo du Moine Guerrier</div>    
 <div class="container">
 
     <h1>🧘‍♂️ Dojo du Moine Guerrier</h1>
