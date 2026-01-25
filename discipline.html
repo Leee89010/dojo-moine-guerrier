@@ -44,7 +44,7 @@
 
             <div class="dojo-card">
 
-                <label><input type="checkbox" id="hHydratation"> Hydratation</label><br>
+                <label><input type="checkbox" id="hHydratation"> Hydratation (2L minimum)</label><br>
                 <label><input type="checkbox" id="hMobilite"> 10 min de mobilité</label><br>
                 <label><input type="checkbox" id="hPasMatin"> Pas de cigarette/joint avant midi</label><br>
                 <label><input type="checkbox" id="hPasGrignotage"> Pas de grignotage</label><br>
@@ -57,25 +57,58 @@
 
         <section class="dojo-section">
             <h2 class="dojo-section-title">Score</h2>
-            <div class="dojo-card small-text" id="scoreDiscipline"></div>
+            <div class="dojo-card small-text" id="scoreDiscipline">
+                Valide tes habitudes pour voir ton score.
+            </div>
         </section>
+
+        <div id="disciplineStatus" style="margin-top: 10px; text-align: center; color: #d4af37;"></div>
 
     </main>
 
     <!-- MENU -->
     <div class="bottom-menu-wrapper">
         <div class="bottom-menu-pill">
-            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="index.html"><span class="icon">🏯</span>Accueil</a>
             <a href="progression.html"><span class="icon">📈</span>Progression</a>
             <a href="finance.html"><span class="icon">💸</span>Finances</a>
         </div>
     </div>
 
     <script src="dojo.js"></script>
-    <script src="firebase.js"></script>
 
     <script>
+        function todayKey() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getJSON(key, def) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : def;
+            } catch {
+                return def;
+            }
+        }
+
+        function setJSON(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
         const key = todayKey();
+        const statusEl = document.getElementById("disciplineStatus");
+
+        // Vérifier si déjà validé
+        const xpGained = getJSON("xpGained", {});
+        
+        if (xpGained[key]?.discipline) {
+            statusEl.innerHTML = "✅ Discipline déjà validée aujourd'hui !";
+            statusEl.style.color = "#4caf50";
+        }
 
         // Pré-remplissage si déjà fait
         const disc = getJSON("discipline", {});
@@ -88,7 +121,8 @@
             document.getElementById("hTache").checked = d.h5;
 
             document.getElementById("scoreDiscipline").innerText =
-                "Score : " + d.score + "/5";
+                "Score : " + d.score + "/5" + 
+                "\nXP gagnés : " + (d.score * 2 + (d.score === 5 ? 10 : 0)) + " XP";
         }
 
         // Validation
@@ -103,16 +137,36 @@
             const score = [h1,h2,h3,h4,h5].filter(Boolean).length;
 
             const disc = getJSON("discipline", {});
-            disc[key] = { h1,h2,h3,h4,h5,score };
+            disc[key] = { h1, h2, h3, h4, h5, score };
             setJSON("discipline", disc);
 
-            // XP
-            let xp = parseInt(localStorage.getItem("xp") || "0", 10);
-            xp += score * 2;
-            if (score === 5) xp += 10;
-            localStorage.setItem("xp", xp.toString());
+            // Vérifier si déjà validé aujourd'hui
+            const xpGained = getJSON("xpGained", {});
+            
+            let xpEarned = 0;
+            
+            if (!xpGained[key]?.discipline) {
+                // XP : 2 points par habitude + 10 bonus si 5/5
+                xpEarned = score * 2;
+                if (score === 5) xpEarned += 10;
 
-            alert("Discipline enregistrée !");
+                let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+                xp += xpEarned;
+                localStorage.setItem("xp", xp.toString());
+
+                // Marquer comme validé
+                if (!xpGained[key]) {
+                    xpGained[key] = {};
+                }
+                xpGained[key].discipline = true;
+                setJSON("xpGained", xpGained);
+
+                alert("✅ Discipline enregistrée !\n\nScore : " + score + "/5\nXP gagnés : +" + xpEarned + " XP" + 
+                      (score === 5 ? "\n🎉 PARFAIT ! Bonus de 10 XP !" : ""));
+            } else {
+                alert("📊 Discipline mise à jour !\n\nScore : " + score + "/5\n\n⚠️ XP déjà accordés aujourd'hui (pas de double gain)");
+            }
+
             window.location.href = "index.html";
         });
     </script>
