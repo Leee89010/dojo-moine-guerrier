@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finances</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="page-finances">
+
+    <div class="finance-header">
+        <h1>💸 Finances</h1>
+        <div class="finance-period">
+            <button id="prevMonth">◀</button>
+            <span id="currentPeriod"></span>
+            <button id="nextMonth">▶</button>
+        </div>
+        <div class="finance-view-toggle">
+            <button id="viewMonth" class="active">Mois</button>
+            <button id="viewYear">Année</button>
+        </div>
+        <div class="finance-solde" id="soldeDisplay">Solde : 0 €</div>
+    </div>
+
+    <div class="finance-container">
+
+        <canvas id="donutChart"></canvas>
+        <canvas id="barChart"></canvas>
+
+        <h2 class="section-title">Transactions</h2>
+        <div id="transactionsList"></div>
+
+    </div>
+
+    <button class="add-transaction-btn" id="openAddPopup">＋</button>
+
+    <!-- POPUP AJOUT -->
+    <div class="popup-overlay" id="popupAdd">
+        <div class="popup">
+            <h2>Ajouter une transaction</h2>
+
+            <label>Montant (€)</label>
+            <input type="number" id="amountInput">
+
+            <label>Type</label>
+            <select id="typeInput">
+                <option value="revenu">Revenu</option>
+                <option value="depense">Dépense</option>
+            </select>
+
+            <label>Catégorie</label>
+            <select id="categoryInput"></select>
+
+            <label>Description</label>
+            <input type="text" id="descInput">
+
+            <label>Date</label>
+            <input type="date" id="dateInput">
+
+            <button id="saveTransaction">Enregistrer</button>
+            <button class="close-popup" id="closeAddPopup">Annuler</button>
+        </div>
+    </div>
+
+    <script src="finance.js"></script>
+
+    <!-- MENU FLOTTANT -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html" class="active"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+</body>
+</html>
