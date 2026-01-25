@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addictions • Dojo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-dojo">
+
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+    </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">Addictions</div>
+            <div class="dojo-subtitle">Clarté • Rigueur • Vérité</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
+
+    <main class="dojo-main">
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Consommation du jour</h2>
+
+            <div class="dojo-card">
+
+                <div class="row">
+                    <div>
+                        <label>Joints</label>
+                        <input type="number" id="joints" min="0">
+                    </div>
+                    <div>
+                        <label>Cigarettes</label>
+                        <input type="number" id="cigarettes" min="0">
+                    </div>
+                </div>
+
+                <label>Heure de la première consommation</label>
+                <input type="time" id="heurePremiere">
+
+                <label>Déclencheur principal</label>
+                <select id="declencheur">
+                    <option value="stress">Stress</option>
+                    <option value="ennui">Ennui</option>
+                    <option value="social">Social</option>
+                    <option value="routine">Routine</option>
+                </select>
+
+                <label>Craving (0–10)</label>
+                <input type="number" id="craving" min="0" max="10">
+
+            </div>
+        </section>
+
+        <button class="primary" id="validerAddictionsBtn">Valider la journée</button>
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Résumé</h2>
+            <div class="dojo-card small-text" id="resumeAddictions"></div>
+        </section>
+
+    </main>
+
+    <!-- MENU -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+    <script src="dojo.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const key = todayKey();
+
+        // Affichage résumé si déjà rempli
+        const add = getJSON("addictions", {});
+        if (add[key]) {
+            document.getElementById("resumeAddictions").innerText =
+                "Joints : " + add[key].joints +
+                " | Cigarettes : " + add[key].cigarettes +
+                " | Première : " + add[key].heurePremiere +
+                " | Craving : " + add[key].craving + "/10.";
+        }
+
+        // Validation
+        document.getElementById("validerAddictionsBtn").addEventListener("click", () => {
+
+            const joints = document.getElementById("joints").value || "0";
+            const cigarettes = document.getElementById("cigarettes").value || "0";
+            const heurePremiere = document.getElementById("heurePremiere").value || "-";
+            const declencheur = document.getElementById("declencheur").value;
+            const craving = document.getElementById("craving").value || "0";
+
+            const add = getJSON("addictions", {});
+            add[key] = { joints, cigarettes, heurePremiere, declencheur, craving };
+            setJSON("addictions", add);
+
+            // XP
+            let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+            if (parseInt(joints) === 0 && parseInt(cigarettes) === 0) xp += 15;
+            localStorage.setItem("xp", xp.toString());
+
+            alert("Journée enregistrée !");
+            window.location.href = "index.html";
+        });
+    </script>
+
+</body>
+</html>
