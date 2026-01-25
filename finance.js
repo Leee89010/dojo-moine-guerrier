@@ -1,3 +1,4 @@
+// --- ICÔNES PAR CATÉGORIE ---
 const categoryIcons = {
     "Loyer": "🏠",
     "Courses": "🛒",
@@ -15,8 +16,9 @@ const categoryIcons = {
     "Santé": "💊",
     "Abonnements": "📦",
     "Autres": "💸"
-        
-        // --- STRUCTURE LOCALSTORAGE ---
+};
+
+// --- STRUCTURE LOCALSTORAGE ---
 function getFinances() {
     return JSON.parse(localStorage.getItem("finances")) || {};
 }
@@ -24,6 +26,7 @@ function getFinances() {
 function saveFinances(data) {
     localStorage.setItem("finances", JSON.stringify(data));
 }
+
 // --- CATÉGORIES PAR DÉFAUT ---
 let defaultCategories = [
     "Loyer",
@@ -101,6 +104,7 @@ function updateSolde() {
     el.style.color = solde >= 0 ? "#4caf50" : "#e53935";
 }
 
+// --- AFFICHAGE TRANSACTIONS ---
 function renderTransactions() {
     const container = document.getElementById("transactionsList");
     container.innerHTML = "";
@@ -132,7 +136,6 @@ function renderTransactions() {
     enableSwipeToDelete();
 }
 
-
 // --- GRAPHIQUES ---
 let donutChart, barChart;
 
@@ -148,7 +151,7 @@ function updateCharts() {
     });
 
     const donutData = {
-        labels: Object.keys(categories).map(cat => (categoryIcons[cat] || "💸") + " " + cat)
+        labels: Object.keys(categories).map(cat => (categoryIcons[cat] || "💸") + " " + cat),
         datasets: [{
             data: Object.values(categories),
             backgroundColor: ["#d4af37","#ff7043","#42a5f5","#66bb6a","#ab47bc","#ffa726"]
@@ -227,7 +230,6 @@ document.getElementById("saveTransaction").onclick = () => {
     updateCharts();
 };
 
-
 // --- NAVIGATION MOIS ---
 document.getElementById("prevMonth").onclick = () => {
     currentMonth--;
@@ -253,20 +255,13 @@ document.getElementById("nextMonth").onclick = () => {
     updateCharts();
 };
 
-// --- INIT ---
-populateCategories();
-updatePeriodDisplay();
-updateSolde();
-renderTransactions();
-updateCharts();
-
+// --- SWIPE TO DELETE ---
 function enableSwipeToDelete() {
     const cards = document.querySelectorAll(".swipe-card");
 
     cards.forEach(card => {
         let startX = 0;
         let currentX = 0;
-        let swiped = false;
 
         const content = card.querySelector(".swipe-content");
         const del = card.querySelector(".swipe-delete");
@@ -289,22 +284,16 @@ function enableSwipeToDelete() {
             const diff = currentX - startX;
 
             if (diff < -60) {
-                // Swipe validé
                 content.style.transform = "translateX(-120px)";
                 del.style.transform = "translateX(0)";
-                swiped = true;
             } else {
-                // Retour
                 content.style.transform = "translateX(0)";
                 del.style.transform = "translateX(120px)";
-                swiped = false;
             }
         });
 
-        // Suppression si on clique sur le bouton rouge
         del.addEventListener("click", () => {
             const id = parseInt(card.getAttribute("data-id"), 10);
-
             const monthData = finances[currentYear][formatMonth(currentMonth)];
             monthData.transactions.splice(id, 1);
 
@@ -315,3 +304,10 @@ function enableSwipeToDelete() {
         });
     });
 }
+
+// --- INIT ---
+populateCategories();
+updatePeriodDisplay();
+updateSolde();
+renderTransactions();
+updateCharts();
