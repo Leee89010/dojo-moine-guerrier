@@ -102,39 +102,37 @@ function updateSolde() {
     el.style.color = solde >= 0 ? "#4caf50" : "#e53935";
 }
 
-// --- AFFICHAGE TRANSACTIONS ---
 function renderTransactions() {
     const container = document.getElementById("transactionsList");
     container.innerHTML = "";
 
     const list = getMonthTransactions();
 
-   list.forEach((t, index) => {
-
+    list.forEach((t, index) => {
         const card = document.createElement("div");
-        card.className = "transaction-card";
+        card.className = "transaction-card swipe-card";
+        card.setAttribute("data-id", index);
 
-      const icon = categoryIcons[t.categorie] || "💸";
+        const icon = categoryIcons[t.categorie] || "💸";
 
-card.classList.add("swipe-card");
-card.setAttribute("data-id", index);
+        card.innerHTML = `
+            <div class="swipe-content">
+                <div class="amount ${t.type === "revenu" ? "positive" : "negative"}">
+                    ${icon} ${t.type === "revenu" ? "+" : "-"}${t.montant} €
+                </div>
+                <div class="desc">${t.categorie || "?"} — ${t.description || ""}</div>
+                <div class="desc">${t.date || "?"}</div>
+            </div>
 
-card.innerHTML = `
-    <div class="swipe-content">
-        <div class="amount ${t.type === "revenu" ? "positive" : "negative"}">
-            ${icon} ${t.type === "revenu" ? "+" : "-"}${t.montant} €
-        </div>
-        <div class="desc">${t.categorie} — ${t.description || ""}</div>
-        <div class="desc">${t.date}</div>
-    </div>
+            <div class="swipe-delete">Supprimer</div>
+        `;
 
-    <div class="swipe-delete">Supprimer</div>
-`;
         container.appendChild(card);
     });
-    enableSwipeToDelete();
 
+    enableSwipeToDelete();
 }
+
 
 // --- GRAPHIQUES ---
 let donutChart, barChart;
