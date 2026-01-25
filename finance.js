@@ -10,7 +10,6 @@ function saveFinances(data) {
 let defaultCategories = [
     "Loyer",
     "Courses",
-    "Petite pipe mensuelle",
     "Électricité",
     "Internet",
     "Téléphone",
