@@ -6,68 +6,190 @@
     <title>Progression</title>
 
     <link rel="stylesheet" href="style.css">
-
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="page-progression">
 
-<h1 class="progression-title">📈 Progression journalière</h1>
+    <h1 class="progression-title">📈 Progression</h1>
+    <p class="progression-subtitle" id="periodLabel">Historique des derniers jours</p>
 
-<canvas id="progressionChart"></canvas>
+    <div class="progression-container">
+        <canvas id="progressionChart"></canvas>
 
-<div id="details" class="details"></div>
+        <div class="days-strip" id="daysStrip">
+            <!-- Pills jours générées en JS -->
+        </div>
 
-<!-- MENU BAS -->
-<div class="bottom-menu">
-    <a href="index.html">
-        <i>🧘</i>
-        Dojo
-    </a>
-    <a href="progression.html" class="active">
-        <i>📈</i>
-        Progression
-    </a>
-</div>
+        <div class="details-card" id="detailsCard">
+            <!-- Détails du jour sélectionné -->
+        </div>
+    </div>
+
+    <!-- MENU FLOTTANT -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html">
+                <span class="icon">🧘</span>
+                <span>Dojo</span>
+            </a>
+            <a href="progression.html" class="active">
+                <span class="icon">📈</span>
+                <span>Progression</span>
+            </a>
+        </div>
+    </div>
 
 <script>
-// Charger les données depuis localStorage
-const historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
+/* --- RÉCUPÉRATION DES DONNÉES --- */
+/* On suppose que tu stockeras plus tard stress, sommeil, sport dans un même historique.
+   Pour l'instant, on part de historiquePoids + on prépare la structure. */
 
-// Préparer les données pour le graphique
-const labels = historique.map(e => e.date);
-const data = historique.map(e => e.poids);
+let historique = JSON.parse(localStorage.getItem("historiquePoids")) || [];
+
+// On enrichit la structure pour prévoir stress/sommeil/sport plus tard
+historique = historique.map((entry, index) => ({
+    jour: index + 1,
+    date: entry.date,
+    poids: parseFloat(entry.poids),
+    stress: entry.stress ?? null,
+    sommeil: entry.sommeil ?? null,
+    sport: entry.sport ?? null
+}));
+
+if (historique.length === 0) {
+    document.getElementById("periodLabel").innerText = "Aucune donnée pour l’instant. Valide un rituel dans le Dojo.";
+}
+
+/* --- GRAPH MULTI-CURVES --- */
+const labels = historique.map(e => `Jour ${e.jour}`);
+const poidsData = historique.map(e => e.poids);
+const stressData = historique.map(e => e.stress ?? null);
+const sommeilData = historique.map(e => e.sommeil ?? null);
+const sportData = historique.map(e => e.sport ?? null);
 
 const ctx = document.getElementById('progressionChart');
 
-new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: {
         labels: labels,
-        datasets: [{
-            label: "Poids (kg)",
-            data: data,
-            borderColor: "#d4af37",
-            borderWidth: 3,
-            tension: 0.3,
-            pointRadius: 5,
-            pointBackgroundColor: "#d4af37"
-        }]
+        datasets: [
+            {
+                label: "Poids (kg)",
+                data: poidsData,
+                borderColor: "#d4af37",
+                backgroundColor: "rgba(212,175,55,0.15)",
+                borderWidth: 3,
+                tension: 0.35,
+                pointRadius: 4,
+                pointBackgroundColor: "#d4af37"
+            },
+            {
+                label: "Stress (/10)",
+                data: stressData,
+                borderColor: "#ff6b6b",
+                backgroundColor: "rgba(255,107,107,0.12)",
+                borderWidth: 2,
+                tension: 0.35,
+                pointRadius: 3,
+                pointBackgroundColor: "#ff6b6b"
+            },
+            {
+                label: "Sommeil (/10)",
+                data: sommeilData,
+                borderColor: "#4da3ff",
+                backgroundColor: "rgba(77,163,255,0.12)",
+                borderWidth: 2,
+                tension: 0.35,
+                pointRadius: 3,
+                pointBackgroundColor: "#4da3ff"
+            },
+            {
+                label: "Sport (min)",
+                data: sportData,
+                borderColor: "#4cd964",
+                backgroundColor: "rgba(76,217,100,0.12)",
+                borderWidth: 2,
+                tension: 0.35,
+                pointRadius: 3,
+                pointBackgroundColor: "#4cd964"
+            }
+        ]
     },
     options: {
         responsive: true,
+        plugins: {
+            legend: {
+                labels: {
+                    color: "#ddd",
+                    font: { size: 12 }
+                }
+            }
+        },
         scales: {
-            y: { beginAtZero: false }
+            x: {
+                ticks: { color: "#aaa" },
+                grid: { color: "rgba(255,255,255,0.05)" }
+            },
+            y: {
+                ticks: { color: "#aaa" },
+                grid: { color: "rgba(255,255,255,0.05)" }
+            }
         }
     }
 });
 
-// Affichage des détails
-let html = "<h2>Détails</h2>";
-historique.forEach(e => {
-    html += `<p><b>${e.date}</b> : ${e.poids} kg</p>`;
-});
-document.getElementById("details").innerHTML = html;
+/* --- TIMELINE JOURS + DÉTAILS --- */
+const daysStrip = document.getElementById("daysStrip");
+const detailsCard = document.getElementById("detailsCard");
+
+function renderDays() {
+    daysStrip.innerHTML = "";
+    historique.forEach((entry, index) => {
+        const pill = document.createElement("div");
+        pill.className = "day-pill" + (index === historique.length - 1 ? " active" : "");
+        pill.dataset.index = index;
+        pill.innerText = `Jour ${entry.jour} (${entry.date})`;
+        pill.addEventListener("click", () => selectDay(index));
+        daysStrip.appendChild(pill);
+    });
+
+    if (historique.length > 0) {
+        selectDay(historique.length - 1);
+    } else {
+        detailsCard.innerHTML = "<p>Aucune donnée à afficher.</p>";
+    }
+}
+
+function selectDay(index) {
+    document.querySelectorAll(".day-pill").forEach(p => p.classList.remove("active"));
+    const activePill = document.querySelector(`.day-pill[data-index="${index}"]`);
+    if (activePill) activePill.classList.add("active");
+
+    const e = historique[index];
+
+    detailsCard.innerHTML = `
+        <h2>Jour ${e.jour} — ${e.date}</h2>
+        <div class="detail-row">
+            <span class="detail-label">Poids</span>
+            <span class="detail-value">${e.poids ? e.poids + " kg" : "-"}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Stress</span>
+            <span class="detail-value">${e.stress ?? "-"}/10</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Sommeil</span>
+            <span class="detail-value">${e.sommeil ?? "-"}/10</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Sport</span>
+            <span class="detail-value">${e.sport ?? "-"}</span>
+        </div>
+    `;
+}
+
+renderDays();
 </script>
 
 </body>
