@@ -31,67 +31,147 @@
     <!-- HEADER -->
     <header class="dojo-header">
         <div>
-            <div class="dojo-title">Rituel du Matin</div>
-            <div class="dojo-subtitle">Commence par la discipline</div>
+            <div class="dojo-title">🔥 Rituel du Matin</div>
+            <div class="dojo-subtitle">Le pouvoir du commencement</div>
         </div>
         <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
     </header>
 
     <main class="dojo-main">
 
+        <!-- Hero Section -->
+        <div class="rituel-hero">
+            <div class="hero-icon">🌅</div>
+            <h2 class="hero-title">Commence ta journée en guerrier</h2>
+            <p class="hero-subtitle">Chaque matin est une renaissance</p>
+        </div>
+
+        <!-- Section Données -->
         <section class="dojo-section">
-            <h2 class="dojo-section-title">Données du jour</h2>
+            <div class="section-header">
+                <h2 class="section-title-premium">📊 Données du jour</h2>
+                <div class="section-line"></div>
+            </div>
 
-            <div class="dojo-card">
-                <label>Poids (kg)</label>
-                <input type="number" id="poids" step="0.1" placeholder="Ex: 75.5">
+            <div class="premium-card">
+                <div class="input-group-premium">
+                    <label class="premium-label">
+                        <span class="label-icon">⚖️</span>
+                        <span>Poids (kg)</span>
+                    </label>
+                    <input type="number" id="poids" step="0.1" placeholder="75.5" class="premium-input">
+                </div>
 
-                <div class="row">
-                    <div>
-                        <label>Stress (0—10)</label>
-                        <input type="number" id="stress" min="0" max="10" value="5">
+                <div class="input-row">
+                    <div class="input-group-premium half">
+                        <label class="premium-label">
+                            <span class="label-icon">😰</span>
+                            <span>Stress</span>
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" id="stress" min="0" max="10" value="5" class="premium-slider">
+                            <div class="slider-value" id="stressValue">5/10</div>
+                        </div>
                     </div>
-                    <div>
-                        <label>Sommeil (0—10)</label>
-                        <input type="number" id="sommeil" min="0" max="10" value="7">
+                    <div class="input-group-premium half">
+                        <label class="premium-label">
+                            <span class="label-icon">😴</span>
+                            <span>Sommeil</span>
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" id="sommeil" min="0" max="10" value="7" class="premium-slider">
+                            <div class="slider-value" id="sommeilValue">7/10</div>
+                        </div>
                     </div>
                 </div>
 
-                <label>Intention du jour</label>
-                <input type="text" id="intention" placeholder="Ex : Aujourd'hui je suis discipliné.">
+                <div class="input-group-premium">
+                    <label class="premium-label">
+                        <span class="label-icon">💭</span>
+                        <span>Intention du jour</span>
+                    </label>
+                    <input type="text" id="intention" placeholder="Ex : Aujourd'hui je suis discipliné" class="premium-input">
+                </div>
 
-                <label>Tâche du jour</label>
-                <input type="text" id="tache" placeholder="Ex : Faire ma séance de muscu.">
+                <div class="input-group-premium">
+                    <label class="premium-label">
+                        <span class="label-icon">🎯</span>
+                        <span>Tâche prioritaire</span>
+                    </label>
+                    <input type="text" id="tache" placeholder="Ex : Faire ma séance de muscu" class="premium-input">
+                </div>
             </div>
         </section>
 
+        <!-- Section Routine -->
         <section class="dojo-section">
-            <h2 class="dojo-section-title">Routine guidée</h2>
+            <div class="section-header">
+                <h2 class="section-title-premium">⏱️ Routine guidée</h2>
+                <div class="section-line"></div>
+            </div>
 
-            <div class="dojo-card small-text">
-                <p><b>Minute 1 :</b> Pesée, respiration 4-2-6 (4 cycles), verre d'eau.</p>
-                <p><b>Minute 2 :</b> Intention + tâche du jour.</p>
-                <p><b>Minute 3 :</b> Habitudes + anti-craving (respiration + 10 squats + gainage 10 sec).</p>
+            <div class="routine-timeline">
+                <div class="routine-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Minute 1 - Ancrage</h3>
+                        <p class="step-desc">Pesée • Respiration 4-2-6 (4 cycles) • Verre d'eau</p>
+                    </div>
+                </div>
+                <div class="routine-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Minute 2 - Direction</h3>
+                        <p class="step-desc">Intention du jour • Tâche prioritaire • Visualisation</p>
+                    </div>
+                </div>
+                <div class="routine-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Minute 3 - Action</h3>
+                        <p class="step-desc">10 squats • Gainage 10 sec • Respiration finale</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <button class="primary" id="validerRituelBtn">Valider le rituel</button>
+        <button class="btn-premium-validate" id="validerRituelBtn">
+            <span class="btn-icon">✨</span>
+            <span>Valider le rituel</span>
+            <span class="btn-shine"></span>
+        </button>
 
-        <div id="rituelStatus" style="margin-top: 10px; text-align: center; color: #d4af37;"></div>
+        <div id="rituelStatus" class="status-message"></div>
 
     </main>
 
     <!-- MENU -->
     <div class="bottom-menu-wrapper">
         <div class="bottom-menu-pill">
-            <a href="index.html"><span class="icon">🏯</span>Accueil</a>
+            <a href="index.html"><span class="icon">🏯</span>Dojo</a>
             <a href="progression.html"><span class="icon">📈</span>Progression</a>
             <a href="finance.html"><span class="icon">💸</span>Finances</a>
         </div>
     </div>
 
     <script>
-        // Fonction pour générer la clé du jour
+        // Sliders interactifs
+        const stressInput = document.getElementById('stress');
+        const sommeilInput = document.getElementById('sommeil');
+        const stressValue = document.getElementById('stressValue');
+        const sommeilValue = document.getElementById('sommeilValue');
+
+        stressInput.addEventListener('input', (e) => {
+            stressValue.textContent = e.target.value + '/10';
+            stressValue.style.color = e.target.value >= 7 ? '#ff6b6b' : (e.target.value >= 4 ? '#ffa726' : '#4caf50');
+        });
+
+        sommeilInput.addEventListener('input', (e) => {
+            sommeilValue.textContent = e.target.value + '/10';
+            sommeilValue.style.color = e.target.value >= 7 ? '#4caf50' : (e.target.value < 5 ? '#ff6b6b' : '#ffa726');
+        });
+
+        // Fonctions utilitaires
         function todayKey() {
             const now = new Date();
             const year = now.getFullYear();
@@ -116,20 +196,22 @@
         const key = todayKey();
         const statusEl = document.getElementById("rituelStatus");
 
-        // Vérifier si le rituel a déjà été validé aujourd'hui
+        // Vérifier si déjà validé
         const xpGained = getJSON("xpGained", {});
         
         if (xpGained[key]?.rituel) {
-            statusEl.innerHTML = "✅ Rituel déjà validé aujourd'hui ! (+10 XP déjà accordés)";
-            statusEl.style.color = "#4caf50";
+            statusEl.innerHTML = "✅ Rituel déjà validé aujourd'hui !";
+            statusEl.style.opacity = "1";
         }
 
-        // Pré-remplissage si déjà saisi
+        // Pré-remplissage
         const corps = getJSON("corps", {});
         if (corps[key]) {
             document.getElementById("poids").value = corps[key].poids || "";
             document.getElementById("stress").value = corps[key].stress || 5;
             document.getElementById("sommeil").value = corps[key].sommeil || 7;
+            stressValue.textContent = (corps[key].stress || 5) + '/10';
+            sommeilValue.textContent = (corps[key].sommeil || 7) + '/10';
         }
 
         const meta = getJSON("metaJour", {});
@@ -138,9 +220,8 @@
             document.getElementById("tache").value = meta[key].tache || "";
         }
 
-        // Validation du rituel
+        // Validation
         document.getElementById("validerRituelBtn").addEventListener("click", () => {
-
             const poids = document.getElementById("poids").value;
             const stress = document.getElementById("stress").value;
             const sommeil = document.getElementById("sommeil").value;
@@ -148,32 +229,31 @@
             const tache = document.getElementById("tache").value;
 
             if (!poids || !stress || !intention) {
-                alert("❌ Remplis au moins poids, stress et intention.");
+                statusEl.innerHTML = "❌ Remplis au moins poids, stress et intention";
+                statusEl.style.opacity = "1";
+                statusEl.style.color = "#ff6b6b";
                 return;
             }
 
-            // Vérifier si déjà validé
             const xpGained = getJSON("xpGained", {});
             
             if (xpGained[key]?.rituel) {
-                alert("⚠️ Tu as déjà validé ce rituel aujourd'hui !\nPas d'XP supplémentaire pour éviter la triche 😉");
+                statusEl.innerHTML = "⚠️ Rituel déjà validé aujourd'hui !";
+                statusEl.style.opacity = "1";
+                statusEl.style.color = "#ffa726";
                 return;
             }
 
-            // Corps
+            // Sauvegarder
             const corps = getJSON("corps", {});
             corps[key] = { poids, stress, sommeil };
             setJSON("corps", corps);
 
-            // Meta
             const meta = getJSON("metaJour", {});
             meta[key] = { intention, tache };
             setJSON("metaJour", meta);
 
-            // Historique poids (avec stress et sommeil pour progression)
             const hist = getJSON("historiquePoids", []);
-            
-            // Vérifier si une entrée existe déjà pour aujourd'hui
             const existingIndex = hist.findIndex(h => h.date === key);
             
             const newEntry = { 
@@ -184,16 +264,13 @@
             };
             
             if (existingIndex >= 0) {
-                // Mise à jour de l'entrée existante
                 hist[existingIndex] = newEntry;
             } else {
-                // Nouvelle entrée
                 hist.push(newEntry);
             }
             
             setJSON("historiquePoids", hist);
 
-            // XP (une seule fois par jour)
             if (!xpGained[key]) {
                 xpGained[key] = {};
             }
@@ -205,8 +282,13 @@
             xp += 10;
             localStorage.setItem("xp", xp.toString());
 
-            alert("✅ Rituel enregistré ! +10 XP\n\nTon intention : " + intention);
-            window.location.href = "index.html";
+            statusEl.innerHTML = "✨ Rituel validé ! +10 XP";
+            statusEl.style.opacity = "1";
+            statusEl.style.color = "#4caf50";
+
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 1500);
         });
     </script>
 
