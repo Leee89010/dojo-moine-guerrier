@@ -752,7 +752,7 @@ document.getElementById("enable-notifs").addEventListener("click", async () => {
     console.log("✅ Permission accordée");
 
     try {
-        const token = await messaging.getToken({ vapidKey:BDcCdEu-qubVPVMvyJpaXSupQCHfAryaOoihi6Xqi84O4rkOmyYq4gICs9ZLTHB3IgfaXO0c96MoumqmQHCw_n4 });
+        const token = await messaging.getToken({ vapidKey: vapidKey });
 
         if (!token) {
             console.log("❌ Aucun token généré");
