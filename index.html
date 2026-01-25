@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Dojo du Moine Guerrier</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --bg: #0b0b0b;
+    --card: #151515;
+    --accent: #d4af37;
+    --text: #f5f5f5;
+    --muted: #888;
+    --danger: #c0392b;
+    --success: #27ae60;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: radial-gradient(circle at top, #222 0, #000 55%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 16px;
+}
+
+h1, h2, h3 {
+    font-weight: 300;
+    text-align: center;
+    margin: 10px 0;
+}
+
+h1 {
+    letter-spacing: 2px;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    border: 1px solid #222;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background: #1f1f1f;
+    color: var(--text);
+    border: 1px solid #333;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+button:hover {
+    background: #262626;
+    border-color: var(--accent);
+}
+
+button.primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+    border-color: var(--accent);
+}
+
+button.primary:hover {
+    filter: brightness(1.1);
+}
+
+.section {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+label {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0 12px;
+    background: #111;
+    color: var(--text);
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+.small {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 11px;
+    margin: 2px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #222;
+    font-size: 11px;
+    margin-right: 4px;
+}
+
+.row {
+    display: flex;
+    gap: 8px;
+}
+
+.row > div {
+    flex: 1;
+}
+
+.center {
+    text-align: center;
+}
+
+.xp {
+    font-size: 13px;
+    color: var(--accent);
+    text-align: center;
+    margin-top: 4px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #222;
+    margin: 12px 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <h1>🧘‍♂️ Dojo du Moine Guerrier</h1>
+
+    <!-- RITUEL DU MATIN -->
+    <div id="rituel" class="section visible card">
+        <h2>⚔️ Rituel du Matin</h2>
+        <p class="small center">“Commence par la discipline. Le reste attendra.”</p>
+
+        <label>Poids du jour (kg)</label>
+        <input type="number" id="poids" step="0.1">
+
+        <div class="row">
+            <div>
+                <label>Stress (0–10)</label>
+                <input type="number" id="stress" min="0" max="10">
+            </div>
+            <div>
+                <label>Sommeil (0–10)</label>
+                <input type="number" id="sommeil" min="0" max="10">
+            </div>
+        </div>
+
+        <label>Intention du jour</label>
+        <input type="text" id="intention" placeholder="Ex : Aujourd’hui je suis discipliné.">
+
+        <label>Tâche du jour (1 seule)</label>
+        <input type="text" id="tache" placeholder="Ex : Faire ma séance de muscu.">
+
+        <hr>
+
+        <p class="small"><b>Minute 1 :</b> Pesée, respiration 4-2-6 (4 cycles), verre d’eau.</p>
+        <p class="small"><b>Minute 2 :</b> Intention + tâche du jour.</p>
+        <p class="small"><b>Minute 3 :</b> Habitudes + anti-craving (respiration + 10 squats + gainage 10 sec).</p>
+
+        <button class="primary" onclick="validerRituel()">Valider le rituel</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="section card">
+        <h2>📊 Tableau de Bord</h2>
+        <p class="small center">“Voici ta Voie aujourd’hui. Exécute.”</p>
+
+        <div class="card">
+            <h3>🥋 Séance du jour</h3>
+            <p id="seanceDuJour">Aujourd’hui : définis ta séance.</p>
+            <button onclick="definirSeance()">Définir / modifier la séance</button>
+        </div>
+
+        <div class="card">
+            <h3>⚖️ Poids</h3>
+            <p id="poidsDisplay">Poids du jour : -</p>
+            <p id="objectifDisplay" class="small">Objectif : 75 kg</p>
+        </div>
+
+        <div class="card">
+            <h3>🧠 Mental</h3>
+            <p id="stressDisplay">Stress : -</p>
+            <p id="intentionDisplay">Intention : -</p>
+        </div>
+
+        <div class="card">
+            <h3>🧱 Discipline & XP</h3>
+            <p id="xpDisplay" class="xp">XP total : 0</p>
+            <button onclick="showSection('discipline')">Gérer mes habitudes</button>
+        </div>
+
+        <button onclick="showSection('corps')">⚖️ Corps</button>
+        <button onclick="showSection('sport')">🥊 Sport</button>
+        <button onclick="showSection('addictions')">🚬 Addictions</button>
+        <button onclick="showSection('mental')">🧠 Mental</button>
+        <button onclick="showSection('badges')">🏆 Niveaux & Badges</button>
+    </div>
+
+    <!-- CORPS -->
+    <div id="corps" class="section card">
+        <h2>⚖️ Corps & Composition</h2>
+        <p id="historiquePoids" class="small"></p>
+        <button onclick="showSection('dashboard')">⬅️ Retour</button>
+    </div>
+
+    <!-- SPORT -->
+    <div id="sport" class="section card">
+        <h2>🥊 Entraînement</h2>
+
+        <label>Type de séance</label>
+        <select id="typeSeance">
+            <option value="Kickboxing">Kickboxing</option>
+            <option value="Muscu">Musculation</option>
+            <option value="Boxe anglaise">Boxe anglaise</option>
+            <option value="Cardio">Cardio</option>
+            <option value="Repos actif">Repos actif</option>
+        </select>
+
+        <div class="row">
+            <div>
+                <label>Durée (min)</label>
+                <input type="number" id="dureeSeance">
+            </div>
+            <div>
+                <label>Intensité (1–10)</label>
+                <input type="number" id="intensiteSeance" min="1" max="10">
+            </div>
+        </div>
+
+        <label>Objectif de la séance</label>
+        <input type="text" id="objectifSeance" placeholder="Ex : puissance, technique, cardio...">
+
+        <button class="primary" onclick="validerSeance()">Valider la séance (XP)</button>
+
+        <p id="historiqueSeances" class="small"></p>
+
+        <button onclick="showSection('dashboard')">⬅️ Retour</button>
+    </div>
+
+    <!-- ADDICTIONS -->
+    <div id="addictions" class="section card">
+        <h2>🚬 Addictions & Cravings</h2>
+
+        <div class="row">
+            <div>
+                <label>Joints (nombre)</label>
+                <input type="number" id="joints" min="0">
+            </div>
+            <div>
+                <label>Cigarettes (nombre)</label>
+                <input type="number" id="cigarettes" min="0">
+            </div>
+        </div>
+
+        <label>Heure de la première consommation</label>
+        <input type="time" id="heurePremiere">
+
+        <label>Déclencheur principal</label>
+        <select id="declencheur">
+            <option value="stress">Stress</option>
+            <option value="ennui">Ennui</option>
+            <option value="social">Social</option>
+            <option value="routine">Routine</option>
+        </select>
+
+        <label>Craving (0–10)</label>
+        <input type="number" id="craving" min="0" max="10">
+
+        <button class="primary" onclick="validerAddictions()">Valider la journée (XP)</button>
+
+        <p id="resumeAddictions" class="small"></p>
+
+        <button onclick="showSection('dashboard')">⬅️ Retour</button>
+    </div>
+
+    <!-- DISCIPLINE -->
+    <div id="discipline" class="section card">
+        <h2>🧱 Discipline & Habitudes</h2>
+
+        <p class="small">Coche ce que tu as fait aujourd’hui :</p>
+
+        <label><input type="checkbox" id="hHydratation"> Hydratation</label><br>
+        <label><input type="checkbox" id="hMobilite"> 10 min de mobilité</label><br>
+        <label><input type="checkbox" id="hPasMatin"> Pas de cigarette/joint avant midi</label><br>
+        <label><input type="checkbox" id="hPasGrignotage"> Pas de grignotage</label><br>
+        <label><input type="checkbox" id="hTache"> Tâche du jour complétée</label><br>
+
+        <button class="primary" onclick="validerDiscipline()">Valider discipline (XP)</button>
+
+        <p id="scoreDiscipline" class="xp"></p>
+
+        <button onclick="showSection('dashboard')">⬅️ Retour</button>
+    </div>
+
+    <!-- MENTAL -->
+    <div id="mental" class="section card">
+        <h2>🧠 Mental</h2>
+        <p id="mentalSummary" class="small"></p>
+        <button onclick="showSection('dashboard')">⬅️ Retour</button>
+    </div>
+
+    <!-- BADGES -->
+    <div id="badges" class="section card">
+        <h2>🏆 Niveaux & Badges</h2>
+        <p class="small">Système simple : plus tu gagnes d’XP, plus tu montes.</p>
+        <p id="niveauGlobal" class="xp"></p>
+        <p id="listeBadges" class="small"></p>
+        <button onclick="showSection('dashboard')">⬅️ Retour</button>
+    </div>
+
+</div>
+
+<script>
+// --- UTILITAIRES ---
+function todayKey() {
+    const d = new Date();
+    return d.toISOString().slice(0,10); // YYYY-MM-DD
+}
+
+function getJSON(key, def) {
+    try {
+        return JSON.parse(localStorage.getItem(key)) || def;
+    } catch {
+        return def;
+    }
+}
+
+function setJSON(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
+// --- RITUEL ---
+function validerRituel() {
+    const poids = document.getElementById("poids").value;
+    const stress = document.getElementById("stress").value;
+    const sommeil = document.getElementById("sommeil").value;
+    const intention = document.getElementById("intention").value;
+    const tache = document.getElementById("tache").value;
+
+    if (!poids || !stress || !intention) {
+        alert("Tu veux être discipliné ? Alors remplis au moins poids, stress et intention.");
+        return;
+    }
+
+    const key = todayKey();
+    const corps = getJSON("corps", {});
+    corps[key] = { poids, stress, sommeil };
+    setJSON("corps", corps);
+
+    const meta = getJSON("metaJour", {});
+    meta[key] = meta[key] || {};
+    meta[key].intention = intention;
+    meta[key].tache = tache;
+    setJSON("metaJour", meta);
+
+    // XP rituel
+    let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+    xp += 10;
+    localStorage.setItem("xp", xp.toString());
+
+    document.getElementById("rituel").classList.remove("visible");
+    document.getElementById("dashboard").classList.add("visible");
+    afficherDashboard();
+}
+
+// --- DASHBOARD ---
+function afficherDashboard() {
+    const key = todayKey();
+    const corps = getJSON("corps", {});
+    const meta = getJSON("metaJour", {});
+    const xp = parseInt(localStorage.getItem("xp") || "0", 10);
+
+    if (corps[key]) {
+        document.getElementById("poidsDisplay").innerText =
+            "Poids du jour : " + corps[key].poids + " kg";
+        document.getElementById("stressDisplay").innerText =
+            "Stress : " + (corps[key].stress || "-") + "/10";
+    } else {
+        document.getElementById("poidsDisplay").innerText = "Poids du jour : -";
+        document.getElementById("stressDisplay").innerText = "Stress : -";
+    }
+
+    if (meta[key]) {
+        document.getElementById("intentionDisplay").innerText =
+            "Intention : " + (meta[key].intention || "-");
+    } else {
+        document.getElementById("intentionDisplay").innerText = "Intention : -";
+    }
+
+    document.getElementById("xpDisplay").innerText = "XP total : " + xp;
+
+    // Séance du jour
+    const seances = getJSON("seances", {});
+    if (seances[key]) {
+        document.getElementById("seanceDuJour").innerText =
+            "Aujourd’hui : " + seances[key].type + " — " +
+            (seances[key].objectif || "sans objectif défini.");
+    }
+
+    // Mental summary
+    let mentalText = "";
+    if (corps[key]) {
+        const s = parseInt(corps[key].stress || "0", 10);
+        if (s >= 7) {
+            mentalText += "Stress élevé. Respire. Tu n’es pas ton stress.\n";
+        } else if (s >= 4) {
+            mentalText += "Stress modéré. Reste vigilant.\n";
+        } else {
+            mentalText += "Stress bas. Profite pour avancer fort.\n";
+        }
+    }
+    document.getElementById("mentalSummary").innerText = mentalText;
+
+    majBadges();
+}
+
+// --- NAVIGATION ---
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+    document.getElementById(id).classList.add('visible');
+}
+
+// --- SEANCE ---
+function definirSeance() {
+    showSection('sport');
+}
+
+function validerSeance() {
+    const type = document.getElementById("typeSeance").value;
+    const duree = document.getElementById("dureeSeance").value;
+    const intensite = document.getElementById("intensiteSeance").value;
+    const objectif = document.getElementById("objectifSeance").value;
+
+    const key = todayKey();
+    const seances = getJSON("seances", {});
+    seances[key] = { type, duree, intensite, objectif };
+    setJSON("seances", seances);
+
+    // XP sport
+    let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+    xp += 12;
+    localStorage.setItem("xp", xp.toString());
+
+    document.getElementById("historiqueSeances").innerText =
+        "Dernière séance : " + type + " — " + duree + " min — intensité " + intensite + "/10.";
+
+    alert("Séance validée. Tu avances.");
+    showSection('dashboard');
+    afficherDashboard();
+}
+
+// --- ADDICTIONS ---
+function validerAddictions() {
+    const joints = document.getElementById("joints").value || "0";
+    const cigarettes = document.getElementById("cigarettes").value || "0";
+    const heurePremiere = document.getElementById("heurePremiere").value || "-";
+    const declencheur = document.getElementById("declencheur").value;
+    const craving = document.getElementById("craving").value || "0";
+
+    const key = todayKey();
+    const add = getJSON("addictions", {});
+    add[key] = { joints, cigarettes, heurePremiere, declencheur, craving };
+    setJSON("addictions", add);
+
+    let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+    if (parseInt(joints) === 0 && parseInt(cigarettes) === 0) {
+        xp += 15; // journée clean
+    }
+    localStorage.setItem("xp", xp.toString());
+
+    document.getElementById("resumeAddictions").innerText =
+        "Joints : " + joints + " | Cigarettes : " + cigarettes +
+        " | Première : " + heurePremiere + " | Craving : " + craving + "/10.";
+
+    alert("Journée addictions enregistrée.");
+    afficherDashboard();
+}
+
+// --- DISCIPLINE ---
+function validerDiscipline() {
+    const h1 = document.getElementById("hHydratation").checked;
+    const h2 = document.getElementById("hMobilite").checked;
+    const h3 = document.getElementById("hPasMatin").checked;
+    const h4 = document.getElementById("hPasGrignotage").checked;
+    const h5 = document.getElementById("hTache").checked;
+
+    const score = [h1,h2,h3,h4,h5].filter(Boolean).length;
+
+    const key = todayKey();
+    const disc = getJSON("discipline", {});
+    disc[key] = { h1,h2,h3,h4,h5,score };
+    setJSON("discipline", disc);
+
+    let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+    xp += score * 2;
+    if (score === 5) xp += 10; // journée parfaite
+    localStorage.setItem("xp", xp.toString());
+
+    document.getElementById("scoreDiscipline").innerText =
+        "Score discipline : " + score + "/5";
+
+    alert("Discipline validée. Tu prouves ta rigueur.");
+    afficherDashboard();
+}
+
+// --- BADGES & NIVEAUX ---
+function majBadges() {
+    const xp = parseInt(localStorage.getItem("xp") || "0", 10);
+    let niveau = "Errant";
+    if (xp >= 500) niveau = "Moine Implacable";
+    else if (xp >= 300) niveau = "Moine Rigoureux";
+    else if (xp >= 150) niveau = "Moine en Formation";
+    else if (xp >= 50) niveau = "Apprenti de la Rigueur";
+
+    document.getElementById("niveauGlobal").innerText =
+        "Niveau Discipline : " + niveau + " (" + xp + " XP)";
+
+    const corps = getJSON("corps", {});
+    const poidsActuel = corps[todayKey()]?.poids;
+    let badges = [];
+
+    if (xp >= 50) badges.push("Premier Pas sur la Voie");
+    if (xp >= 150) badges.push("Semaine du Moine (ou équivalent XP)");
+    if (xp >= 300) badges.push("Rigueur Inflexible");
+
+    if (poidsActuel) {
+        const diff = 86.7 - parseFloat(poidsActuel); // point de départ approximatif
+        if (diff >= 2) badges.push("Allègement (–2 kg)");
+        if (diff >= 5) badges.push("Transformation (–5 kg)");
+        if (diff >= 10) badges.push("Renouveau (–10 kg)");
+        if (parseFloat(poidsActuel) <= 75) badges.push("Temple Parfait (75 kg atteint)");
+    }
+
+    document.getElementById("listeBadges").innerText =
+        badges.length ? "Badges obtenus : " + badges.join(" | ") :
+        "Aucun badge pour l’instant. Gagne-les.";
+}
+
+// --- INIT ---
+window.onload = function() {
+    // Si le rituel du jour a déjà été fait, on va direct au dashboard
+    const corps = getJSON("corps", {});
+    if (corps[todayKey()]) {
+        document.getElementById("rituel").classList.remove("visible");
+        document.getElementById("dashboard").classList.add("visible");
+        afficherDashboard();
+    }
+};
+</script>
+
+</body>
+</html>
