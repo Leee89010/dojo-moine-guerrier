@@ -52,7 +52,7 @@ function populateCategories() {
     defaultCategories.forEach(cat => {
         const option = document.createElement("option");
         option.value = cat;
-        option.textContent = cat;
+        option.textContent = (categoryIcons[cat] || "💸") + " " + cat;
         select.appendChild(option);
     });
 }
@@ -113,13 +113,16 @@ function renderTransactions() {
         const card = document.createElement("div");
         card.className = "transaction-card";
 
-        card.innerHTML = `
-            <div class="amount ${t.type === "revenu" ? "positive" : "negative"}">
-                ${t.type === "revenu" ? "+" : "-"}${t.montant} €
-            </div>
-            <div class="desc">${t.categorie} — ${t.description || ""}</div>
-            <div class="desc">${t.date}</div>
-        `;
+      const icon = categoryIcons[t.categorie] || "💸";
+
+card.innerHTML = `
+    <div class="amount ${t.type === "revenu" ? "positive" : "negative"}">
+        ${icon} ${t.type === "revenu" ? "+" : "-"}${t.montant} €
+    </div>
+    <div class="desc">${t.categorie} — ${t.description || ""}</div>
+    <div class="desc">${t.date}</div>
+`;
+
 
         container.appendChild(card);
     });
@@ -140,7 +143,7 @@ function updateCharts() {
     });
 
     const donutData = {
-        labels: Object.keys(categories),
+        labels: Object.keys(categories).map(cat => (categoryIcons[cat] || "💸") + " " + cat)
         datasets: [{
             data: Object.values(categories),
             backgroundColor: ["#d4af37","#ff7043","#42a5f5","#66bb6a","#ab47bc","#ffa726"]
