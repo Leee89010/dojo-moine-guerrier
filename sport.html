@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Séance du jour • Dojo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-dojo">
+
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+    </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">Séance du jour</div>
+            <div class="dojo-subtitle">Forge ton corps</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
+
+    <main class="dojo-main">
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Détails de la séance</h2>
+
+            <div class="dojo-card">
+
+                <label>Type de séance</label>
+                <select id="typeSeance">
+                    <option value="Kickboxing">Kickboxing</option>
+                    <option value="Musculation">Musculation</option>
+                    <option value="Boxe anglaise">Boxe anglaise</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="Repos actif">Repos actif</option>
+                </select>
+
+                <div class="row">
+                    <div>
+                        <label>Durée (min)</label>
+                        <input type="number" id="dureeSeance">
+                    </div>
+                    <div>
+                        <label>Intensité (1–10)</label>
+                        <input type="number" id="intensiteSeance" min="1" max="10">
+                    </div>
+                </div>
+
+                <label>Objectif de la séance</label>
+                <input type="text" id="objectifSeance" placeholder="Ex : puissance, technique, cardio...">
+
+            </div>
+        </section>
+
+        <button class="primary" id="validerSeanceBtn">Valider la séance</button>
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Historique</h2>
+            <div class="dojo-card small-text" id="historiqueSeances"></div>
+        </section>
+
+    </main>
+
+    <!-- MENU -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+    <script src="dojo.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const key = todayKey();
+
+        // Affichage historique
+        const seances = getJSON("seances", {});
+        if (seances[key]) {
+            document.getElementById("historiqueSeances").innerText =
+                "Dernière séance : " + seances[key].type + " — " +
+                seances[key].duree + " min — intensité " +
+                seances[key].intensite + "/10.";
+        }
+
+        // Validation
+        document.getElementById("validerSeanceBtn").addEventListener("click", () => {
+
+            const type = document.getElementById("typeSeance").value;
+            const duree = document.getElementById("dureeSeance").value;
+            const intensite = document.getElementById("intensiteSeance").value;
+            const objectif = document.getElementById("objectifSeance").value;
+
+            const seances = getJSON("seances", {});
+            seances[key] = { type, duree, intensite, objectif };
+            setJSON("seances", seances);
+
+            // XP
+            let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+            xp += 12;
+            localStorage.setItem("xp", xp.toString());
+
+            alert("Séance validée !");
+            window.location.href = "index.html";
+        });
+    </script>
+
+</body>
+</html>
