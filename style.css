@@ -32,3 +32,109 @@
     display: block;
     margin-bottom: 4px;
 }
+/* --- PAGE PROGRESSION BACKGROUND --- */
+body.page-progression {
+    margin: 0;
+    padding: 0 0 90px 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    background: radial-gradient(circle at top, #1b1b1f, #050507);
+    color: #f5f5f5;
+}
+
+/* --- TITRE PROGRESSION --- */
+.progression-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 20px 0 5px;
+}
+
+.progression-subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+/* --- CONTAINER PRINCIPAL --- */
+.progression-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px 20px;
+    box-sizing: border-box;
+}
+
+/* --- GRAPH --- */
+#progressionChart {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 20px;
+}
+
+/* --- TIMELINE JOURS --- */
+.days-strip {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px 0 5px;
+    margin-bottom: 10px;
+    scrollbar-width: none;
+}
+.days-strip::-webkit-scrollbar {
+    display: none;
+}
+
+.day-pill {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #ddd;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.day-pill.active {
+    background: rgba(212,175,55,0.18);
+    border-color: #d4af37;
+    color: #fdf5d0;
+}
+
+/* --- CARTE DÉTAILS --- */
+.details-card {
+    background: rgba(15,15,20,0.9);
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-top: 10px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.details-card h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.detail-label {
+    color: #aaa;
+}
+
+.detail-value {
+    font-weight: 600;
+}
+
+/* --- MENU FLOTTANT iOS PILL --- */
+.bottom-menu-wrapper {
+    position: fixed;
+    bottom: 18px;
+    left: 0;
+    width: 
