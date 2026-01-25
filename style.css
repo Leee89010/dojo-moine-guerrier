@@ -709,3 +709,47 @@ body.page-finances {
     transition: transform 0.25s ease;
     border-radius: 14px;
 }
+/* Tailles des cartes */
+.dojo-card-medium {
+    padding: 16px 18px;
+}
+
+.dojo-card-small {
+    padding: 14px 16px;
+}
+
+/* Inline inputs */
+.inline-input {
+    width: 80px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 6px;
+    color: var(--text);
+    text-align: right;
+}
+
+.inline-slider {
+    width: 120px;
+}
+
+/* Cartes cliquables */
+.clickable {
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.clickable:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* Popup premium */
+.popup-dojo {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 20px;
+    border-radius: 18px;
+    width: 90%;
+    max-width: 380px;
+    backdrop-filter: blur(14px);
+}
