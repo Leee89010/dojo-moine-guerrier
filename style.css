@@ -1004,3 +1004,448 @@ body.page-finances {
 .details-card {
     animation: fadeIn 0.4s ease;
 }
+/* ============================================================
+   PROGRESSION.HTML - STYLE ULTRA SEXY
+   À ajouter à la fin de votre style.css existant
+   ============================================================ */
+
+/* Container principal */
+.progression-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 100px;
+}
+
+/* Sélecteur de période */
+.period-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.period-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    padding: 10px 20px;
+    border-radius: 999px;
+    color: #aaa;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.period-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(212,175,55,0.15);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.period-btn:hover::before {
+    width: 200px;
+    height: 200px;
+}
+
+.period-btn:hover {
+    border-color: rgba(212,175,55,0.4);
+    transform: translateY(-2px);
+}
+
+.period-btn.active {
+    background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.15));
+    border-color: #d4af37;
+    color: #fdf5d0;
+    box-shadow: 0 4px 20px rgba(212,175,55,0.3);
+}
+
+/* Statistiques résumées */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, rgba(20,20,25,0.95), rgba(15,15,20,0.95));
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.stat-card:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px rgba(212,175,55,0.3));
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #d4af37;
+    margin: 8px 0;
+    text-shadow: 0 0 20px rgba(212,175,55,0.4);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+}
+
+/* Container du graphique */
+.chart-container {
+    background: linear-gradient(145deg, rgba(20,20,25,0.95), rgba(15,15,20,0.95));
+    border-radius: 24px;
+    padding: 30px 20px;
+    margin: 30px 0;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, rgba(212,175,55,0.1), transparent);
+    border-radius: 24px;
+    z-index: -1;
+}
+
+#progressionChart {
+    max-height: 350px;
+}
+
+/* Section timeline */
+.days-section {
+    margin: 35px 0 20px;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #d4af37;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Timeline jours SEXY */
+.days-strip {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 15px 5px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212,175,55,0.4) rgba(255,255,255,0.05);
+}
+
+.days-strip::-webkit-scrollbar {
+    height: 8px;
+}
+
+.days-strip::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    margin: 0 10px;
+}
+
+.days-strip::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, rgba(212,175,55,0.3), rgba(212,175,55,0.6));
+    border-radius: 10px;
+}
+
+.days-strip::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, rgba(212,175,55,0.5), rgba(212,175,55,0.8));
+}
+
+.day-pill {
+    flex: 0 0 auto;
+    min-width: 70px;
+    height: 70px;
+    padding: 8px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(30,30,35,0.9), rgba(20,20,25,0.9));
+    border: 2px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.day-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(212,175,55,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.day-pill:hover {
+    border-color: rgba(212,175,55,0.4);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.day-pill:hover::before {
+    opacity: 1;
+}
+
+.day-name {
+    font-size: 10px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.day-number {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ddd;
+}
+
+.day-pill.active {
+    background: linear-gradient(145deg, rgba(212,175,55,0.25), rgba(212,175,55,0.15));
+    border-color: #d4af37;
+    box-shadow: 0 8px 30px rgba(212,175,55,0.4);
+    transform: translateY(-4px) scale(1.08);
+}
+
+.day-pill.active .day-name {
+    color: #d4af37;
+}
+
+.day-pill.active .day-number {
+    color: #fdf5d0;
+    text-shadow: 0 0 20px rgba(212,175,55,0.5);
+}
+
+/* Carte détails ULTRA SEXY */
+.details-card {
+    background: linear-gradient(145deg, rgba(20,20,25,0.98), rgba(15,15,20,0.98));
+    border-radius: 24px;
+    padding: 30px;
+    margin-top: 25px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.details-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.detail-header h2 {
+    font-size: 22px;
+    margin: 0 0 25px;
+    color: #d4af37;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-shadow: 0 0 30px rgba(212,175,55,0.3);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.detail-item {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 18px;
+    border: 1.5px solid rgba(255,255,255,0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(212,175,55,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.detail-item:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.detail-item:hover::before {
+    opacity: 1;
+}
+
+.detail-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 15px rgba(212,175,55,0.3));
+}
+
+.detail-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.detail-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #f5f5f5;
+}
+
+/* Codes couleur pour valeurs */
+.detail-item.high .detail-value {
+    color: #ff6b6b;
+    text-shadow: 0 0 20px rgba(255,107,107,0.5);
+}
+
+.detail-item.medium .detail-value {
+    color: #ffa726;
+    text-shadow: 0 0 20px rgba(255,167,38,0.5);
+}
+
+.detail-item.good .detail-value {
+    color: #4caf50;
+    text-shadow: 0 0 20px rgba(76,175,80,0.5);
+}
+
+.detail-item.empty {
+    opacity: 0.4;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .stats-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .detail-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .chart-container {
+        padding: 20px 15px;
+    }
+    
+    .stat-card {
+        padding: 16px;
+    }
+    
+    .stat-icon {
+        font-size: 28px;
+    }
+    
+    .stat-value {
+        font-size: 20px;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.stat-card,
+.chart-container,
+.details-card {
+    animation: fadeInUp 0.6s ease;
+}
+
+.day-pill.active {
+    animation: pulse 2s infinite;
+}
+
+/* Effet glow sur hover */
+.stat-card:hover .stat-icon,
+.detail-item:hover .detail-icon {
+    animation: pulse 1s ease-in-out;
+}
