@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discipline • Dojo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-dojo">
+
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+    </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">Discipline</div>
+            <div class="dojo-subtitle">La Voie du Moine</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
+
+    <main class="dojo-main">
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Habitudes du jour</h2>
+
+            <div class="dojo-card">
+
+                <label><input type="checkbox" id="hHydratation"> Hydratation</label><br>
+                <label><input type="checkbox" id="hMobilite"> 10 min de mobilité</label><br>
+                <label><input type="checkbox" id="hPasMatin"> Pas de cigarette/joint avant midi</label><br>
+                <label><input type="checkbox" id="hPasGrignotage"> Pas de grignotage</label><br>
+                <label><input type="checkbox" id="hTache"> Tâche du jour complétée</label><br>
+
+            </div>
+        </section>
+
+        <button class="primary" id="validerDisciplineBtn">Valider discipline</button>
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Score</h2>
+            <div class="dojo-card small-text" id="scoreDiscipline"></div>
+        </section>
+
+    </main>
+
+    <!-- MENU -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+    <script src="dojo.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const key = todayKey();
+
+        // Pré-remplissage si déjà fait
+        const disc = getJSON("discipline", {});
+        if (disc[key]) {
+            const d = disc[key];
+            document.getElementById("hHydratation").checked = d.h1;
+            document.getElementById("hMobilite").checked = d.h2;
+            document.getElementById("hPasMatin").checked = d.h3;
+            document.getElementById("hPasGrignotage").checked = d.h4;
+            document.getElementById("hTache").checked = d.h5;
+
+            document.getElementById("scoreDiscipline").innerText =
+                "Score : " + d.score + "/5";
+        }
+
+        // Validation
+        document.getElementById("validerDisciplineBtn").addEventListener("click", () => {
+
+            const h1 = document.getElementById("hHydratation").checked;
+            const h2 = document.getElementById("hMobilite").checked;
+            const h3 = document.getElementById("hPasMatin").checked;
+            const h4 = document.getElementById("hPasGrignotage").checked;
+            const h5 = document.getElementById("hTache").checked;
+
+            const score = [h1,h2,h3,h4,h5].filter(Boolean).length;
+
+            const disc = getJSON("discipline", {});
+            disc[key] = { h1,h2,h3,h4,h5,score };
+            setJSON("discipline", disc);
+
+            // XP
+            let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+            xp += score * 2;
+            if (score === 5) xp += 10;
+            localStorage.setItem("xp", xp.toString());
+
+            alert("Discipline enregistrée !");
+            window.location.href = "index.html";
+        });
+    </script>
+
+</body>
+</html>
