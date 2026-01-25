@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rituel du Matin • Dojo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-dojo">
+
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+    </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">Rituel du Matin</div>
+            <div class="dojo-subtitle">Commence par la discipline</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
+
+    <main class="dojo-main">
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Données du jour</h2>
+
+            <div class="dojo-card">
+                <label>Poids (kg)</label>
+                <input type="number" id="poids" step="0.1">
+
+                <div class="row">
+                    <div>
+                        <label>Stress (0–10)</label>
+                        <input type="number" id="stress" min="0" max="10">
+                    </div>
+                    <div>
+                        <label>Sommeil (0–10)</label>
+                        <input type="number" id="sommeil" min="0" max="10">
+                    </div>
+                </div>
+
+                <label>Intention du jour</label>
+                <input type="text" id="intention" placeholder="Ex : Aujourd’hui je suis discipliné.">
+
+                <label>Tâche du jour</label>
+                <input type="text" id="tache" placeholder="Ex : Faire ma séance de muscu.">
+            </div>
+        </section>
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Routine guidée</h2>
+
+            <div class="dojo-card small-text">
+                <p><b>Minute 1 :</b> Pesée, respiration 4-2-6 (4 cycles), verre d’eau.</p>
+                <p><b>Minute 2 :</b> Intention + tâche du jour.</p>
+                <p><b>Minute 3 :</b> Habitudes + anti-craving (respiration + 10 squats + gainage 10 sec).</p>
+            </div>
+        </section>
+
+        <button class="primary" id="validerRituelBtn">Valider le rituel</button>
+
+    </main>
+
+    <!-- MENU -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+    <script src="dojo.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        // Validation du rituel
+        document.getElementById("validerRituelBtn").addEventListener("click", () => {
+
+            const poids = document.getElementById("poids").value;
+            const stress = document.getElementById("stress").value;
+            const sommeil = document.getElementById("sommeil").value;
+            const intention = document.getElementById("intention").value;
+            const tache = document.getElementById("tache").value;
+
+            if (!poids || !stress || !intention) {
+                alert("Remplis au moins poids, stress et intention.");
+                return;
+            }
+
+            const key = todayKey();
+
+            // Corps
+            const corps = getJSON("corps", {});
+            corps[key] = { poids, stress, sommeil };
+            setJSON("corps", corps);
+
+            // Meta
+            const meta = getJSON("metaJour", {});
+            meta[key] = { intention, tache };
+            setJSON("metaJour", meta);
+
+            // Historique poids
+            const hist = getJSON("historiquePoids", []);
+            hist.push({ date: key, poids, stress, sommeil });
+            setJSON("historiquePoids", hist);
+
+            // XP
+            let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+            xp += 10;
+            localStorage.setItem("xp", xp.toString());
+
+            alert("Rituel enregistré !");
+            window.location.href = "index.html";
+        });
+    </script>
+
+</body>
+</html>
