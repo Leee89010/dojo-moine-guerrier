@@ -6,9 +6,12 @@
     
 <script>
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    navigator.serviceWorker.register("/firebase-messaging-sw.js")
+    .then(() => console.log("SW Firebase OK"))
+    .catch(err => console.error("SW Firebase ERROR", err));
 }
 </script>
+
     
 <script>
 if ("serviceWorker" in navigator) {
