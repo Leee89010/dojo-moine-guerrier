@@ -723,7 +723,7 @@ const vapidKey = "BDcCdEu-qubVPVMvyJpaXSupQCHfAryaOoihi6Xqi84O4rkOmyYq4gICs9ZLTH
 // --- DEMANDE DE PERMISSION ---
 Notification.requestPermission().then(permission => {
     if (permission === "granted") {
-        messaging.getToken({ vapidKey: vapidKey }).then(token => {
+        messaging.getToken({ vapidKey: BDcCdEu-qubVPVMvyJpaXSupQCHfAryaOoihi6Xqi84O4rkOmyYq4gICs9ZLTHB3IgfaXO0c96MoumqmQHCw_n4 }).then(token => {
             console.log("🔥 Token FCM :", token);
             localStorage.setItem("fcmToken", token);
         });
@@ -757,7 +757,7 @@ document.getElementById("enable-notifs").addEventListener("click", async () => {
     console.log("✅ Permission accordée");
 
     try {
-        const token = await messaging.getToken({ vapidKey: vapidKey });
+        const token = await messaging.getToken({ vapidKey: BDcCdEu-qubVPVMvyJpaXSupQCHfAryaOoihi6Xqi84O4rkOmyYq4gICs9ZLTHB3IgfaXO0c96MoumqmQHCw_n4 });
 
         if (!token) {
             console.log("❌ Aucun token généré");
