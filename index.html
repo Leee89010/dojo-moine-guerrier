@@ -673,6 +673,51 @@ window.onload = function() {
     }
 };
 </script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging.js"></script>
+
+<script>
+// --- CONFIG FIREBASE ---
+const firebaseConfig = {
+  apiKey: "AIzaSyBl5qUBgdizyFhZsDDQOXM_JlFHtn7PZj0",
+  authDomain: "dojo-du-moine-guerrier.firebaseapp.com",
+  projectId: "dojo-du-moine-guerrier",
+  storageBucket: "dojo-du-moine-guerrier.firebasestorage.app",
+  messagingSenderId: "395565857197",
+  appId: "1:395565857197:web:dedd212901fcd4835e8924",
+  measurementId: "G-WYNDY2KDP5"
+};
+
+// --- INITIALISATION ---
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+// --- CLÉ VAPID (celle que tu as dans Firebase > Web Push) ---
+const vapidKey = "BDcCdEu-qubVPVMvyJpaXSupQCHfAryaOoihi6Xqi84O4rkOmyYq4gICs9ZLTHB3IgfaXO0c96MoumqmQHCw_n4";
+
+// --- DEMANDE DE PERMISSION ---
+Notification.requestPermission().then(permission => {
+    if (permission === "granted") {
+        messaging.getToken({ vapidKey: vapidKey }).then(token => {
+            console.log("🔥 Token FCM :", token);
+            localStorage.setItem("fcmToken", token);
+        });
+    } else {
+        console.log("Notifications refusées");
+    }
+});
+
+// --- RÉCEPTION DES NOTIFICATIONS EN PREMIER PLAN ---
+messaging.onMessage(payload => {
+    console.log("📩 Notification reçue :", payload);
+
+    new Notification(payload.notification.title, {
+        body: payload.notification.body,
+        icon: "icon-192.png"
+    });
+});
+</script>
 
 </body>
 </html>
