@@ -1,138 +1,310 @@
-/* --- MENU BAS --- */
-.bottom-menu {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 65px;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(10px);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid #333;
-    z-index: 9999;
+/* ============================================================
+   DOJO DU MOINE GUERRIER — STYLE PREMIUM 2025
+   Fusion : Zen sombre + Or + iOS glassmorphism
+   ============================================================ */
+
+/* ------------------------------
+   VARIABLES GLOBALES
+--------------------------------*/
+:root {
+    --bg1: #050507;
+    --bg2: #1b1b1f;
+    --card-bg: rgba(20,20,25,0.85);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #f5f5f5;
+    --muted: #aaa;
+    --accent: #d4af37;
+    --accent-soft: rgba(212,175,55,0.18);
+    --radius: 18px;
+    --blur: 14px;
+    --transition: 0.25s ease;
 }
 
-.bottom-menu a {
-    color: #aaa;
-    text-decoration: none;
-    font-size: 14px;
-    text-align: center;
-    flex: 1;
-}
-
-.bottom-menu a.active {
-    color: #d4af37;
-    font-weight: bold;
-}
-
-.bottom-menu i {
-    font-size: 22px;
-    display: block;
-    margin-bottom: 4px;
-}
-/* --- PAGE PROGRESSION BACKGROUND --- */
-body.page-progression {
+/* ------------------------------
+   RESET
+--------------------------------*/
+* {
     margin: 0;
-    padding: 0 0 90px 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-    background: radial-gradient(circle at top, #1b1b1f, #050507);
-    color: #f5f5f5;
-}
-
-/* --- TITRE PROGRESSION --- */
-.progression-title {
-    text-align: center;
-    font-size: 26px;
-    font-weight: 700;
-    margin: 20px 0 5px;
-}
-
-.progression-subtitle {
-    text-align: center;
-    font-size: 13px;
-    color: #aaa;
-    margin-bottom: 20px;
-}
-
-/* --- CONTAINER PRINCIPAL --- */
-.progression-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 16px 20px;
+    padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* --- GRAPH --- */
-#progressionChart {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto 20px;
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+    background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+    color: var(--text);
+    padding-bottom: 120px;
+    overflow-x: hidden;
 }
 
-/* --- TIMELINE JOURS --- */
-.days-strip {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px 0 5px;
-    margin-bottom: 10px;
-    scrollbar-width: none;
-}
-.days-strip::-webkit-scrollbar {
-    display: none;
+/* ------------------------------
+   FOND ANIMÉ (fumée + particules)
+--------------------------------*/
+#background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
 }
 
-.day-pill {
-    flex: 0 0 auto;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #ddd;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-.day-pill.active {
-    background: rgba(212,175,55,0.18);
-    border-color: #d4af37;
-    color: #fdf5d0;
+.smoke {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+    filter: blur(80px);
+    animation: smokeMove 18s infinite ease-in-out;
 }
 
-/* --- CARTE DÉTAILS --- */
-.details-card {
-    background: rgba(15,15,20,0.9);
-    border-radius: 18px;
-    padding: 16px 18px;
-    margin-top: 10px;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.05);
+.smoke:nth-child(1) { top: -100px; left: -150px; animation-delay: 0s; }
+.smoke:nth-child(2) { bottom: -150px; right: -100px; animation-delay: 4s; }
+.smoke:nth-child(3) { top: 40%; left: 20%; animation-delay: 8s; }
+
+@keyframes smokeMove {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(40px,-30px) scale(1.2); }
+    100% { transform: translate(0,0) scale(1); }
 }
 
-.details-card h2 {
-    font-size: 18px;
-    margin: 0 0 10px;
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: floatUp 6s infinite ease-in-out;
 }
 
-.detail-row {
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 0.3; }
+    50% { opacity: 0.9; }
+    100% { transform: translateY(-120px) scale(0.5); opacity: 0; }
+}
+
+/* ------------------------------
+   HEADER
+--------------------------------*/
+.dojo-header {
+    padding: 26px 20px 10px;
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
-    margin: 4px 0;
+    align-items: center;
 }
 
-.detail-label {
-    color: #aaa;
+.dojo-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(212,175,55,0.25);
 }
 
-.detail-value {
+.dojo-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.dojo-settings-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--card-border);
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.dojo-settings-btn:hover {
+    background: var(--accent-soft);
+    color: #000;
+}
+
+/* ------------------------------
+   SECTIONS
+--------------------------------*/
+.dojo-main {
+    padding: 0 18px 40px;
+}
+
+.dojo-section {
+    margin-top: 20px;
+}
+
+.dojo-section-title {
+    font-size: 18px;
     font-weight: 600;
+    margin-bottom: 12px;
 }
 
-/* --- MENU FLOTTANT iOS PILL --- */
+/* ------------------------------
+   CARTES
+--------------------------------*/
+.dojo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(var(--blur));
+    box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    transition: var(--transition);
+}
+
+.dojo-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 18px 50px rgba(212,175,55,0.15);
+}
+
+/* ------------------------------
+   INPUTS & SELECTS
+--------------------------------*/
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 14px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text);
+    transition: var(--transition);
+}
+
+input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(212,175,55,0.25);
+    outline: none;
+}
+
+/* ------------------------------
+   BOUTONS
+--------------------------------*/
+button.primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 10px 30px rgba(212,175,55,0.35);
+    transition: var(--transition);
+}
+
+button.primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 10px 40px rgba(212,175,55,0.45);
+}
+
+.dojo-chip {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.dojo-chip:hover {
+    background: var(--accent-soft);
+    color: #000;
+}
+
+/* ------------------------------
+   PROGRESS BARS
+--------------------------------*/
+.dojo-card-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.dojo-card-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+/* ------------------------------
+   RITUELS
+--------------------------------*/
+.ritual-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(var(--blur));
+    transition: var(--transition);
+}
+
+.ritual-card.completed {
+    border-color: var(--accent);
+    background: rgba(212,175,55,0.12);
+}
+
+.ritual-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.ritual-icon {
+    font-size: 22px;
+}
+
+.ritual-toggle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    background: transparent;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.ritual-card.completed .ritual-toggle {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+/* ------------------------------
+   POPUP RÉGLAGES
+--------------------------------*/
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.popup {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 20px;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 400px;
+    backdrop-filter: blur(var(--blur));
+}
+
+/* ------------------------------
+   MENU FLOTTANT iOS
+--------------------------------*/
 .bottom-menu-wrapper {
     position: fixed;
     bottom: 18px;
@@ -166,199 +338,22 @@ body.page-progression {
     gap: 6px;
     padding: 6px 10px;
     border-radius: 999px;
-    transition: all 0.2s ease;
-}
-
-.bottom-menu-pill a span.icon {
-    font-size: 18px;
+    transition: var(--transition);
 }
 
 .bottom-menu-pill a.active {
-    background: rgba(212,175,55,0.18);
+    background: var(--accent-soft);
     color: #fdf5d0;
 }
 
-/* --- PAGE FINANCES --- */
-body.page-finances {
-    background: radial-gradient(circle at top, #1b1b1f, #050507);
-    color: #f5f5f5;
-    padding-bottom: 120px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text";
+/* ------------------------------
+   ANIMATIONS
+--------------------------------*/
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.finance-header {
-    text-align: center;
-    padding: 20px 0 10px;
-}
-
-.finance-period {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin: 10px 0;
-}
-
-.finance-period button {
-    background: rgba(255,255,255,0.1);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    color: #fff;
-    cursor: pointer;
-}
-
-.finance-view-toggle {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.finance-view-toggle button {
-    background: rgba(255,255,255,0.1);
-    border: none;
-    padding: 6px 14px;
-    border-radius: 999px;
-    color: #aaa;
-    cursor: pointer;
-}
-
-.finance-view-toggle button.active {
-    background: rgba(212,175,55,0.18);
-    color: #fdf5d0;
-}
-
-.finance-solde {
-    margin-top: 10px;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.finance-container {
-    padding: 20px;
-}
-
-.section-title {
-    margin-top: 20px;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-/* --- TRANSACTIONS --- */
-.transaction-card {
-    background: rgba(255,255,255,0.05);
-    padding: 14px;
-    border-radius: 14px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
-.transaction-card .amount {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.transaction-card .amount.positive {
-    color: #4caf50;
-}
-
-.transaction-card .amount.negative {
-    color: #e53935;
-}
-
-.transaction-card .desc {
-    font-size: 14px;
-    color: #aaa;
-}
-
-/* --- BOUTON AJOUT --- */
-.add-transaction-btn {
-    position: fixed;
-    bottom: 100px;
-    right: 20px;
-    background: #d4af37;
-    color: #000;
-    border: none;
-    padding: 16px 20px;
-    border-radius: 999px;
-    font-size: 22px;
-    cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-/* --- POPUP --- */
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup {
-    background: #111;
-    padding: 20px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 400px;
-}
-
-.popup input, .popup select {
-    width: 100%;
-    padding: 10px;
-    margin: 6px 0 14px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-}
-
-.popup button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 10px;
-    background: #d4af37;
-    color: #000;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.close-popup {
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-}
-/* --- SWIPE TO DELETE --- */
-.swipe-card {
-    position: relative;
-    overflow: hidden;
-    touch-action: pan-y;
-}
-
-.swipe-content {
-    background: rgba(255,255,255,0.05);
-    padding: 14px;
-    border-radius: 14px;
-    transition: transform 0.25s ease;
-}
-
-.swipe-delete {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    width: 120px;
-    background: #e53935;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
-    transform: translateX(120px);
-    transition: transform 0.25s ease;
-    border-radius: 14px;
+.fade-in {
+    animation: fadeIn 0.4s ease;
 }
