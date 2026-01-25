@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental • Dojo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-dojo">
+
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+    </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">Mental</div>
+            <div class="dojo-subtitle">Clarté intérieure</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
+
+    <main class="dojo-main">
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Résumé du jour</h2>
+
+            <div class="dojo-card small-text" id="mentalSummary">
+                Chargement...
+            </div>
+        </section>
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Conseils du Moine</h2>
+
+            <div class="dojo-card small-text" id="mentalAdvice">
+                ...
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MENU -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+    <script src="dojo.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const key = todayKey();
+        const corps = getJSON("corps", {});
+        const meta = getJSON("metaJour", {});
+
+        let summary = "";
+        let advice = "";
+
+        if (corps[key]) {
+            const stress = parseInt(corps[key].stress || "0", 10);
+
+            if (stress >= 7) {
+                summary = "Stress élevé. Respire. Tu n’es pas ton stress.";
+                advice = "Fais 4 cycles de respiration 4-2-6. Bois un verre d’eau. Marche 5 minutes.";
+            } 
+            else if (stress >= 4) {
+                summary = "Stress modéré. Reste vigilant.";
+                advice = "Fais une pause de 2 minutes. Respiration lente. Reviens dans ton corps.";
+            } 
+            else {
+                summary = "Stress bas. Profite pour avancer fort.";
+                advice = "C’est le moment idéal pour accomplir ta tâche du jour.";
+            }
+        } else {
+            summary = "Aucune donnée pour aujourd’hui.";
+            advice = "Fais ton rituel du matin pour commencer la journée.";
+        }
+
+        document.getElementById("mentalSummary").innerText = summary;
+        document.getElementById("mentalAdvice").innerText = advice;
+    </script>
+
+</body>
+</html>
