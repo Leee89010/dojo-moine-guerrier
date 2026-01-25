@@ -1,24 +1,3 @@
-// --- ICÔNES PAR CATÉGORIE ---
-const categoryIcons = {
-    "Loyer": "🏠",
-    "Courses": "🛒",
-    "Électricité": "⚡",
-    "Internet": "🌐",
-    "Téléphone": "📱",
-    "Essence": "⛽",
-    "Transport": "🚌",
-    "Resto": "🍽️",
-    "Fast-food": "🍔",
-    "Cinéma": "🎬",
-    "Sorties": "🎉",
-    "Ubereats": "🛵",
-    "Shopping": "🛍️",
-    "Santé": "💊",
-    "Abonnements": "📦",
-    "Autres": "💸"
-};
-
-
 // --- STRUCTURE LOCALSTORAGE ---
 function getFinances() {
     return JSON.parse(localStorage.getItem("finances")) || {};
@@ -48,6 +27,27 @@ let defaultCategories = [
     "Abonnements",
     "Autres"
 ];
+
+// --- ICÔNES PAR CATÉGORIE ---
+const categoryIcons = {
+    "Loyer": "🏠",
+    "Courses": "🛒",
+    "Électricité": "⚡",
+    "Internet": "🌐",
+    "Téléphone": "📱",
+    "Essence": "⛽",
+    "Transport": "🚌",
+    "Resto": "🍽️",
+    "Fast-food": "🍔",
+    "Cinéma": "🎬",
+    "Sorties": "🎉",
+    "Ubereats": "🛵",
+    "Shopping": "🛍️",
+    "Santé": "💊",
+    "Abonnements": "📦",
+    "Autres": "💸"
+};
+
 
 function populateCategories() {
     const select = document.getElementById("categoryInput");
