@@ -9,3 +9,9 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
     e.respondWith(fetch(e.request));
 });
+messaging.onBackgroundMessage(payload => {
+    self.registration.showNotification(payload.notification.title, {
+        body: payload.notification.body,
+        icon: "icon-192.png"
+    });
+});
