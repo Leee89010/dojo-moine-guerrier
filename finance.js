@@ -109,7 +109,8 @@ function renderTransactions() {
 
     const list = getMonthTransactions();
 
-    list.forEach(t => {
+   list.forEach((t, index) => {
+
         const card = document.createElement("div");
         card.className = "transaction-card";
 
