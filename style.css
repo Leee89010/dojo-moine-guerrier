@@ -137,4 +137,44 @@ body.page-progression {
     position: fixed;
     bottom: 18px;
     left: 0;
-    width: 
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.bottom-menu-pill {
+    pointer-events: auto;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(18px);
+    border-radius: 999px;
+    padding: 10px 18px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+}
+
+.bottom-menu-pill a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+.bottom-menu-pill a span.icon {
+    font-size: 18px;
+}
+
+.bottom-menu-pill a.active {
+    background: rgba(212,175,55,0.18);
+    color: #fdf5d0;
+}
+
