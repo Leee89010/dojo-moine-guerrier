@@ -90,8 +90,6 @@
         </div>
     </div>
 
-    <script src="dojo.js"></script>
-
     <script>
         // Fonction pour générer la clé du jour
         function todayKey() {
@@ -178,22 +176,19 @@
             // Vérifier si une entrée existe déjà pour aujourd'hui
             const existingIndex = hist.findIndex(h => h.date === key);
             
+            const newEntry = { 
+                date: key, 
+                poids: parseFloat(poids),
+                stress: parseInt(stress),
+                sommeil: parseInt(sommeil)
+            };
+            
             if (existingIndex >= 0) {
                 // Mise à jour de l'entrée existante
-                hist[existingIndex] = { 
-                    date: key, 
-                    poids: parseFloat(poids),
-                    stress: parseInt(stress),
-                    sommeil: parseInt(sommeil)
-                };
+                hist[existingIndex] = newEntry;
             } else {
                 // Nouvelle entrée
-                hist.push({ 
-                    date: key, 
-                    poids: parseFloat(poids),
-                    stress: parseInt(stress),
-                    sommeil: parseInt(sommeil)
-                });
+                hist.push(newEntry);
             }
             
             setJSON("historiquePoids", hist);
