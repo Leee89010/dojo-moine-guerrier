@@ -332,3 +332,33 @@ body.page-finances {
     background: rgba(255,255,255,0.1);
     color: #fff;
 }
+/* --- SWIPE TO DELETE --- */
+.swipe-card {
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+.swipe-content {
+    background: rgba(255,255,255,0.05);
+    padding: 14px;
+    border-radius: 14px;
+    transition: transform 0.25s ease;
+}
+
+.swipe-delete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 120px;
+    background: #e53935;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    transform: translateX(120px);
+    transition: transform 0.25s ease;
+    border-radius: 14px;
+}
