@@ -236,6 +236,11 @@ hr {
 </style>
 </head>
 <body>
+<div class="slider-container" id="slider">
+
+    <!-- PAGE 1 : DOJO -->
+    <div class="slider-page page-dojo">
+            
     <button id="enable-notifs" style="
     background:#d4af37;
     color:black;
@@ -768,6 +773,68 @@ document.getElementById("enable-notifs").addEventListener("click", async () => {
 
     } catch (err) {
         console.error("Erreur lors de la génération du token :", err);
+    }
+});
+</script>
+            
+    </div> <!-- FIN PAGE 1 -->
+
+    <!-- PAGE 2 : PROGRESSION -->
+    <div class="slider-page page-progression">
+        <div class="progression-title">Progression journalière</div>
+        <canvas id="progressionChart"></canvas>
+    </div>
+
+</div> <!-- FIN SLIDER -->   
+        <!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// --- SLIDER ---
+let startX = 0;
+let currentPage = 0;
+const slider = document.getElementById("slider");
+
+document.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", e => {
+    let endX = e.changedTouches[0].clientX;
+
+    if (startX - endX > 50) slideTo(1);   // slide gauche → progression
+    if (endX - startX > 50) slideTo(0);   // slide droite → dojo
+});
+
+function slideTo(page) {
+    currentPage = page;
+    slider.style.transform = `translateX(-${page * 100}vw)`;
+}
+
+// --- GRAPHIQUE ---
+const ctx = document.getElementById('progressionChart');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+        datasets: [{
+            label: "Progression",
+            data: [2, 3, 4, 6, 7, 8, 10],
+            borderColor: "#d4af37",
+            borderWidth: 3,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: "#d4af37"
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true },
+            x: { grid: { display: false } }
+        },
+        plugins: { legend: { display: false } }
     }
 });
 </script>
