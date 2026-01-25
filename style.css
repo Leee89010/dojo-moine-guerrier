@@ -1,0 +1,34 @@
+/* --- MENU BAS --- */
+.bottom-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #333;
+    z-index: 9999;
+}
+
+.bottom-menu a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    flex: 1;
+}
+
+.bottom-menu a.active {
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.bottom-menu i {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 4px;
+}
