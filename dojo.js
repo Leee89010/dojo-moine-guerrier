@@ -309,3 +309,204 @@ const disc = getJSON("discipline", {});
 if (disc[key]) {
     document.getElementById("disciplineScoreLabel").textContent = disc[key].score + "/5";
 }
+/* ============================================================
+   DOJO — EXTENSIONS INTERACTIVES (Corps, Séance, Addictions,
+   Discipline, Mental, XP)
+   ============================================================ */
+
+const key = todayKey();
+
+/* ============================================================
+   1. ÉTAT DU CORPS — INLINE EDITING
+   ============================================================ */
+
+const corpsData = getJSON("corps", {});
+
+if (!corpsData[key]) {
+    corpsData[key] = { poids: "", stress: 0, sommeil: 0 };
+}
+
+document.getElementById("poidsInput").value = corpsData[key].poids || "";
+document.getElementById("stressInput").value = corpsData[key].stress || 0;
+document.getElementById("sommeilInput").value = corpsData[key].sommeil || 0;
+
+document.getElementById("saveCorpsBtn").addEventListener("click", () => {
+    corpsData[key].poids = document.getElementById("poidsInput").value;
+    corpsData[key].stress = document.getElementById("stressInput").value;
+    corpsData[key].sommeil = document.getElementById("sommeilInput").value;
+
+    saveJSON("corps", corpsData);
+
+    alert("État du corps mis à jour.");
+    renderMental();
+});
+
+/* ============================================================
+   2. POPUP GÉNÉRIQUE
+   ============================================================ */
+
+function openPopup(id) {
+    document.getElementById(id).style.display = "flex";
+}
+
+function closePopup(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+/* ============================================================
+   3. SÉANCE DU JOUR — POPUP
+   ============================================================ */
+
+const seances = getJSON("seances", {});
+
+if (!seances[key]) {
+    seances[key] = { type: "", duree: "", intensite: "" };
+}
+
+document.getElementById("seanceCard").addEventListener("click", () => {
+    document.getElementById("popupSeanceType").value = seances[key].type;
+    document.getElementById("popupSeanceDuree").value = seances[key].duree;
+    document.getElementById("popupSeanceIntensite").value = seances[key].intensite;
+    openPopup("popupSeance");
+});
+
+document.getElementById("saveSeanceBtn").addEventListener("click", () => {
+    seances[key].type = document.getElementById("popupSeanceType").value;
+    seances[key].duree = document.getElementById("popupSeanceDuree").value;
+    seances[key].intensite = document.getElementById("popupSeanceIntensite").value;
+
+    saveJSON("seances", seances);
+    renderSeance();
+    closePopup("popupSeance");
+});
+
+/* ============================================================
+   4. ADDICTIONS — POPUP
+   ============================================================ */
+
+const addictions = getJSON("addictions", {});
+
+if (!addictions[key]) {
+    addictions[key] = { joints: 0, cigarettes: 0, craving: 0 };
+}
+
+document.getElementById("addictionsCard").addEventListener("click", () => {
+    document.getElementById("popupJoints").value = addictions[key].joints;
+    document.getElementById("popupCigarettes").value = addictions[key].cigarettes;
+    document.getElementById("popupCraving").value = addictions[key].craving;
+    openPopup("popupAddictions");
+});
+
+document.getElementById("saveAddictionsBtn").addEventListener("click", () => {
+    addictions[key].joints = parseInt(document.getElementById("popupJoints").value);
+    addictions[key].cigarettes = parseInt(document.getElementById("popupCigarettes").value);
+    addictions[key].craving = parseInt(document.getElementById("popupCraving").value);
+
+    saveJSON("addictions", addictions);
+    renderAddictions();
+    closePopup("popupAddictions");
+});
+
+/* ============================================================
+   5. DISCIPLINE — POPUP
+   ============================================================ */
+
+const discipline = getJSON("discipline", {});
+
+if (!discipline[key]) {
+    discipline[key] = { score: 0 };
+}
+
+document.getElementById("disciplineCard").addEventListener("click", () => {
+    document.getElementById("popupDisciplineScore").value = discipline[key].score;
+    openPopup("popupDiscipline");
+});
+
+document.getElementById("saveDisciplineBtn").addEventListener("click", () => {
+    discipline[key].score = parseInt(document.getElementById("popupDisciplineScore").value);
+    saveJSON("discipline", discipline);
+    renderDiscipline();
+    closePopup("popupDiscipline");
+});
+
+/* ============================================================
+   6. MENTAL — AUTO CALCULÉ
+   ============================================================ */
+
+function renderMental() {
+    const c = corpsData[key];
+    if (!c) return;
+
+    let etat = "";
+    let conseil = "";
+
+    const stress = parseInt(c.stress || 0);
+
+    if (stress >= 7) {
+        etat = "Stress élevé";
+        conseil = "Respiration 4-2-6 + marche.";
+    } else if (stress >= 4) {
+        etat = "Stress modéré";
+        conseil = "Pause + respiration lente.";
+    } else {
+        etat = "Stress bas";
+        conseil = "Avance fort sur ta tâche.";
+    }
+
+    document.getElementById("mentalEtatLabel").textContent = etat;
+    document.getElementById("mentalConseilLabel").textContent = conseil;
+}
+
+/* ============================================================
+   7. XP + NIVEAU
+   ============================================================ */
+
+function renderXP() {
+    const xp = parseInt(localStorage.getItem("xp") || "0");
+    let niveau = "Errant";
+
+    if (xp >= 500) niveau = "Moine Implacable";
+    else if (xp >= 300) niveau = "Moine Rigoureux";
+    else if (xp >= 150) niveau = "Moine en Formation";
+    else if (xp >= 50) niveau = "Apprenti de la Rigueur";
+
+    document.getElementById("xpLabel").textContent = xp + " XP";
+    document.getElementById("niveauLabel").textContent = niveau;
+}
+
+/* ============================================================
+   8. RENDU DES CARTES
+   ============================================================ */
+
+function renderCorps() {
+    document.getElementById("poidsInput").value = corpsData[key].poids || "";
+    document.getElementById("stressInput").value = corpsData[key].stress || 0;
+    document.getElementById("sommeilInput").value = corpsData[key].sommeil || 0;
+}
+
+function renderSeance() {
+    document.getElementById("typeSeanceLabel").textContent = seances[key].type || "–";
+    document.getElementById("dureeSeanceLabel").textContent = seances[key].duree || "–";
+    document.getElementById("intensiteSeanceLabel").textContent = seances[key].intensite || "–";
+}
+
+function renderAddictions() {
+    document.getElementById("jointsLabel").textContent = addictions[key].joints;
+    document.getElementById("cigarettesLabel").textContent = addictions[key].cigarettes;
+    document.getElementById("cravingLabel").textContent = addictions[key].craving + "/10";
+}
+
+function renderDiscipline() {
+    document.getElementById("disciplineScoreLabel").textContent = discipline[key].score + "/5";
+}
+
+/* ============================================================
+   9. INITIALISATION
+   ============================================================ */
+
+renderCorps();
+renderSeance();
+renderAddictions();
+renderDiscipline();
+renderMental();
+renderXP();
