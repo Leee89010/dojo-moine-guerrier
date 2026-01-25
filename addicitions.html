@@ -47,11 +47,11 @@
                 <div class="row">
                     <div>
                         <label>Joints</label>
-                        <input type="number" id="joints" min="0">
+                        <input type="number" id="joints" min="0" value="0">
                     </div>
                     <div>
                         <label>Cigarettes</label>
-                        <input type="number" id="cigarettes" min="0">
+                        <input type="number" id="cigarettes" min="0" value="0">
                     </div>
                 </div>
 
@@ -64,10 +64,11 @@
                     <option value="ennui">Ennui</option>
                     <option value="social">Social</option>
                     <option value="routine">Routine</option>
+                    <option value="aucun">Aucun (jour clean)</option>
                 </select>
 
-                <label>Craving (0–10)</label>
-                <input type="number" id="craving" min="0" max="10">
+                <label>Craving (0—10)</label>
+                <input type="number" id="craving" min="0" max="10" value="0">
 
             </div>
         </section>
@@ -76,34 +77,81 @@
 
         <section class="dojo-section">
             <h2 class="dojo-section-title">Résumé</h2>
-            <div class="dojo-card small-text" id="resumeAddictions"></div>
+            <div class="dojo-card small-text" id="resumeAddictions">
+                Valide ta journée pour voir le résumé.
+            </div>
         </section>
+
+        <div id="addictionsStatus" style="margin-top: 10px; text-align: center; color: #d4af37;"></div>
 
     </main>
 
     <!-- MENU -->
     <div class="bottom-menu-wrapper">
         <div class="bottom-menu-pill">
-            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="index.html"><span class="icon">🏯</span>Accueil</a>
             <a href="progression.html"><span class="icon">📈</span>Progression</a>
             <a href="finance.html"><span class="icon">💸</span>Finances</a>
         </div>
     </div>
 
     <script src="dojo.js"></script>
-    <script src="firebase.js"></script>
 
     <script>
+        function todayKey() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getJSON(key, def) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : def;
+            } catch {
+                return def;
+            }
+        }
+
+        function setJSON(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
         const key = todayKey();
+        const statusEl = document.getElementById("addictionsStatus");
+
+        // Vérifier si déjà validé
+        const xpGained = getJSON("xpGained", {});
+        
+        if (xpGained[key]?.addictions) {
+            statusEl.innerHTML = "✅ Addictions déjà validées aujourd'hui !";
+            statusEl.style.color = "#4caf50";
+        }
 
         // Affichage résumé si déjà rempli
         const add = getJSON("addictions", {});
         if (add[key]) {
-            document.getElementById("resumeAddictions").innerText =
-                "Joints : " + add[key].joints +
-                " | Cigarettes : " + add[key].cigarettes +
-                " | Première : " + add[key].heurePremiere +
-                " | Craving : " + add[key].craving + "/10.";
+            const data = add[key];
+            
+            // Pré-remplir le formulaire
+            document.getElementById("joints").value = data.joints || 0;
+            document.getElementById("cigarettes").value = data.cigarettes || 0;
+            document.getElementById("heurePremiere").value = data.heurePremiere || "";
+            document.getElementById("declencheur").value = data.declencheur || "stress";
+            document.getElementById("craving").value = data.craving || 0;
+
+            // Afficher le résumé
+            const isClean = parseInt(data.joints) === 0 && parseInt(data.cigarettes) === 0;
+            
+            document.getElementById("resumeAddictions").innerHTML = 
+                "<strong>Joints :</strong> " + data.joints + " | " +
+                "<strong>Cigarettes :</strong> " + data.cigarettes + "<br>" +
+                "<strong>Première :</strong> " + (data.heurePremiere || "N/A") + " | " +
+                "<strong>Déclencheur :</strong> " + data.declencheur + "<br>" +
+                "<strong>Craving :</strong> " + data.craving + "/10" +
+                (isClean ? "<br><br>🎉 <strong>Journée CLEAN ! +15 XP</strong>" : "");
         }
 
         // Validation
@@ -119,12 +167,38 @@
             add[key] = { joints, cigarettes, heurePremiere, declencheur, craving };
             setJSON("addictions", add);
 
-            // XP
-            let xp = parseInt(localStorage.getItem("xp") || "0", 10);
-            if (parseInt(joints) === 0 && parseInt(cigarettes) === 0) xp += 15;
-            localStorage.setItem("xp", xp.toString());
+            // Vérifier si déjà validé aujourd'hui
+            const xpGained = getJSON("xpGained", {});
+            
+            let xpEarned = 0;
+            const isClean = parseInt(joints) === 0 && parseInt(cigarettes) === 0;
 
-            alert("Journée enregistrée !");
+            if (!xpGained[key]?.addictions) {
+                // XP bonus si journée clean
+                if (isClean) {
+                    xpEarned = 15;
+                    let xp = parseInt(localStorage.getItem("xp") || "0", 10);
+                    xp += xpEarned;
+                    localStorage.setItem("xp", xp.toString());
+                }
+
+                // Marquer comme validé
+                if (!xpGained[key]) {
+                    xpGained[key] = {};
+                }
+                xpGained[key].addictions = true;
+                setJSON("xpGained", xpGained);
+
+                if (isClean) {
+                    alert("🎉 JOURNÉE CLEAN !\n\nAucune consommation aujourd'hui.\nXP gagnés : +15 XP\n\nContinue comme ça, guerrier !");
+                } else {
+                    alert("📊 Journée enregistrée.\n\nJoints : " + joints + "\nCigarettes : " + cigarettes + 
+                          "\n\n💡 Chaque jour compte. Demain peut être ton jour clean.");
+                }
+            } else {
+                alert("📊 Données mises à jour.\n\n⚠️ XP déjà accordés aujourd'hui (pas de double gain)");
+            }
+
             window.location.href = "index.html";
         });
     </script>
