@@ -201,8 +201,8 @@ document.getElementById("saveTransaction").onclick = () => {
     const desc = document.getElementById("descInput").value;
     const date = document.getElementById("dateInput").value;
 
-    if (!montant || !date) {
-        alert("Montant et date obligatoires.");
+    if (!montant || !date || !categorie || !type) {
+        alert("Montant, date, type et catégorie sont obligatoires.");
         return;
     }
 
@@ -226,6 +226,7 @@ document.getElementById("saveTransaction").onclick = () => {
     renderTransactions();
     updateCharts();
 };
+
 
 // --- NAVIGATION MOIS ---
 document.getElementById("prevMonth").onclick = () => {
