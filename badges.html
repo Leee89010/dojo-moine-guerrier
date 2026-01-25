@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badges • Dojo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-dojo">
+
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+    </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">Badges & Niveaux</div>
+            <div class="dojo-subtitle">La Voie du Guerrier</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
+
+    <main class="dojo-main">
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Niveau actuel</h2>
+            <div class="dojo-card xp" id="niveauGlobal">Chargement...</div>
+        </section>
+
+        <section class="dojo-section">
+            <h2 class="dojo-section-title">Badges obtenus</h2>
+            <div class="dojo-card small-text" id="listeBadges">Chargement...</div>
+        </section>
+
+    </main>
+
+    <!-- MENU -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+    <script src="dojo.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        // On réutilise la logique de dojo.js
+        const xp = parseInt(localStorage.getItem("xp") || "0", 10);
+
+        let niveau = "Errant";
+        if (xp >= 500) niveau = "Moine Implacable";
+        else if (xp >= 300) niveau = "Moine Rigoureux";
+        else if (xp >= 150) niveau = "Moine en Formation";
+        else if (xp >= 50) niveau = "Apprenti de la Rigueur";
+
+        document.getElementById("niveauGlobal").innerText =
+            "Niveau : " + niveau + " (" + xp + " XP)";
+
+        // Badges
+        const corps = getJSON("corps", {});
+        const poidsActuel = corps[todayKey()]?.poids;
+        let badges = [];
+
+        if (xp >= 50) badges.push("Premier Pas sur la Voie");
+        if (xp >= 150) badges.push("Semaine du Moine");
+        if (xp >= 300) badges.push("Rigueur Inflexible");
+
+        if (poidsActuel) {
+            const diff = 86.7 - parseFloat(poidsActuel);
+            if (diff >= 2) badges.push("Allègement (–2 kg)");
+            if (diff >= 5) badges.push("Transformation (–5 kg)");
+            if (diff >= 10) badges.push("Renouveau (–10 kg)");
+            if (parseFloat(poidsActuel) <= 75) badges.push("Temple Parfait (75 kg atteint)");
+        }
+
+        document.getElementById("listeBadges").innerText =
+            badges.length ? badges.join(" | ") : "Aucun badge pour l’instant.";
+    </script>
+
+</body>
+</html>
