@@ -115,15 +115,20 @@ function renderTransactions() {
 
       const icon = categoryIcons[t.categorie] || "💸";
 
+card.classList.add("swipe-card");
+card.setAttribute("data-id", index);
+
 card.innerHTML = `
-    <div class="amount ${t.type === "revenu" ? "positive" : "negative"}">
-        ${icon} ${t.type === "revenu" ? "+" : "-"}${t.montant} €
+    <div class="swipe-content">
+        <div class="amount ${t.type === "revenu" ? "positive" : "negative"}">
+            ${icon} ${t.type === "revenu" ? "+" : "-"}${t.montant} €
+        </div>
+        <div class="desc">${t.categorie} — ${t.description || ""}</div>
+        <div class="desc">${t.date}</div>
     </div>
-    <div class="desc">${t.categorie} — ${t.description || ""}</div>
-    <div class="desc">${t.date}</div>
+
+    <div class="swipe-delete">Supprimer</div>
 `;
-
-
         container.appendChild(card);
     });
 }
