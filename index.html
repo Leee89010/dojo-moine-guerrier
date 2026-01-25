@@ -35,319 +35,280 @@
         }
     </script>
 
-    <!-- HEADER -->
-    <header class="dojo-header">
-        <div>
-            <div class="dojo-title">Dojo du Moine Guerrier</div>
-            <div class="dojo-subtitle">Discipline quotidienne • Force intérieure</div>
+    <!-- HEADER PREMIUM -->
+    <header class="dojo-header-premium">
+        <div class="header-content">
+            <div class="dojo-logo">🏯</div>
+            <div>
+                <div class="dojo-title-premium">Dojo du Moine Guerrier</div>
+                <div class="dojo-subtitle-premium">La discipline forge l'excellence</div>
+            </div>
         </div>
-        <button id="openSettings" class="dojo-settings-btn">⚙️</button>
+        <button id="openSettings" class="btn-icon-premium">⚙️</button>
     </header>
 
     <!-- CONTENU PRINCIPAL -->
-    <main class="dojo-main">
+    <main class="dojo-main-premium">
 
-        <!-- SECTION CORPS -->
-        <section class="dojo-section">
-            <h2 class="dojo-section-title">Corps</h2>
-
-            <div class="dojo-stats-grid">
-
-                <!-- ÉTAT DU CORPS -->
-                <div class="dojo-card dojo-card-medium" id="corpsCard">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">🧍‍♂️</span>
-                        <span class="dojo-card-label">État du corps</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Poids</span>
-                        <input type="number" id="poidsInput" class="inline-input" placeholder="kg" step="0.1">
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Stress</span>
-                        <input type="range" id="stressInput" min="0" max="10" class="inline-slider">
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Sommeil</span>
-                        <input type="range" id="sommeilInput" min="0" max="10" class="inline-slider">
-                    </div>
-
-                    <button class="primary small" id="saveCorpsBtn">Enregistrer</button>
+        <!-- Hero XP Section -->
+        <div class="hero-xp-card">
+            <div class="xp-ring">
+                <div class="xp-inner">
+                    <div class="xp-icon">🧠</div>
+                    <div class="xp-amount" id="xpLabel">0 XP</div>
                 </div>
-
-                <!-- SÉANCE DU JOUR -->
-                <div class="dojo-card dojo-card-medium clickable" id="seanceCard">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">🥋</span>
-                        <span class="dojo-card-label">Séance du jour</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Type</span>
-                        <span class="detail-value" id="typeSeanceLabel">—</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Durée</span>
-                        <span class="detail-value" id="dureeSeanceLabel">—</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Intensité</span>
-                        <span class="detail-value" id="intensiteSeanceLabel">—</span>
-                    </div>
-                </div>
-
-                <!-- ADDICTIONS -->
-                <div class="dojo-card dojo-card-medium clickable" id="addictionsCard">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">🚬</span>
-                        <span class="dojo-card-label">Addictions</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Joints</span>
-                        <span class="detail-value" id="jointsLabel">—</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Cigarettes</span>
-                        <span class="detail-value" id="cigarettesLabel">—</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Craving</span>
-                        <span class="detail-value" id="cravingLabel">—</span>
-                    </div>
-                </div>
-
-                <!-- DISCIPLINE -->
-                <div class="dojo-card dojo-card-medium clickable" id="disciplineCard">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">🛡️</span>
-                        <span class="dojo-card-label">Discipline</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Score du jour</span>
-                        <span class="detail-value" id="disciplineScoreLabel">—</span>
-                    </div>
-                </div>
-
-                <!-- MENTAL -->
-                <div class="dojo-card dojo-card-small" id="mentalCard">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">🧘‍♂️</span>
-                        <span class="dojo-card-label">Mental</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">État</span>
-                        <span class="detail-value" id="mentalEtatLabel">—</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Conseil</span>
-                        <span class="detail-value" id="mentalConseilLabel">—</span>
-                    </div>
-                </div>
-
-                <!-- XP / NIVEAU -->
-                <div class="dojo-card dojo-card-small" id="xpCard">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">🧠</span>
-                        <span class="dojo-card-label">Progression</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">XP</span>
-                        <span class="detail-value" id="xpLabel">—</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Niveau</span>
-                        <span class="detail-value" id="niveauLabel">—</span>
-                    </div>
-                </div>
-
-                <!-- PAS -->
-                <div class="dojo-card steps-card" id="stepsCard">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">🚶‍♂️</span>
-                        <span class="dojo-card-label">Pas du jour</span>
-                    </div>
-
-                    <div class="dojo-card-main">
-                        <span class="dojo-card-value" id="stepsValue">0</span>
-                        <span class="dojo-card-unit">pas</span>
-                    </div>
-
-                    <div class="dojo-card-progress">
-                        <div class="dojo-card-progress-bar">
-                            <div class="dojo-card-progress-fill" id="stepsProgress"></div>
-                        </div>
-                        <div class="dojo-card-progress-text">
-                            Objectif : <span id="stepsGoalLabel">10 000</span> pas
-                        </div>
-                    </div>
-
-                    <div class="dojo-card-actions">
-                        <button class="dojo-chip" data-steps="500">+500</button>
-                        <button class="dojo-chip" data-steps="1000">+1 000</button>
-                    </div>
-
-                    <div class="dojo-card-hint">Appui long pour modifier l'objectif</div>
-                </div>
-
-                <!-- HYDRATATION -->
-                <div class="dojo-card water-card">
-                    <div class="dojo-card-header">
-                        <span class="dojo-card-icon">💧</span>
-                        <span class="dojo-card-label">Hydratation</span>
-                    </div>
-
-                    <div class="dojo-card-toggle">
-                        <button class="toggle-btn active" id="modeLitres">Litres</button>
-                        <button class="toggle-btn" id="modeVerres">Verres</button>
-                    </div>
-
-                    <div class="dojo-card-main">
-                        <span class="dojo-card-value" id="waterValue">0</span>
-                        <span class="dojo-card-unit" id="waterUnit">L</span>
-                    </div>
-
-                    <div class="dojo-card-progress">
-                        <div class="dojo-card-progress-bar">
-                            <div class="dojo-card-progress-fill" id="waterProgress"></div>
-                        </div>
-                        <div class="dojo-card-progress-text">
-                            Objectif : <span id="waterGoalLabel">2</span> <span id="waterGoalUnit">L</span>
-                        </div>
-                    </div>
-
-                    <div class="dojo-card-actions">
-                        <button class="dojo-chip" id="waterPlus">+0.25</button>
-                    </div>
-                </div>
-
             </div>
-        </section>
-
-        <!-- RITUELS -->
-        <section class="dojo-section">
-            <h2 class="dojo-section-title">Rituels du jour</h2>
-
-            <div class="dojo-rituals" id="ritualsList">
-                <div class="ritual-card">
-                    <div class="ritual-left">
-                        <span class="ritual-icon">🔥</span>
-                        <div>
-                            <div class="ritual-title">Méditation</div>
-                            <div class="ritual-subtitle">15 minutes</div>
-                        </div>
-                    </div>
-                    <button class="ritual-toggle"></button>
+            <div class="xp-details">
+                <div class="xp-level" id="niveauLabel">Errant</div>
+                <div class="xp-progress-bar">
+                    <div class="xp-progress-fill" id="xpProgress"></div>
                 </div>
+                <div class="xp-next">Prochain niveau : 50 XP</div>
+            </div>
+        </div>
 
-                <div class="ritual-card">
-                    <div class="ritual-left">
-                        <span class="ritual-icon">📿</span>
-                        <div>
-                            <div class="ritual-title">Mantra</div>
-                            <div class="ritual-subtitle">108 répétitions</div>
-                        </div>
-                    </div>
-                    <button class="ritual-toggle"></button>
+        <!-- Sections principales -->
+        <div class="dojo-grid-premium">
+
+            <!-- Corps -->
+            <div class="premium-card glass-card" id="corpsCard">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🧍‍♂️</span>
+                    <span class="card-title-premium">État du corps</span>
                 </div>
-
-                <div class="ritual-card">
-                    <div class="ritual-left">
-                        <span class="ritual-icon">📓</span>
-                        <div>
-                            <div class="ritual-title">Journal</div>
-                            <div class="ritual-subtitle">5 minutes</div>
-                        </div>
+                <div class="card-body-premium">
+                    <div class="metric-inline">
+                        <span class="metric-label">Poids</span>
+                        <input type="number" id="poidsInput" class="inline-input-premium" placeholder="kg" step="0.1">
                     </div>
-                    <button class="ritual-toggle"></button>
+                    <div class="metric-inline">
+                        <span class="metric-label">Stress</span>
+                        <input type="range" id="stressInput" min="0" max="10" class="inline-slider-premium" value="5">
+                    </div>
+                    <div class="metric-inline">
+                        <span class="metric-label">Sommeil</span>
+                        <input type="range" id="sommeilInput" min="0" max="10" class="inline-slider-premium" value="7">
+                    </div>
+                    <button class="btn-card-action" id="saveCorpsBtn">💾 Enregistrer</button>
+                </div>
+            </div>
+
+            <!-- Séance -->
+            <div class="premium-card glass-card clickable-card" id="seanceCard">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🥋</span>
+                    <span class="card-title-premium">Séance du jour</span>
+                </div>
+                <div class="card-body-premium">
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Type</span>
+                        <span class="stat-value-sm" id="typeSeanceLabel">—</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Durée</span>
+                        <span class="stat-value-sm" id="dureeSeanceLabel">—</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Intensité</span>
+                        <span class="stat-value-sm" id="intensiteSeanceLabel">—</span>
+                    </div>
+                </div>
+                <div class="card-hover-indicator">Cliquer pour modifier</div>
+            </div>
+
+            <!-- Addictions -->
+            <div class="premium-card glass-card clickable-card" id="addictionsCard">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🚬</span>
+                    <span class="card-title-premium">Addictions</span>
+                </div>
+                <div class="card-body-premium">
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Joints</span>
+                        <span class="stat-value-sm" id="jointsLabel">—</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Cigarettes</span>
+                        <span class="stat-value-sm" id="cigarettesLabel">—</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Craving</span>
+                        <span class="stat-value-sm" id="cravingLabel">—</span>
+                    </div>
+                </div>
+                <div class="card-hover-indicator">Cliquer pour modifier</div>
+            </div>
+
+            <!-- Discipline -->
+            <div class="premium-card glass-card clickable-card" id="disciplineCard">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🛡️</span>
+                    <span class="card-title-premium">Discipline</span>
+                </div>
+                <div class="card-body-premium">
+                    <div class="discipline-score">
+                        <div class="score-circle">
+                            <span id="disciplineScoreLabel">0</span>
+                            <span class="score-max">/5</span>
+                        </div>
+                        <div class="score-label">Habitudes validées</div>
+                    </div>
+                </div>
+                <div class="card-hover-indicator">Cliquer pour modifier</div>
+            </div>
+
+            <!-- Mental -->
+            <div class="premium-card glass-card mental-card">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🧘‍♂️</span>
+                    <span class="card-title-premium">État mental</span>
+                </div>
+                <div class="card-body-premium">
+                    <div class="mental-status" id="mentalEtatLabel">Équilibré</div>
+                    <div class="mental-advice" id="mentalConseilLabel">Continue sur cette voie</div>
+                </div>
+            </div>
+
+            <!-- Pas -->
+            <div class="premium-card glass-card steps-card-premium" id="stepsCard">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🚶‍♂️</span>
+                    <span class="card-title-premium">Pas du jour</span>
+                </div>
+                <div class="steps-main">
+                    <div class="steps-number" id="stepsValue">0</div>
+                    <div class="steps-goal">/ <span id="stepsGoalLabel">10 000</span> pas</div>
+                </div>
+                <div class="progress-bar-premium">
+                    <div class="progress-fill-premium" id="stepsProgress"></div>
+                </div>
+                <div class="steps-actions">
+                    <button class="chip-btn" data-steps="500">+500</button>
+                    <button class="chip-btn" data-steps="1000">+1K</button>
+                    <button class="chip-btn" data-steps="2000">+2K</button>
+                </div>
+                <div class="card-hint">Appui long pour modifier l'objectif</div>
+            </div>
+
+            <!-- Hydratation -->
+            <div class="premium-card glass-card water-card-premium">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">💧</span>
+                    <span class="card-title-premium">Hydratation</span>
+                </div>
+                <div class="water-toggle">
+                    <button class="toggle-chip active" id="modeLitres">Litres</button>
+                    <button class="toggle-chip" id="modeVerres">Verres</button>
+                </div>
+                <div class="water-main">
+                    <div class="water-amount">
+                        <span id="waterValue">0</span>
+                        <span id="waterUnit" class="water-unit">L</span>
+                    </div>
+                    <div class="water-goal">Objectif : <span id="waterGoalLabel">2</span><span id="waterGoalUnit">L</span></div>
+                </div>
+                <div class="progress-bar-premium">
+                    <div class="progress-fill-premium water-fill" id="waterProgress"></div>
+                </div>
+                <button class="btn-add-water" id="waterPlus">+ Ajouter</button>
+            </div>
+
+        </div>
+
+        <!-- Rituels Section -->
+        <section class="rituals-section-premium">
+            <h2 class="section-title-premium">⚡ Rituels quotidiens</h2>
+            <div class="rituals-grid" id="ritualsList">
+                <div class="ritual-card-premium">
+                    <div class="ritual-icon-premium">🔥</div>
+                    <div class="ritual-info">
+                        <div class="ritual-name">Méditation</div>
+                        <div class="ritual-duration">15 minutes</div>
+                    </div>
+                    <button class="ritual-check"></button>
+                </div>
+                <div class="ritual-card-premium">
+                    <div class="ritual-icon-premium">📿</div>
+                    <div class="ritual-info">
+                        <div class="ritual-name">Mantra</div>
+                        <div class="ritual-duration">108 répétitions</div>
+                    </div>
+                    <button class="ritual-check"></button>
+                </div>
+                <div class="ritual-card-premium">
+                    <div class="ritual-icon-premium">📓</div>
+                    <div class="ritual-info">
+                        <div class="ritual-name">Journal</div>
+                        <div class="ritual-duration">5 minutes</div>
+                    </div>
+                    <button class="ritual-check"></button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- BOUTON FLOTTANT -->
-    <button class="add-ritual-btn" onclick="window.location.href='rituel.html'">＋</button>
+    <!-- BOUTON FLOTTANT RITUEL -->
+    <button class="fab-premium" onclick="window.location.href='rituel.html'">
+        <span class="fab-icon">✨</span>
+        <span class="fab-text">Rituel</span>
+    </button>
 
-    <!-- POPUP RÉGLAGES -->
+    <!-- POPUPS (gardées mais stylées) -->
     <div class="popup-overlay" id="settingsPopup">
-        <div class="popup">
-            <h2>Réglages du Dojo</h2>
-
+        <div class="popup-premium">
+            <h2>⚙️ Réglages</h2>
             <label>Objectif de pas</label>
-            <input type="number" id="stepsGoalInput">
-
+            <input type="number" id="stepsGoalInput" class="popup-input">
             <label>Mode hydratation</label>
-            <select id="waterModeSelect">
+            <select id="waterModeSelect" class="popup-input">
                 <option value="litres">Litres</option>
                 <option value="verres">Verres</option>
             </select>
-
             <label>Objectif hydratation (litres)</label>
-            <input type="number" step="0.1" id="waterGoalLitresInput">
-
+            <input type="number" step="0.1" id="waterGoalLitresInput" class="popup-input">
             <label>Objectif hydratation (verres)</label>
-            <input type="number" id="waterGoalGlassesInput">
-
-            <button id="saveSettings">Enregistrer</button>
-            <button id="closeSettings" class="close-popup">Fermer</button>
+            <input type="number" id="waterGoalGlassesInput" class="popup-input">
+            <button id="saveSettings" class="popup-btn-primary">Enregistrer</button>
+            <button id="closeSettings" class="popup-btn-secondary">Fermer</button>
         </div>
     </div>
 
-    <!-- POPUP SÉANCE -->
     <div class="popup-overlay" id="popupSeance">
-        <div class="popup">
-            <h2>Séance du jour</h2>
-
+        <div class="popup-premium">
+            <h2>🥋 Séance du jour</h2>
             <label>Type</label>
-            <input type="text" id="popupSeanceType" placeholder="Ex : Muscu, Cardio, Yoga">
-
+            <input type="text" id="popupSeanceType" placeholder="Muscu, Cardio, Yoga..." class="popup-input">
             <label>Durée (min)</label>
-            <input type="number" id="popupSeanceDuree">
-
+            <input type="number" id="popupSeanceDuree" class="popup-input">
             <label>Intensité (0—10)</label>
-            <input type="number" id="popupSeanceIntensite" min="0" max="10">
-
-            <button class="primary" id="saveSeanceBtn">Enregistrer</button>
-            <button class="close-popup" onclick="closePopup('popupSeance')">Fermer</button>
+            <input type="number" id="popupSeanceIntensite" min="0" max="10" class="popup-input">
+            <button class="popup-btn-primary" id="saveSeanceBtn">Enregistrer</button>
+            <button class="popup-btn-secondary" onclick="closePopup('popupSeance')">Fermer</button>
         </div>
     </div>
 
-    <!-- POPUP ADDICTIONS -->
     <div class="popup-overlay" id="popupAddictions">
-        <div class="popup">
-            <h2>Addictions</h2>
-
+        <div class="popup-premium">
+            <h2>🚬 Addictions</h2>
             <label>Joints</label>
-            <input type="number" id="popupJoints" min="0">
-
+            <input type="number" id="popupJoints" min="0" class="popup-input">
             <label>Cigarettes</label>
-            <input type="number" id="popupCigarettes" min="0">
-
+            <input type="number" id="popupCigarettes" min="0" class="popup-input">
             <label>Craving (0—10)</label>
-            <input type="number" id="popupCraving" min="0" max="10">
-
-            <button class="primary" id="saveAddictionsBtn">Enregistrer</button>
-            <button class="close-popup" onclick="closePopup('popupAddictions')">Fermer</button>
+            <input type="number" id="popupCraving" min="0" max="10" class="popup-input">
+            <button class="popup-btn-primary" id="saveAddictionsBtn">Enregistrer</button>
+            <button class="popup-btn-secondary" onclick="closePopup('popupAddictions')">Fermer</button>
         </div>
     </div>
 
-    <!-- POPUP DISCIPLINE -->
     <div class="popup-overlay" id="popupDiscipline">
-        <div class="popup">
-            <h2>Discipline</h2>
-
+        <div class="popup-premium">
+            <h2>🛡️ Discipline</h2>
             <label>Score du jour (0—5)</label>
-            <input type="number" id="popupDisciplineScore" min="0" max="5">
-
-            <button class="primary" id="saveDisciplineBtn">Enregistrer</button>
-            <button class="close-popup" onclick="closePopup('popupDiscipline')">Fermer</button>
+            <input type="number" id="popupDisciplineScore" min="0" max="5" class="popup-input">
+            <button class="popup-btn-primary" id="saveDisciplineBtn">Enregistrer</button>
+            <button class="popup-btn-secondary" onclick="closePopup('popupDiscipline')">Fermer</button>
         </div>
     </div>
 
@@ -362,8 +323,6 @@
 
     <!-- JS -->
     <script src="dojo.js"></script>
-    <!-- Firebase désactivé temporairement car non configuré correctement -->
-    <!-- <script src="firebase.js"></script> -->
 
 </body>
 </html>
