@@ -6,6 +6,36 @@ function getFinances() {
 function saveFinances(data) {
     localStorage.setItem("finances", JSON.stringify(data));
 }
+// --- CATÉGORIES PAR DÉFAUT ---
+let defaultCategories = [
+    "Loyer",
+    "Courses",
+    "Électricité",
+    "Internet",
+    "Téléphone",
+    "Essence",
+    "Transport",
+    "Resto",
+    "Fast-food",
+    "Cinéma",
+    "Sorties",
+    "Ubereats",
+    "Shopping",
+    "Santé",
+    "Abonnements",
+    "Autres"
+];
+function populateCategories() {
+    const select = document.getElementById("categoryInput");
+    select.innerHTML = "";
+
+    defaultCategories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+    });
+}
 
 // --- VARIABLES ---
 let finances = getFinances();
@@ -195,6 +225,7 @@ document.getElementById("nextMonth").onclick = () => {
 };
 
 // --- INIT ---
+populateCategories();
 updatePeriodDisplay();
 updateSolde();
 renderTransactions();
