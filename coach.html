@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach IA • Dojo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-coach">
+
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+    </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">🤖 Coach IA</div>
+            <div class="dojo-subtitle">Le Sage du Dojo</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
+
+    <div class="coach-container">
+
+        <!-- Hero Coach -->
+        <div class="coach-hero">
+            <div class="coach-avatar">
+                <div class="avatar-ring"></div>
+                <div class="avatar-inner">🧘‍♂️</div>
+            </div>
+            <h2 class="coach-greeting" id="coachGreeting">Bienvenue, Guerrier</h2>
+            <p class="coach-status" id="coachStatus">Analyse de ton état en cours...</p>
+        </div>
+
+        <!-- Onglets -->
+        <div class="coach-tabs">
+            <button class="coach-tab active" data-tab="conseil">💭 Conseil du jour</button>
+            <button class="coach-tab" data-tab="journal">📝 Journal IA</button>
+            <button class="coach-tab" data-tab="objectifs">🎯 Objectifs</button>
+        </div>
+
+        <!-- TAB 1: CONSEIL DU JOUR -->
+        <div class="coach-tab-content active" id="tab-conseil">
+            
+            <!-- Analyse automatique -->
+            <div class="analysis-card">
+                <h3 class="card-title">📊 Analyse de ton état</h3>
+                <div class="metrics-grid" id="metricsGrid">
+                    <!-- Généré dynamiquement -->
+                </div>
+                <button class="btn-analyze" id="btnAnalyze">
+                    <span class="btn-icon">✨</span>
+                    <span>Demander un conseil</span>
+                </button>
+            </div>
+
+            <!-- Réponse IA -->
+            <div class="ia-response-card" id="iaResponseCard" style="display:none;">
+                <div class="response-header">
+                    <div class="ia-avatar">🤖</div>
+                    <div>
+                        <div class="ia-name">Le Sage du Dojo</div>
+                        <div class="ia-typing" id="iaTyping">réfléchit...</div>
+                    </div>
+                </div>
+                <div class="response-content" id="iaResponse"></div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: JOURNAL IA -->
+        <div class="coach-tab-content" id="tab-journal">
+            
+            <div class="journal-card">
+                <h3 class="card-title">📝 Comment s'est passée ta journée ?</h3>
+                <textarea 
+                    id="journalInput" 
+                    class="journal-textarea"
+                    placeholder="Écris librement tes pensées, ressentis, défis du jour...&#10;&#10;Exemple :&#10;'Journée difficile, beaucoup de stress au travail. Pas eu le temps de faire ma séance. Je me sens coupable...'&#10;&#10;L'IA va t'aider à analyser et structurer tes pensées."
+                ></textarea>
+                <button class="btn-journal" id="btnJournal">
+                    <span class="btn-icon">🧠</span>
+                    <span>Analyser mon journal</span>
+                </button>
+            </div>
+
+            <!-- Réponse IA Journal -->
+            <div class="ia-response-card" id="iaJournalCard" style="display:none;">
+                <div class="response-header">
+                    <div class="ia-avatar">🤖</div>
+                    <div>
+                        <div class="ia-name">Analyse de ton journal</div>
+                        <div class="ia-typing" id="iaJournalTyping">analyse...</div>
+                    </div>
+                </div>
+                <div class="response-content" id="iaJournalResponse"></div>
+            </div>
+
+            <!-- Historique -->
+            <div class="journal-history">
+                <h3 class="card-title">📚 Entrées précédentes</h3>
+                <div id="journalHistory"></div>
+            </div>
+
+        </div>
+
+        <!-- TAB 3: OBJECTIFS -->
+        <div class="coach-tab-content" id="tab-objectifs">
+            
+            <!-- Créer objectif -->
+            <div class="objectif-create-card">
+                <h3 class="card-title">🎯 Définis ton objectif</h3>
+                <input 
+                    type="text" 
+                    id="objectifInput" 
+                    class="objectif-input"
+                    placeholder="Ex: Peser 75kg, Économiser 1000€, Courir 5km..."
+                >
+                <button class="btn-objectif" id="btnCreateObjectif">
+                    <span class="btn-icon">🚀</span>
+                    <span>Créer le plan avec l'IA</span>
+                </button>
+            </div>
+
+            <!-- Objectifs actifs -->
+            <div class="objectifs-list" id="objectifsList">
+                <!-- Généré dynamiquement -->
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MENU -->
+    <div class="bottom-menu-wrapper">
+        <div class="bottom-menu-pill">
+            <a href="index.html"><span class="icon">🏯</span>Dojo</a>
+            <a href="progression.html"><span class="icon">📈</span>Progression</a>
+            <a href="finance.html"><span class="icon">💸</span>Finances</a>
+        </div>
+    </div>
+
+    <script src="dojo.js"></script>
+    <script src="coach.js"></script>
+
+</body>
+</html>
