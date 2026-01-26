@@ -2908,3 +2908,532 @@ body.page-finances {
         grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
     }
 }
+/* ============================================================
+   COACH IA - CSS ULTRA PREMIUM
+   À ajouter à la fin de style.css
+   ============================================================ */
+
+body.page-coach {
+    background: radial-gradient(circle at top, #1b1b1f, #050507);
+    color: #f5f5f5;
+    padding-bottom: 120px;
+}
+
+.coach-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+/* === HERO COACH === */
+.coach-hero {
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+}
+
+.coach-avatar {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+    position: relative;
+}
+
+.avatar-ring {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #d4af37, #f5d98b, #d4af37);
+    animation: rotate 4s linear infinite;
+}
+
+.avatar-inner {
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, rgba(20,20,25,0.98), rgba(15,15,20,0.98));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    border: 3px solid rgba(0,0,0,0.5);
+}
+
+.coach-greeting {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d4af37, #f5d98b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.coach-status {
+    font-size: 14px;
+    color: #888;
+}
+
+/* === ONGLETS === */
+.coach-tabs {
+    display: flex;
+    gap: 10px;
+    margin: 30px 0;
+    overflow-x: auto;
+    padding: 5px;
+}
+
+.coach-tab {
+    flex: 1;
+    min-width: 150px;
+    padding: 14px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    color: #888;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.coach-tab:hover {
+    border-color: rgba(212,175,55,0.4);
+}
+
+.coach-tab.active {
+    background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.15));
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+.coach-tab-content {
+    display: none;
+}
+
+.coach-tab-content.active {
+    display: block;
+    animation: fadeInUp 0.4s ease;
+}
+
+/* === CARDS === */
+.analysis-card,
+.journal-card,
+.objectif-create-card {
+    background: linear-gradient(145deg, rgba(20,20,25,0.98), rgba(15,15,20,0.98));
+    border-radius: 24px;
+    padding: 30px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    margin-bottom: 25px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #d4af37;
+    margin-bottom: 20px;
+}
+
+/* === MÉTRIQUES GRID === */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.metric-item {
+    background: rgba(255,255,255,0.03);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s;
+}
+
+.metric-item:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-3px);
+}
+
+.metric-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.metric-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.metric-value {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+/* === BOUTONS === */
+.btn-analyze,
+.btn-journal,
+.btn-objectif {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #d4af37, #f5d98b);
+    border: none;
+    border-radius: 14px;
+    color: #000;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.btn-analyze:hover,
+.btn-journal:hover,
+.btn-objectif:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(212,175,55,0.5);
+}
+
+.btn-analyze:disabled,
+.btn-journal:disabled,
+.btn-objectif:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-icon {
+    font-size: 20px;
+}
+
+/* === RÉPONSE IA === */
+.ia-response-card {
+    background: linear-gradient(145deg, rgba(30,25,40,0.98), rgba(20,15,30,0.98));
+    border-radius: 24px;
+    padding: 25px;
+    border: 2px solid rgba(212,175,55,0.3);
+    box-shadow: 0 20px 60px rgba(212,175,55,0.2);
+    margin-bottom: 25px;
+    animation: slideInUp 0.5s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.response-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.ia-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(212,175,55,0.3), rgba(212,175,55,0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 2px solid #d4af37;
+}
+
+.ia-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #d4af37;
+}
+
+.ia-typing {
+    font-size: 12px;
+    color: #888;
+    font-style: italic;
+}
+
+.response-content {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #ddd;
+    white-space: pre-line;
+}
+
+/* === JOURNAL === */
+.journal-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 15px;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: vertical;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+}
+
+.journal-textarea:focus {
+    outline: none;
+    border-color: #d4af37;
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 0 20px rgba(212,175,55,0.2);
+}
+
+.journal-textarea::placeholder {
+    color: #666;
+}
+
+.journal-history {
+    margin-top: 30px;
+}
+
+.journal-entry {
+    background: rgba(255,255,255,0.03);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s;
+}
+
+.journal-entry:hover {
+    border-color: rgba(212,175,55,0.3);
+}
+
+.entry-date {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.entry-text {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.entry-view {
+    padding: 8px 16px;
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 8px;
+    color: #d4af37;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.entry-view:hover {
+    background: rgba(212,175,55,0.25);
+}
+
+/* === OBJECTIFS === */
+.objectif-input {
+    width: 100%;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+}
+
+.objectif-input:focus {
+    outline: none;
+    border-color: #d4af37;
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 0 20px rgba(212,175,55,0.2);
+}
+
+.objectif-input::placeholder {
+    color: #666;
+}
+
+.objectifs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.objectif-card {
+    background: linear-gradient(145deg, rgba(20,20,25,0.98), rgba(15,15,20,0.98));
+    border-radius: 24px;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    transition: all 0.3s;
+}
+
+.objectif-card:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-3px);
+}
+
+.objectif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.objectif-titre {
+    font-size: 20px;
+    font-weight: 800;
+    color: #d4af37;
+    margin: 0;
+}
+
+.objectif-delete {
+    background: rgba(255,107,107,0.2);
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #ff6b6b;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.objectif-delete:hover {
+    background: rgba(255,107,107,0.3);
+    transform: scale(1.1);
+}
+
+.objectif-description {
+    font-size: 15px;
+    color: #aaa;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.objectif-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.objectif-progress {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.objectif-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #d4af37, #f5d98b);
+    transition: width 0.6s ease;
+}
+
+.objectif-details {
+    margin: 20px 0;
+}
+
+.objectif-details summary {
+    cursor: pointer;
+    color: #d4af37;
+    font-weight: 600;
+    padding: 12px;
+    background: rgba(212,175,55,0.1);
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.objectif-details summary:hover {
+    background: rgba(212,175,55,0.2);
+}
+
+.objectif-plan {
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.objectif-plan h4 {
+    font-size: 15px;
+    color: #d4af37;
+    margin: 20px 0 12px;
+}
+
+.etape-item {
+    background: rgba(255,255,255,0.03);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 3px solid #d4af37;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.objectif-plan ul {
+    margin: 0;
+    padding-left: 25px;
+}
+
+.objectif-plan li {
+    margin-bottom: 8px;
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.objectif-actions {
+    margin-top: 15px;
+}
+
+.btn-update-progress {
+    padding: 12px 20px;
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 10px;
+    color: #d4af37;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-update-progress:hover {
+    background: rgba(212,175,55,0.25);
+    transform: scale(1.02);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .coach-tabs {
+        flex-direction: column;
+    }
+    
+    .coach-tab {
+        min-width: auto;
+    }
+}
