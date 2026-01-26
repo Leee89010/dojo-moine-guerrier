@@ -3,77 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finances</title>
+    <title>Finances • Dojo</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body class="page-finances">
 
-    <div class="finance-header">
-        <h1>💸 Finances</h1>
-        <div class="finance-period">
-            <button id="prevMonth">◀</button>
-            <span id="currentPeriod"></span>
-            <button id="nextMonth">▶</button>
-        </div>
-        <div class="finance-view-toggle">
-            <button id="viewMonth" class="active">Mois</button>
-            <button id="viewYear">Année</button>
-        </div>
-        <div class="finance-solde" id="soldeDisplay">Solde : 0 €</div>
+    <!-- FOND ANIMÉ -->
+    <div id="background">
+        <div class="smoke"></div>
+        <div class="smoke"></div>
+        <div class="smoke"></div>
     </div>
+
+    <script>
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.top = Math.random() * 100 + "vh";
+            p.style.animationDelay = Math.random() * 6 + "s";
+            document.getElementById("background").appendChild(p);
+        }
+    </script>
+
+    <!-- HEADER -->
+    <header class="dojo-header">
+        <div>
+            <div class="dojo-title">💸 Finances</div>
+            <div class="dojo-subtitle">Maîtrise de tes flux</div>
+        </div>
+        <button class="dojo-settings-btn" onclick="window.location.href='index.html'">⬅️</button>
+    </header>
 
     <div class="finance-container">
 
-        <canvas id="donutChart"></canvas>
-        <canvas id="barChart"></canvas>
+        <!-- Navigation période -->
+        <div class="finance-nav">
+            <button id="prevMonth" class="nav-btn">◀</button>
+            <div class="current-period" id="currentPeriod">Janvier 2025</div>
+            <button id="nextMonth" class="nav-btn">▶</button>
+        </div>
 
-        <h2 class="section-title">Transactions</h2>
-        <div id="transactionsList"></div>
+        <!-- Solde Hero -->
+        <div class="solde-hero">
+            <div class="solde-label">Solde du mois</div>
+            <div class="solde-amount" id="soldeDisplay">0 €</div>
+            <div class="solde-details">
+                <div class="solde-detail revenus">
+                    <span class="detail-icon">📈</span>
+                    <div>
+                        <div class="detail-label">Revenus</div>
+                        <div class="detail-value" id="totalRevenus">0 €</div>
+                    </div>
+                </div>
+                <div class="solde-detail depenses">
+                    <span class="detail-icon">📉</span>
+                    <div>
+                        <div class="detail-label">Dépenses</div>
+                        <div class="detail-value" id="totalDepenses">0 €</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">📊 Répartition des dépenses</h3>
+                <canvas id="donutChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">📅 Évolution quotidienne</h3>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="transactions-section">
+            <h2 class="section-title-finance">💳 Transactions du mois</h2>
+            <div id="transactionsList" class="transactions-list"></div>
+        </div>
 
     </div>
 
-    <button class="add-transaction-btn" id="openAddPopup">＋</button>
+    <!-- FAB Add -->
+    <button class="fab-finance" id="openAddPopup">
+        <span class="fab-icon">+</span>
+    </button>
 
-    <!-- POPUP AJOUT -->
+    <!-- POPUP AJOUT PREMIUM -->
     <div class="popup-overlay" id="popupAdd">
-        <div class="popup">
-            <h2>Ajouter une transaction</h2>
+        <div class="popup-finance">
+            <h2>💰 Nouvelle transaction</h2>
+
+            <!-- Toggle Type -->
+            <div class="type-toggle">
+                <button class="type-btn active" data-type="depense">
+                    <span class="type-icon">📉</span>
+                    <span>Dépense</span>
+                </button>
+                <button class="type-btn" data-type="revenu">
+                    <span class="type-icon">📈</span>
+                    <span>Revenu</span>
+                </button>
+            </div>
 
             <label>Montant (€)</label>
-            <input type="number" id="amountInput">
+            <input type="number" id="amountInput" placeholder="0.00" step="0.01" class="finance-input">
 
-            <label>Type</label>
-            <select id="typeInput">
-                <option value="revenu">Revenu</option>
-                <option value="depense">Dépense</option>
-            </select>
-
-            <label>Catégorie</label>
-            <select id="categoryInput"></select>
+            <label id="categoryLabel">Catégorie</label>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Généré dynamiquement -->
+            </div>
 
             <label>Description</label>
-            <input type="text" id="descInput">
+            <input type="text" id="descInput" placeholder="Ex: Courses Lidl" class="finance-input">
 
             <label>Date</label>
-            <input type="date" id="dateInput">
+            <input type="date" id="dateInput" class="finance-input">
 
-            <button id="saveTransaction">Enregistrer</button>
-            <button class="close-popup" id="closeAddPopup">Annuler</button>
+            <button id="saveTransaction" class="finance-btn-primary">Enregistrer</button>
+            <button class="finance-btn-secondary" id="closeAddPopup">Annuler</button>
         </div>
     </div>
-
-    <script src="finance.js"></script>
 
     <!-- MENU FLOTTANT -->
     <div class="bottom-menu-wrapper">
         <div class="bottom-menu-pill">
-            <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+            <a href="index.html"><span class="icon">🏯</span>Dojo</a>
             <a href="progression.html"><span class="icon">📈</span>Progression</a>
             <a href="finance.html" class="active"><span class="icon">💸</span>Finances</a>
         </div>
     </div>
+
+    <script src="finance.js"></script>
 
 </body>
 </html>
