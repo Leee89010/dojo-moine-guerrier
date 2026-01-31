@@ -93,29 +93,6 @@
                 <div class="card-hover-indicator">Cliquer pour modifier</div>
             </div>
 
-            <!-- Addictions -->
-            <div class="premium-card glass-card clickable-card" id="addictionsCard">
-                <div class="card-header-premium">
-                    <span class="card-icon-premium">🚬</span>
-                    <span class="card-title-premium">Addictions</span>
-                </div>
-                <div class="card-body-premium">
-                    <div class="stat-row">
-                        <span class="stat-label-sm">Joints</span>
-                        <span class="stat-value-sm" id="jointsLabel">—</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label-sm">Cigarettes</span>
-                        <span class="stat-value-sm" id="cigarettesLabel">—</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label-sm">Craving</span>
-                        <span class="stat-value-sm" id="cravingLabel">—</span>
-                    </div>
-                </div>
-                <div class="card-hover-indicator">Cliquer pour modifier</div>
-            </div>
-
             <!-- Discipline -->
             <div class="premium-card glass-card clickable-card" id="disciplineCard">
                 <div class="card-header-premium">
@@ -134,7 +111,7 @@
                 <div class="card-hover-indicator">Cliquer pour modifier</div>
             </div>
 
-            <!-- Mental + Coach IA fusionnés -->
+            <!-- Mental + Coach IA -->
             <div class="premium-card glass-card mental-card">
                 <div class="card-header-premium">
                     <span class="card-icon-premium">🧘‍♂️</span>
@@ -150,7 +127,25 @@
                 </div>
             </div>
 
-            <!-- Pas -->
+            <!-- XP / NIVEAU -->
+            <div class="premium-card glass-card" id="xpCard">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🧠</span>
+                    <span class="card-title-premium">Progression</span>
+                </div>
+                <div class="card-body-premium">
+                    <div class="stat-row">
+                        <span class="stat-label-sm">XP</span>
+                        <span class="stat-value-sm" id="xpLabelSmall">—</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Niveau</span>
+                        <span class="stat-value-sm" id="niveauLabelSmall">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAS -->
             <div class="premium-card glass-card steps-card-premium" id="stepsCard">
                 <div class="card-header-premium">
                     <span class="card-icon-premium">🚶‍♂️</span>
@@ -171,7 +166,7 @@
                 <div class="card-hint">Appui long pour modifier l'objectif</div>
             </div>
 
-            <!-- Hydratation -->
+            <!-- HYDRATATION -->
             <div class="premium-card glass-card water-card-premium">
                 <div class="card-header-premium">
                     <span class="card-icon-premium">💧</span>
@@ -196,7 +191,7 @@
 
         </div>
 
-        <!-- Rituels Section -->
+        <!-- RITUELS -->
         <section class="rituals-section-premium">
             <h2 class="section-title-premium">⚡ Rituels quotidiens</h2>
             <div class="rituals-grid" id="ritualsList">
@@ -241,9 +236,9 @@
         </button>
     </div>
 
-    <!-- POPUPS (gardées mais stylées) -->
+    <!-- POPUP RÉGLAGES -->
     <div class="popup-overlay" id="settingsPopup">
-        <div class="popup-premium">
+        <div class="popup">
             <h2>⚙️ Réglages</h2>
             <label>Objectif de pas</label>
             <input type="number" id="stepsGoalInput" class="popup-input">
@@ -261,39 +256,82 @@
         </div>
     </div>
 
+    <!-- POPUP SÉANCE PREMIUM -->
     <div class="popup-overlay" id="popupSeance">
-        <div class="popup-premium">
+        <div class="popup-premium-sport">
             <h2>🥋 Séance du jour</h2>
-            <label>Type</label>
-            <input type="text" id="popupSeanceType" placeholder="Muscu, Cardio, Yoga..." class="popup-input">
+
+            <label>Type de séance</label>
+            <div class="sport-categories-grid" id="sportCategoriesGrid">
+                <button class="sport-cat-btn" data-type="Musculation">
+                    <span class="cat-icon">💪</span>
+                    <span>Muscu</span>
+                </button>
+                <button class="sport-cat-btn" data-type="Cardio">
+                    <span class="cat-icon">🏃</span>
+                    <span>Cardio</span>
+                </button>
+                <button class="sport-cat-btn" data-type="Boxe">
+                    <span class="cat-icon">🥊</span>
+                    <span>Boxe</span>
+                </button>
+                <button class="sport-cat-btn" data-type="Kickboxing">
+                    <span class="cat-icon">🦵</span>
+                    <span>Kickboxing</span>
+                </button>
+                <button class="sport-cat-btn" data-type="Yoga">
+                    <span class="cat-icon">🧘</span>
+                    <span>Yoga</span>
+                </button>
+                <button class="sport-cat-btn" data-type="Mobilité">
+                    <span class="cat-icon">🤸</span>
+                    <span>Mobilité</span>
+                </button>
+                <button class="sport-cat-btn" data-type="HIIT">
+                    <span class="cat-icon">⚡</span>
+                    <span>HIIT</span>
+                </button>
+                <button class="sport-cat-btn" data-type="Autre">
+                    <span class="cat-icon">🎯</span>
+                    <span>Autre</span>
+                </button>
+            </div>
+
+            <input type="text" id="popupSeanceTypeCustom" placeholder="Autre type..." class="popup-input" style="display:none;">
+
             <label>Durée (min)</label>
-            <input type="number" id="popupSeanceDuree" class="popup-input">
-            <label>Intensité (0—10)</label>
-            <input type="number" id="popupSeanceIntensite" min="0" max="10" class="popup-input">
-            <button class="popup-btn-primary" id="saveSeanceBtn">Enregistrer</button>
-            <button class="popup-btn-secondary" onclick="closePopup('popupSeance')">Fermer</button>
+            <div class="duration-quick-btns">
+                <button class="duration-btn" data-duration="20">20min</button>
+                <button class="duration-btn" data-duration="30">30min</button>
+                <button class="duration-btn" data-duration="45">45min</button>
+                <button class="duration-btn" data-duration="60">60min</button>
+                <button class="duration-btn" data-duration="90">90min</button>
+            </div>
+            <input type="number" id="popupSeanceDuree" placeholder="Ou entre une durée..." class="popup-input">
+
+            <label>Intensité</label>
+            <div class="intensity-slider-container">
+                <input type="range" id="popupSeanceIntensite" min="1" max="10" value="5" class="intensity-slider">
+                <div class="intensity-labels">
+                    <span class="intensity-value" id="intensityValue">5</span>
+                    <span class="intensity-emoji" id="intensityEmoji">😐</span>
+                </div>
+            </div>
+
+            <label>Notes (optionnel)</label>
+            <textarea id="popupSeanceNotes" placeholder="Ex: Focus sur les jambes, bon ressenti..." class="popup-textarea"></textarea>
+
+            <button class="popup-btn-primary" id="saveSeanceBtn">✅ Enregistrer la séance</button>
+            <button class="popup-btn-secondary" onclick="closePopup('popupSeance')">Annuler</button>
         </div>
     </div>
 
-    <div class="popup-overlay" id="popupAddictions">
-        <div class="popup-premium">
-            <h2>🚬 Addictions</h2>
-            <label>Joints</label>
-            <input type="number" id="popupJoints" min="0" class="popup-input">
-            <label>Cigarettes</label>
-            <input type="number" id="popupCigarettes" min="0" class="popup-input">
-            <label>Craving (0—10)</label>
-            <input type="number" id="popupCraving" min="0" max="10" class="popup-input">
-            <button class="popup-btn-primary" id="saveAddictionsBtn">Enregistrer</button>
-            <button class="popup-btn-secondary" onclick="closePopup('popupAddictions')">Fermer</button>
-        </div>
-    </div>
-
+    <!-- POPUP DISCIPLINE -->
     <div class="popup-overlay" id="popupDiscipline">
-        <div class="popup-premium">
+        <div class="popup">
             <h2>🛡️ Discipline</h2>
             <label>Score du jour (0—5)</label>
-            <input type="number" id="popupDisciplineScore" min="0" max="5" class="popup-input">
+            <input type="number" id="popupDisciplineScore" min="0" max="5" value="0" class="popup-input">
             <button class="popup-btn-primary" id="saveDisciplineBtn">Enregistrer</button>
             <button class="popup-btn-secondary" onclick="closePopup('popupDiscipline')">Fermer</button>
         </div>
