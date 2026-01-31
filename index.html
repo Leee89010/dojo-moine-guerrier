@@ -70,45 +70,6 @@
         <!-- Sections principales -->
         <div class="dojo-grid-premium">
 
-            <!-- Corps -->
-            <div class="premium-card glass-card" id="corpsCard">
-                <div class="card-header-premium">
-                    <span class="card-icon-premium">🧍‍♂️</span>
-                    <span class="card-title-premium">État du corps</span>
-                </div>
-                <div class="card-body-premium">
-                    <div class="metric-inline">
-                        <span class="metric-label">Poids</span>
-                        <input type="number" id="poidsInput" class="inline-input-premium" placeholder="kg" step="0.1">
-                    </div>
-                    <div class="metric-inline">
-                        <span class="metric-label">Stress</span>
-                        <input type="range" id="stressInput" min="0" max="10" class="inline-slider-premium" value="5">
-                    </div>
-                    <div class="metric-inline">
-                        <span class="metric-label">Sommeil</span>
-                        <input type="range" id="sommeilInput" min="0" max="10" class="inline-slider-premium" value="7">
-                    </div>
-                    <button class="btn-card-action" id="saveCorpsBtn">💾 Enregistrer</button>
-                </div>
-            </div>
-            
-<!-- COACH IA -->
-<div class="premium-card glass-card clickable-card" onclick="window.location.href='coach.html'">
-    <div class="card-header-premium">
-        <span class="card-icon-premium">🤖</span>
-        <span class="card-title-premium">Coach IA</span>
-    </div>
-    <div class="card-body-premium">
-        <div class="coach-preview">
-            <p style="font-size: 14px; color: #aaa; line-height: 1.6;">
-                Analyse IA • Conseils personnalisés • Journal intelligent
-            </p>
-        </div>
-    </div>
-    <div class="card-hover-indicator">Cliquer pour ouvrir</div>
-</div>
-            
             <!-- Séance -->
             <div class="premium-card glass-card clickable-card" id="seanceCard">
                 <div class="card-header-premium">
@@ -132,6 +93,29 @@
                 <div class="card-hover-indicator">Cliquer pour modifier</div>
             </div>
 
+            <!-- Addictions -->
+            <div class="premium-card glass-card clickable-card" id="addictionsCard">
+                <div class="card-header-premium">
+                    <span class="card-icon-premium">🚬</span>
+                    <span class="card-title-premium">Addictions</span>
+                </div>
+                <div class="card-body-premium">
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Joints</span>
+                        <span class="stat-value-sm" id="jointsLabel">—</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Cigarettes</span>
+                        <span class="stat-value-sm" id="cigarettesLabel">—</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-sm">Craving</span>
+                        <span class="stat-value-sm" id="cravingLabel">—</span>
+                    </div>
+                </div>
+                <div class="card-hover-indicator">Cliquer pour modifier</div>
+            </div>
+
             <!-- Discipline -->
             <div class="premium-card glass-card clickable-card" id="disciplineCard">
                 <div class="card-header-premium">
@@ -150,7 +134,7 @@
                 <div class="card-hover-indicator">Cliquer pour modifier</div>
             </div>
 
-            <!-- Mental -->
+            <!-- Mental + Coach IA fusionnés -->
             <div class="premium-card glass-card mental-card">
                 <div class="card-header-premium">
                     <span class="card-icon-premium">🧘‍♂️</span>
@@ -159,6 +143,10 @@
                 <div class="card-body-premium">
                     <div class="mental-status" id="mentalEtatLabel">Équilibré</div>
                     <div class="mental-advice" id="mentalConseilLabel">Continue sur cette voie</div>
+                    <button class="btn-coach-quick" onclick="window.location.href='coach.html'">
+                        <span>🤖</span>
+                        <span>Demander conseil au Coach IA</span>
+                    </button>
                 </div>
             </div>
 
@@ -241,11 +229,17 @@
 
     </main>
 
-    <!-- BOUTON FLOTTANT RITUEL -->
-    <button class="fab-premium" onclick="window.location.href='rituel.html'">
-        <span class="fab-icon">✨</span>
-        <span class="fab-text">Rituel</span>
-    </button>
+    <!-- BOUTONS FLOTTANTS -->
+    <div class="fab-group">
+        <button class="fab-premium" onclick="window.location.href='rituel.html'">
+            <span class="fab-icon">✨</span>
+            <span class="fab-text">Rituel</span>
+        </button>
+        <button class="fab-coach" onclick="window.location.href='coach.html'">
+            <span class="fab-icon">🤖</span>
+            <span class="fab-text">Coach IA</span>
+        </button>
+    </div>
 
     <!-- POPUPS (gardées mais stylées) -->
     <div class="popup-overlay" id="settingsPopup">
@@ -280,7 +274,21 @@
             <button class="popup-btn-secondary" onclick="closePopup('popupSeance')">Fermer</button>
         </div>
     </div>
-    
+
+    <div class="popup-overlay" id="popupAddictions">
+        <div class="popup-premium">
+            <h2>🚬 Addictions</h2>
+            <label>Joints</label>
+            <input type="number" id="popupJoints" min="0" class="popup-input">
+            <label>Cigarettes</label>
+            <input type="number" id="popupCigarettes" min="0" class="popup-input">
+            <label>Craving (0—10)</label>
+            <input type="number" id="popupCraving" min="0" max="10" class="popup-input">
+            <button class="popup-btn-primary" id="saveAddictionsBtn">Enregistrer</button>
+            <button class="popup-btn-secondary" onclick="closePopup('popupAddictions')">Fermer</button>
+        </div>
+    </div>
+
     <div class="popup-overlay" id="popupDiscipline">
         <div class="popup-premium">
             <h2>🛡️ Discipline</h2>
